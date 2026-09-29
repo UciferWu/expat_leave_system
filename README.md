@@ -1,6 +1,6 @@
 # 法籍员工休假申请审批平台 · Plateforme de congés des expatriés
 
-几内亚法籍员工的休假申请、查询与审批平台。纯静态网页（GitHub Pages）+ Supabase，手机可直接使用，中法双语一键切换，账号只能由管理员创建。
+几内亚法籍员工的休假申请、查询与审批平台。纯静态网页（GitHub Pages）+ Supabase，手机可直接使用，中文 / 法文 / 英文一键切换，账号只能由管理员创建。
 
 Plateforme de demande, de suivi et de validation des congés des salariés français en Guinée. Site statique (GitHub Pages) + Supabase, utilisable sur mobile, bilingue chinois / français, comptes créés uniquement par l'administrateur.
 
@@ -23,6 +23,7 @@ Plateforme de demande, de suivi et de validation des congés des salariés fran�
 - 设置了试用期截止日期的员工，试用期结束前不能申请年假（病假等其他假期不受限）。
 - 天数按员工**工作国家**的法定假日计算；工作国家默认列表：中国、几内亚、科特迪瓦、新加坡（可在设置里维护）。
 - 系统从 2026 年开始使用，不显示也不能申请 2026 年以前的假期。
+- 已批准的休假可由该申请的审批人或管理员修改日期（如提前返岗），必须填写原因；天数和余额自动重算，修改前后的日期记入流转记录。员工本人不能修改自己已批准的休假。
 - 年假不能跨年申请；同一员工的申请日期不能重叠；最多补报 60 天前的假期。
 - 所有写操作都经过数据库函数校验，网页端无法绕过（行级安全 RLS）。
 - Validation à un niveau ; décompte calculé côté base (par défaut jours ouvrables lundi–samedi hors fériés, modifiable) ; contrôle du solde à la demande et à la validation ; pas de chevauchement ; pas d'auto-validation.
@@ -33,7 +34,7 @@ Plateforme de demande, de suivi et de validation des congés des salariés fran�
 
 ### 1. Supabase 数据库 / Base de données
 1. 在 [supabase.com](https://supabase.com) 新建项目（区域建议 West EU / Paris）。
-2. **SQL Editor** → 依次粘贴并运行 `001_schema.sql`、`002_storage.sql`、`003_entitlements_probation_countries.sql`（都在 `supabase/migrations/`）。
+2. **SQL Editor** → 依次粘贴并运行 `001_schema.sql`、`002_storage.sql`、`003_entitlements_probation_countries.sql`、`004_modify_leave_english.sql`（都在 `supabase/migrations/`）。
 3. **Authentication → Sign In / Providers**：关闭 **Allow new users to sign up**（禁止自助注册，只有管理员能建号）。
 4. **Authentication → URL Configuration**：Site URL 填 `https://uciferwu.github.io/expat_leave_system/`。
 

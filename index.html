@@ -305,13 +305,14 @@ zh:{
   setupTitle:"尚未连接数据库", setupBody:"请在 config.js 中填入 Supabase 的 Project URL 和 anon key，然后刷新页面。",
   onLeaveNow:"正在休假", stats_pending:"待审批", stats_onleave:"今日休假", stats_month:"本月批准天数", stats_users:"在职人数",
   dayUnit:"天", from:"从", to:"至", noResults:"没有符合条件的记录", count:"条",
+  modifyLeave:"修改休假", modifyHint:"如员工提前返岗，把结束日期改为实际休假的最后一天，多出的天数会自动退回余额。也可延长，但会重新校验余额。", modifyReason:"修改原因", modifyReasonPh:"例：提前返岗", newDuration:"修改后", oldDuration:"原天数", modified:"已修改", ev_modified:"修改休假", modifiedSaved:"休假已更新", nameEn:"英文名称", perYearAll:"每年额度（适用于所有年份）", unitDays:"天", unitShort:"天", ERR_NOT_APPROVED:"只能修改已批准的申请", ERR_NO_CHANGE:"日期没有变化",
   ERR_PROBATION:"试用期至 {d}，试用期结束前不能申请年假", ERR_BEFORE_START:"系统从 {d} 年开始使用，不能申请更早的假期",
   ERR_ACCOUNT_INACTIVE:"账号已停用，请联系人力资源部", ERR_TYPE:"请选择假期类型", ERR_DATES:"结束日期不能早于开始日期",
   ERR_HALF:"同一天不能既从下午开始又在上午结束", ERR_TOO_OLD:"不能补报 60 天以前的假期", ERR_CROSS_YEAR:"年假不能跨年，请按年度分两次申请",
   ERR_ZERO_DAYS:"所选日期内没有需要计算的工作日", ERR_OVERLAP:"与你已有的申请时间重叠", ERR_ATTACHMENT:"附件无效",
   ERR_ATTACHMENT_REQUIRED:"此类假期必须上传附件", ERR_BALANCE:"{k}余额不足，当前可用 {d} 天", ERR_FORBIDDEN:"没有权限执行此操作",
-  ERR_NOT_FOUND:"申请不存在", ERR_SELF_APPROVAL:"不能审批自己的申请", ERR_NOT_PENDING:"该申请已被处理",
-  ERR_COMMENT_REQUIRED:"驳回时必须填写原因", ERR_NOT_CANCELLABLE:"当前状态不能撤回", ERR_EMAIL:"邮箱格式不正确",
+  ERR_NOT_FOUND:"申请不存在", ERR_SELF_APPROVAL:"不能审批或修改自己的申请", ERR_NOT_PENDING:"该申请已被处理",
+  ERR_COMMENT_REQUIRED:"请填写原因", ERR_NOT_CANCELLABLE:"当前状态不能撤回", ERR_EMAIL:"邮箱格式不正确",
   ERR_NAME:"请填写姓名", ERR_PASSWORD_SHORT:"密码至少 8 位", ERR_EMAIL_EXISTS:"该邮箱已经有账号",
   ERR_SELF_DEACTIVATE:"不能停用自己的账号", ERR_FUNCTION:"账号管理服务调用失败，请确认已部署 admin-users 函数",
   ERR_GENERIC:"操作失败，请重试", ERR_NETWORK:"网络连接失败，请检查网络后重试",
@@ -377,18 +378,97 @@ fr:{
   setupTitle:"Base de données non connectée", setupBody:"Renseignez l'URL du projet Supabase et la clé anon dans config.js, puis rechargez la page.",
   onLeaveNow:"En congé", stats_pending:"En attente", stats_onleave:"En congé aujourd'hui", stats_month:"Jours approuvés ce mois", stats_users:"Comptes actifs",
   dayUnit:"j", from:"du", to:"au", noResults:"Aucun résultat", count:"",
+  modifyLeave:"Modifier le congé", modifyHint:"En cas de retour anticipé, indiquez le dernier jour de congé réellement pris : les jours non utilisés sont recrédités. Une prolongation est possible, sous réserve du solde.", modifyReason:"Motif de la modification", modifyReasonPh:"ex. retour anticipé", newDuration:"Nouvelle durée", oldDuration:"Durée initiale", modified:"Modifiée", ev_modified:"Congé modifié", modifiedSaved:"Congé mis à jour", nameEn:"Nom (anglais)", perYearAll:"Droits par an (toutes années)", unitDays:"jours", unitShort:"j", ERR_NOT_APPROVED:"Seule une demande approuvée peut être modifiée", ERR_NO_CHANGE:"Aucune modification des dates",
   ERR_PROBATION:"Période d'essai jusqu'au {d} : pas de congé annuel avant cette date", ERR_BEFORE_START:"La plateforme démarre en {d} : impossible de déclarer un congé antérieur",
   ERR_ACCOUNT_INACTIVE:"Compte désactivé. Contactez les RH.", ERR_TYPE:"Choisissez un type de congé", ERR_DATES:"La date de fin précède la date de début",
   ERR_HALF:"Un même jour ne peut pas commencer l'après-midi et finir à midi", ERR_TOO_OLD:"Impossible de déclarer un congé de plus de 60 jours dans le passé",
   ERR_CROSS_YEAR:"Un congé annuel ne peut pas chevaucher deux années : faites deux demandes", ERR_ZERO_DAYS:"Aucun jour décompté sur cette période",
   ERR_OVERLAP:"Chevauche une demande existante", ERR_ATTACHMENT:"Justificatif invalide", ERR_ATTACHMENT_REQUIRED:"Justificatif obligatoire pour ce type de congé",
   ERR_BALANCE:"Solde {k} insuffisant : {d} j disponibles", ERR_FORBIDDEN:"Action non autorisée", ERR_NOT_FOUND:"Demande introuvable",
-  ERR_SELF_APPROVAL:"Vous ne pouvez pas valider votre propre demande", ERR_NOT_PENDING:"Cette demande a déjà été traitée",
-  ERR_COMMENT_REQUIRED:"Motif obligatoire en cas de refus", ERR_NOT_CANCELLABLE:"Cette demande ne peut plus être annulée",
+  ERR_SELF_APPROVAL:"Vous ne pouvez pas valider ni modifier votre propre demande", ERR_NOT_PENDING:"Cette demande a déjà été traitée",
+  ERR_COMMENT_REQUIRED:"Le motif est obligatoire", ERR_NOT_CANCELLABLE:"Cette demande ne peut plus être annulée",
   ERR_EMAIL:"Adresse e-mail invalide", ERR_NAME:"Le nom est obligatoire", ERR_PASSWORD_SHORT:"8 caractères minimum",
   ERR_EMAIL_EXISTS:"Un compte existe déjà avec cet e-mail", ERR_SELF_DEACTIVATE:"Vous ne pouvez pas désactiver votre propre compte",
   ERR_FUNCTION:"Échec du service de comptes : vérifiez que la fonction admin-users est déployée",
-  ERR_GENERIC:"L'opération a échoué, réessayez", ERR_NETWORK:"Connexion impossible, vérifiez le réseau",
+  ERR_GENERIC:"L'opération a échoué, réessayez", ERR_NETWORK:"Connexion impossible, vérifiez le réseau"
+},
+en:{
+  appName:"Expatriate Leave", appShort:"Leave",
+  login:"Sign in", email:"Email", password:"Password", signIn:"Sign in",
+  forgot:"Forgot your password? Please contact Human Resources.", badLogin:"Incorrect email or password",
+  navHome:"Home", navMine:"My requests", navApprove:"Approvals", navAdmin:"Admin", navMe:"Profile",
+  hello:"Hello", balanceTitle:"Annual leave available {y}", available:"Available", used:"Taken", pending:"Pending", total:"Entitlement",
+  newRequest:"Request leave", recent:"Recent requests", seeAll:"See all", noRequests:"No requests yet",
+  nextLeave:"Next leave", yourApprover:"Your approver", noApprover:"No approver assigned: your requests will be handled by an administrator.",
+  toApproveBanner:"{n} request(s) awaiting your approval",
+  leaveType:"Leave type", startDate:"Start date", endDate:"End date",
+  fullDay:"Full day", morning:"Morning", afternoon:"Afternoon",
+  startPm:"Start in the afternoon of the first day", endAm:"End at noon on the last day",
+  duration:"Duration", afterBalance:"{k} balance after approval", notDeducted:"Not deducted",
+  reason:"Reason", destination:"Location during leave", contact:"Emergency contact", optional:"optional",
+  attachment:"Supporting document (medical certificate…)", addFile:"Attach a file or photo", fileTooBig:"File limited to 10 MB",
+  submit:"Submit", submitted:"Request submitted, awaiting approval", required:"required",
+  mode_ouvrables:"Counted in working days: Monday to Saturday, excluding public holidays",
+  mode_ouvres:"Counted in working days: Monday to Friday, excluding public holidays",
+  mode_calendaires:"Counted in calendar days",
+  status_pending:"Pending", status_approved:"Approved", status_rejected:"Rejected", status_cancelled:"Cancelled",
+  all:"All", year:"Year", statusL:"Status",
+  detail:"Request details", refNo:"Reference", period:"Period", submittedAt:"Submitted on", approverL:"Approver",
+  history:"History", ev_submitted:"Submitted", ev_approved:"Approved", ev_rejected:"Rejected", ev_cancelled:"Cancelled",
+  cancelReq:"Cancel request", confirmCancel:"Do you really want to cancel this request?", revoke:"Revoke this leave", revokeReason:"Reason for revocation",
+  comment:"Comment", commentReq:"A reason is required when rejecting", commentOpt:"Optional when approving",
+  approve:"Approve", reject:"Reject", approved:"Approved", rejected:"Rejected", cancelled:"Cancelled",
+  toApprove:"To approve", decided:"Processed", applicant:"Employee", nothingToApprove:"Nothing awaiting approval",
+  balanceOfApplicant:"Employee balance", viewAttachment:"View document",
+  close:"Close", cancel:"Cancel", save:"Save", edit:"Edit", add:"Add", del:"Delete",
+  search:"Search name / employee no. / department", export:"Export CSV",
+  users:"Users", requestsAll:"Requests", balances:"Balances", settings:"Settings",
+  newUser:"New account", editUser:"Edit user",
+  fullName:"Full name", employeeNo:"Employee no.", position:"Position", department:"Department", workCountry:"Work country", nationality:"Nationality",
+  probationEnd:"Probation end date", probationHint:"No annual leave before the end of probation", annualDaysL:"Annual leave / year", sickDaysL:"Sick leave / year",
+  daysHint:"Set once for all years; prorated automatically in the hiring year. Leave blank to use the defaults ({a} / {s} days).",
+  annualShort:"Annual leave", sickShort:"Sick leave", kl_annual:"annual leave", kl_sick:"sick leave", prorated:"Prorated (hiring year)", fullYear:"Full-year entitlement", thisYear:"{y}",
+  sickTitle:"Sick leave available {y}", inProbation:"On probation until {d}: annual leave cannot start before then.",
+  balanceKind:"Deducted from", kind_none:"Not deducted", kind_annual:"Annual leave balance", kind_sick:"Sick leave balance",
+  defaultSickDays:"Default sick leave / year", countries:"Countries", isWorkCountry:"Available as work country", newCountry:"New country",
+  countryCode:"Country code (2 capital letters, e.g. FR)", holidayCountry:"Country",
+  role:"Role", approver:"Approver", hireDate:"Hire date", lang:"Language",
+  tempPwd:"Initial password", tempPwdHint:"Leave blank to generate a 10-character password",
+  role_employee:"Employee", role_approver:"Approver", role_admin:"Administrator",
+  activeL:"Active", inactiveL:"Deactivated", none:"(none)",
+  deactivate:"Deactivate account", activate:"Reactivate", resetPwd:"Reset password", confirmDeactivate:"The employee will no longer be able to sign in. Continue?",
+  credsTitle:"Account created — send these credentials to the employee", pwdResetTitle:"Password reset — send the new password to the employee",
+  copy:"Copy", copied:"Copied", loginUrl:"Address", credsNote:"The employee must change this password at first sign-in.",
+  entitled:"Entitlement for the year", carried:"Carried over", adjustment:"Adjustment", note:"Note", editBalance:"Leave entitlements",
+  countMode:"Day-count method", mode_ouvrables_s:"Working days (Mon–Sat)", mode_ouvres_s:"Working days (Mon–Fri)", mode_calendaires_s:"Calendar days",
+  defaultDays:"Default annual leave / year", companyName:"Company name",
+  leaveTypes:"Leave types", requiresAtt:"Supporting document required", activeType:"Active",
+  holidays:"Public holidays", holidayHint:"Islamic holidays (Eid al-Fitr, Tabaski, Mawlid…) are set each year by decree: remember to add them here.",
+  nameZh:"Name (Chinese)", nameFr:"Name (French)", nameEn:"Name (English)", code:"Code (cannot be changed)", date:"Date", color:"Colour",
+  newType:"New leave type", newHoliday:"New public holiday",
+  profile:"My profile", changePwd:"Change password", newPwd:"New password (min. 8 characters)", confirmPwd:"Confirm password",
+  pwdMismatch:"Passwords do not match", pwdShort:"Minimum 8 characters", pwdChanged:"Password changed",
+  mustChangeTitle:"First sign-in: choose your password", mustChangeBody:"To secure your account, replace the initial password provided by the administrator.",
+  logout:"Sign out", saved:"Saved", loading:"Loading…",
+  setupTitle:"Database not connected", setupBody:"Enter the Supabase project URL and public key in config.js, then reload the page.",
+  onLeaveNow:"On leave", stats_pending:"Pending", stats_onleave:"On leave today", stats_month:"Days approved this month", stats_users:"Active accounts",
+  dayUnit:"d", from:"from", to:"to", noResults:"No results", count:"",
+  modifyLeave:"Edit leave", modifyHint:"If the employee returned early, set the end date to the last day actually taken: unused days are credited back. Extensions are possible, subject to balance.",
+  modifyReason:"Reason for change", modifyReasonPh:"e.g. returned early", newDuration:"New duration", oldDuration:"Original duration", modified:"Edited",
+  ev_modified:"Leave edited", modifiedSaved:"Leave updated", perYearAll:"Yearly entitlement (all years)",
+  unitDays:"days", unitShort:"d", ERR_NOT_APPROVED:"Only approved requests can be edited", ERR_NO_CHANGE:"The dates have not changed",
+  ERR_PROBATION:"On probation until {d}: no annual leave before then", ERR_BEFORE_START:"The platform starts in {d}: earlier leave cannot be recorded",
+  ERR_ACCOUNT_INACTIVE:"Account deactivated. Please contact HR.", ERR_TYPE:"Choose a leave type", ERR_DATES:"The end date is before the start date",
+  ERR_HALF:"The same day cannot start in the afternoon and end at noon", ERR_TOO_OLD:"Leave more than 60 days in the past cannot be recorded",
+  ERR_CROSS_YEAR:"Leave drawn from a balance cannot span two years: submit two requests", ERR_ZERO_DAYS:"No days counted in this period",
+  ERR_OVERLAP:"Overlaps an existing request", ERR_ATTACHMENT:"Invalid document", ERR_ATTACHMENT_REQUIRED:"A supporting document is required for this leave type",
+  ERR_BALANCE:"Insufficient {k} balance: {d} days available", ERR_FORBIDDEN:"Action not allowed", ERR_NOT_FOUND:"Request not found",
+  ERR_SELF_APPROVAL:"You cannot approve or edit your own request", ERR_NOT_PENDING:"This request has already been processed",
+  ERR_COMMENT_REQUIRED:"A reason is required", ERR_NOT_CANCELLABLE:"This request can no longer be cancelled",
+  ERR_EMAIL:"Invalid email address", ERR_NAME:"Name is required", ERR_PASSWORD_SHORT:"Minimum 8 characters",
+  ERR_EMAIL_EXISTS:"An account already exists with this email", ERR_SELF_DEACTIVATE:"You cannot deactivate your own account",
+  ERR_FUNCTION:"Account service failed: check that the admin-users function is deployed",
+  ERR_GENERIC:"The operation failed, please try again", ERR_NETWORK:"Connection failed, please check the network",
 }};
 
 /* =====================================================================
@@ -399,7 +479,7 @@ const store = {
   set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
 };
 const S = {
-  lang: store.get("lang") || ((navigator.language||"").toLowerCase().startsWith("zh") ? "zh" : "fr"),
+  lang: store.get("lang") || (l => l.startsWith("zh") ? "zh" : l.startsWith("en") ? "en" : "fr")((navigator.language||"").toLowerCase()),
   session:null, me:null, settings:null, types:[], countries:[], ctx:null, pendingCount:0,
   filters:{ mine:{status:"all", year:new Date().getFullYear()},
             admin:{tab:"requests", status:"all", year:new Date().getFullYear(), type:"all", q:""},
@@ -414,10 +494,13 @@ const $ = (s, r=document) => r.querySelector(s);
 const t = (k, vars) => { let s = (I18N[S.lang] && I18N[S.lang][k]) ?? I18N.fr[k] ?? k;
   if (vars) for (const [a,b] of Object.entries(vars)) s = s.replace("{"+a+"}", b); return s; };
 const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const locale = () => S.lang === "zh" ? "zh-CN" : "fr-FR";
+const locale = () => ({zh:"zh-CN", fr:"fr-FR", en:"en-GB"})[S.lang] || "fr-FR";
+const C = () => ({zh:"：", fr:" : ", en:": "})[S.lang] || ": ";
+const htmlLang = l => ({zh:"zh-CN", fr:"fr", en:"en"})[l] || "fr";
+const lname = x => !x ? "" : S.lang==="zh" ? x.name_zh : S.lang==="en" ? (x.name_en || x.name_fr) : x.name_fr;
 const todayISO = () => { const d=new Date(); return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10); };
 const num = n => { const v = Number(n||0); return Number.isInteger(v) ? String(v) : v.toFixed(1).replace(/\.0$/,""); };
-const fmtDays = n => S.lang==="zh" ? `${num(n)} 天` : `${num(n)} j`;
+const fmtDays = n => S.lang==="zh" ? `${num(n)} 天` : S.lang==="en" ? `${num(n)} ${Number(n)===1?"day":"days"}` : `${num(n)} j`;
 function fmtDate(iso, opts){
   if(!iso) return "";
   const d = new Date(iso.length<=10 ? iso+"T00:00:00" : iso);
@@ -437,15 +520,15 @@ function fmtRangeShort(r){
   return `${fmtShort(r.start_date)} – ${fmtDate(r.end_date, sameYear?{day:"numeric",month:"short"}:{day:"numeric",month:"short",year:"numeric"})}`;
 }
 const typeOf = code => S.types.find(x => x.code === code) || {code, name_zh:code, name_fr:code, color:"#64748b"};
-const typeName = code => { const x = typeOf(code); return S.lang==="zh" ? x.name_zh : x.name_fr; };
+const typeName = code => lname(typeOf(code));
 const statusPill = s => `<span class="pill st-${s}">${t("status_"+s)}</span>`;
 const initials = n => (n||"?").trim().split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase();
 const isAdmin = () => S.me?.role === "admin";
 const isApprover = () => S.me && (S.me.role === "approver" || S.me.role === "admin");
-const countryName = code => { const c = S.countries.find(x => x.code === code); return c ? (S.lang==="zh" ? c.name_zh : c.name_fr) : (code || ""); };
+const countryName = code => { const c = S.countries.find(x => x.code === code); return c ? lname(c) : (code || ""); };
 const countryOpts = (sel, workOnly, blank) => (blank ? `<option value="">${t("none")}</option>` : "") +
   S.countries.filter(c => !workOnly || c.is_work_country)
-    .map(c => `<option value="${c.code}" ${c.code===sel?"selected":""}>${esc(S.lang==="zh"?c.name_zh:c.name_fr)}</option>`).join("");
+    .map(c => `<option value="${c.code}" ${c.code===sel?"selected":""}>${esc(lname(c))}</option>`).join("");
 const firstYear = () => Number(S.settings?.first_year || 2026);
 function yearsList(){ const out = []; const top = Math.max(new Date().getFullYear() + 1, firstYear());
   for (let y = top; y >= firstYear(); y--) out.push(y); return out; }
@@ -514,7 +597,7 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet()
    Boot / auth
    ===================================================================== */
 async function boot(){
-  document.documentElement.lang = S.lang === "zh" ? "zh-CN" : "fr";
+  document.documentElement.lang = htmlLang(S.lang);
   if (!CONFIGURED) return renderSetup();
   const { data } = await sb.auth.getSession();
   S.session = data.session;
@@ -537,7 +620,7 @@ async function loadContext(){
   S.me = me; S.settings = settings; S.types = types; S.countries = countries; S.ctx = (ctx||[])[0] || {};
   if (!me.active) { await sb.auth.signOut(); S.me = null; S.loginError = t("ERR_ACCOUNT_INACTIVE"); return; }
   if (!store.get("lang") && me.lang) S.lang = me.lang;
-  document.documentElement.lang = S.lang === "zh" ? "zh-CN" : "fr";
+  document.documentElement.lang = htmlLang(S.lang);
   await refreshPendingCount();
 }
 async function refreshPendingCount(){
@@ -547,11 +630,12 @@ async function refreshPendingCount(){
   const { count } = await q; S.pendingCount = count || 0;
 }
 function setLang(l){
-  S.lang = l; store.set("lang", l); document.documentElement.lang = l === "zh" ? "zh-CN" : "fr";
+  S.lang = l; store.set("lang", l); document.documentElement.lang = htmlLang(l);
   if (S.me) { S.me.lang = l; sb.rpc("set_my_lang", {p_lang:l}); }
   render();
 }
-const langSwitch = () => `<div class="lang-switch"><button class="${S.lang==="zh"?"on":""}" onclick="setLang('zh')">中文</button><button class="${S.lang==="fr"?"on":""}" onclick="setLang('fr')">FR</button></div>`;
+const langSwitch = () => `<div class="lang-switch">${[["zh","中文"],["fr","FR"],["en","EN"]].map(([k,l]) =>
+  `<button class="${S.lang===k?"on":""}" onclick="setLang('${k}')">${l}</button>`).join("")}</div>`;
 
 function renderSetup(){
   $("#app").innerHTML = `<div class="login"><div class="top">${langSwitch()}</div><div class="box">
@@ -647,7 +731,7 @@ function heroHtml(b, y){
   const pu = Math.min(100, Number(b.used)/tot*100), pp = Math.min(100-pu, Number(b.pending)/tot*100);
   return `<div class="hero">
     <div class="cap">${t("balanceTitle", {y})}</div>
-    <div class="num tabnum">${num(b.available)}<small>${S.lang==="zh"?"天":"jours"}</small></div>
+    <div class="num tabnum">${num(b.available)}<small>${t("unitDays")}</small></div>
     <div class="bar"><i style="width:${pu}%;background:#fff"></i><i style="width:${pp}%;background:#fcd34d"></i></div>
     <div class="legend">
       <div><b class="tabnum">${num(b.used)}</b><span>● ${t("used")}</span></div>
@@ -663,7 +747,7 @@ function sickCard(b, y){
     <div style="flex:1;min-width:0"><div class="small muted" style="font-weight:600">${t("sickTitle", {y})}</div>
       <div style="height:6px;border-radius:3px;background:var(--off-soft);margin-top:8px;overflow:hidden"><i style="display:block;height:100%;width:${pu}%;background:#dc2626"></i></div>
       <div class="small muted" style="margin-top:6px">${t("used")} ${num(b.used)}${Number(b.pending)?` · ${t("pending")} ${num(b.pending)}`:""} · ${t("total")} ${num(b.total)}${b.prorated?` · ${t("prorated")}`:""}</div></div>
-    <div style="font-size:26px;font-weight:760" class="tabnum">${num(b.available)}<small class="muted" style="font-size:12px;font-weight:600;margin-left:3px">${S.lang==="zh"?"天":"j"}</small></div></div>`;
+    <div style="font-size:26px;font-weight:760" class="tabnum">${num(b.available)}<small class="muted" style="font-size:12px;font-weight:600;margin-left:3px">${t("unitShort")}</small></div></div>`;
 }
 function reqCard(r, opts={}){
   const ty = typeOf(r.type_code);
@@ -673,9 +757,9 @@ function reqCard(r, opts={}){
     <div class="body">
       <div class="top"><span class="ttl">${who || esc(typeName(r.type_code))}</span>${statusPill(r.status)}</div>
       <div class="when">${who ? esc(typeName(r.type_code))+" · " : ""}${fmtRangeShort(r)}</div>
-      <div class="meta">${esc(r.ref_no||"")}${r.reason?` · ${esc(r.reason)}`:""}</div>
+      <div class="meta">${esc(r.ref_no||"")}${r.modified_at?` · <b style="color:var(--warn)">${t("modified")}</b>`:""}${r.reason?` · ${esc(r.reason)}`:""}</div>
     </div>
-    <div class="days tabnum">${num(r.days)}<small>${S.lang==="zh"?"天":"jours"}</small></div></button>`;
+    <div class="days tabnum">${num(r.days)}<small>${t("unitDays")}</small></div></button>`;
 }
 async function pageHome(){
   const y = new Date().getFullYear();
@@ -696,7 +780,7 @@ async function pageHome(){
     <div class="section-h"><h2>${t("recent")}</h2><a href="#mine">${t("seeAll")}</a></div>
     <div class="list">${recent.length ? recent.map(r=>reqCard(r)).join("") : emptyHtml(t("noRequests"))}</div>
     <div class="notice ${S.ctx?.approver_name ? "info" : ""}" style="margin-top:18px">${IC.info}<div>${S.ctx?.approver_name
-      ? `${t("yourApprover")} : <b>${esc(S.ctx.approver_name)}</b>` : t("noApprover")}</div></div>`;
+      ? `${t("yourApprover")}${C()}<b>${esc(S.ctx.approver_name)}</b>` : t("noApprover")}</div></div>`;
 }
 const emptyHtml = msg => `<div class="empty">${IC.inbox}<div>${esc(msg)}</div></div>`;
 
@@ -713,7 +797,7 @@ async function pageNew(){
   $("#main").innerHTML = `<form id="nf" novalidate>
     <div class="field"><span class="label">${t("leaveType")}</span>
       <div class="type-grid">${active.map(x => `<button type="button" class="type-opt ${F.type===x.code?"on":""}" data-type="${esc(x.code)}">
-        <span class="dot" style="background:${esc(x.color)}"></span>${esc(S.lang==="zh"?x.name_zh:x.name_fr)}</button>`).join("")}</div></div>
+        <span class="dot" style="background:${esc(x.color)}"></span>${esc(lname(x))}</button>`).join("")}</div></div>
     ${inProbation() ? `<div class="notice" style="margin:-4px 0 16px">${IC.info}<div>${t("inProbation", {d:fmtDate(S.me.probation_end,{day:"numeric",month:"long",year:"numeric"})})}</div></div>` : ""}
     <div class="row2">
       <div class="field"><label for="fs">${t("startDate")}</label><input class="input" type="date" id="fs" value="${F.start}" required></div>
@@ -787,7 +871,7 @@ async function recalc(){
     } else if (b) {
       const after = Number(b.available) - F.days;
       extra = after < 0 ? `<div class="warnline">${t("ERR_BALANCE", {d:num(b.available), k})}</div>`
-                        : `<div class="lbl">${t("afterBalance", {k})} : <b style="opacity:1">${fmtDays(after)}</b></div>`;
+                        : `<div class="lbl">${t("afterBalance", {k})}${C()}<b style="opacity:1">${fmtDays(after)}</b></div>`;
     } else extra = `<div class="lbl">${t("notDeducted")}</div>`;
     el.innerHTML = `<div class="lbl">${t("duration")}</div><div class="big tabnum">${fmtDays(F.days)}</div>${extra}`;
   } catch(e) { el.innerHTML = `<div class="warnline">${esc(errMsg(e))}</div>`; }
@@ -844,12 +928,13 @@ async function pageMine(){
 async function openRequest(id){
   let r = S.cache.requests?.[id];
   const [full, events] = await Promise.all([
-    run(sb.from("leave_requests").select("*, applicant:profiles!leave_requests_user_id_fkey(full_name,employee_no,department,position)").eq("id", id).single()),
+    run(sb.from("leave_requests").select("*, applicant:profiles!leave_requests_user_id_fkey(full_name,employee_no,department,position,work_country)").eq("id", id).single()),
     run(sb.from("leave_events").select("*").eq("request_id", id).order("created_at")),
   ]).catch(e => { toast(errMsg(e), true); return []; });
   if (!full) return; r = full;
   const mine = r.user_id === S.me.id;
   const canDecide = r.status === "pending" && !mine && (r.approver_id === S.me.id || isAdmin());
+  const canModify = r.status === "approved" && !mine && (r.approver_id === S.me.id || isAdmin());
   const canCancel = (mine && r.status === "pending") || (isAdmin() && ["pending","approved"].includes(r.status));
   let balHtml = "";
   const kind = typeOf(r.type_code).balance_kind;
@@ -877,12 +962,15 @@ async function openRequest(id){
     <div class="hr"></div>
     <div class="label" style="margin-bottom:10px">${t("history")}</div>
     <ul class="timeline">${(events||[]).map(ev => `<li class="${evCls(ev.action)}"><div class="t1">${t("ev_"+ev.action)} · ${esc(ev.actor_name||"")}</div>
-      <div class="t2">${fmtDT(ev.created_at)}</div>${ev.comment?`<div class="t3">${esc(ev.comment)}</div>`:""}</li>`).join("")}</ul>
+      <div class="t2">${fmtDT(ev.created_at)}</div>${ev.action==="modified" && ev.details ? `<div class="t3">${modDiff(ev.details)}</div>` : ""}${ev.comment?`<div class="t3">${esc(ev.comment)}</div>`:""}</li>`).join("")}</ul>
     ${canDecide ? `<div class="hr"></div>
       <div class="field"><label for="dc">${t("comment")}</label><textarea class="input" id="dc" rows="2" placeholder="${t("commentReq")}"></textarea></div>
       <div class="actions"><button class="btn btn-bad" id="rj">${t("reject")}</button><button class="btn btn-ok" id="ap">${t("approve")}</button></div>` : ""}
-    ${canCancel && !canDecide ? `<div class="actions"><button class="btn btn-bad" id="cx">${mine && r.status==="pending" ? t("cancelReq") : t("revoke")}</button></div>` : ""}
+    ${(canCancel && !canDecide) || canModify ? `<div class="actions">
+      ${canModify ? `<button class="btn btn-ghost" id="mdf">${t("modifyLeave")}</button>` : ""}
+      ${canCancel && !canDecide ? `<button class="btn btn-bad" id="cx">${mine && r.status==="pending" ? t("cancelReq") : t("revoke")}</button>` : ""}</div>` : ""}
   `, sh => {
+    if (canModify) $("#mdf", sh).onclick = () => openModify(r);
     const dec = async (d, btn) => {
       busy(btn, true);
       try { await run(sb.rpc("decide_leave", {p_id:r.id, p_decision:d, p_comment:$("#dc").value}));
@@ -898,6 +986,48 @@ async function openRequest(id){
       try { await run(sb.rpc("cancel_leave", {p_id:r.id, p_comment:comment})); toast(t("cancelled")); closeSheet(); await refreshPendingCount(); render(); }
       catch(err){ toast(errMsg(err), true); busy(btn, false); }
     };
+  });
+}
+function modDiff(d){
+  const o = d.old || {}, n = d.new || {};
+  const rng = x => fmtRange({start_date:x.start, end_date:x.end, start_half:x.start_half, end_half:x.end_half});
+  return `<s class="muted">${rng(o)} · ${fmtDays(o.days)}</s><br>→ <b>${rng(n)} · ${fmtDays(n.days)}</b>`;
+}
+function openModify(r){
+  const M = { start:r.start_date, end:r.end_date, sh:r.start_half, eh:r.end_half, days:Number(r.days) };
+  openSheet(t("modifyLeave"), `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><span class="dot" style="background:${esc(typeOf(r.type_code).color)}"></span>
+      <b>${esc(r.applicant?.full_name||"")}</b><span class="muted small">· ${esc(typeName(r.type_code))} · ${esc(r.ref_no||"")}</span></div>
+    <p class="small muted" style="margin-bottom:14px">${t("oldDuration")}${C()}${fmtRange(r)} · <b>${fmtDays(r.days)}</b></p>
+    <div class="notice info" style="margin:0 0 14px">${IC.info}<div>${t("modifyHint")}</div></div>
+    <form id="mf">
+      <div class="row2">
+        <div class="field"><label>${t("startDate")}</label><input class="input" type="date" id="ms" value="${M.start}" required></div>
+        <div class="field"><label>${t("endDate")}</label><input class="input" type="date" id="me" value="${M.end}" required></div></div>
+      <label class="check" style="padding-top:0"><input type="checkbox" id="msh" ${M.sh?"checked":""}> ${t("startPm")}</label>
+      <label class="check" style="padding-top:0"><input type="checkbox" id="meh" ${M.eh?"checked":""}> ${t("endAm")}</label>
+      <div class="card card-pad" style="margin:10px 0 16px;display:flex;align-items:baseline;gap:10px">
+        <span class="muted small">${t("newDuration")}</span><b id="mdays" style="font-size:20px" class="tabnum">${fmtDays(M.days)}</b>
+        <span class="small" id="mdelta"></span></div>
+      <div class="field"><label>${t("modifyReason")} *</label><textarea class="input" id="mr" rows="2" placeholder="${t("modifyReasonPh")}" required></textarea></div>
+      <button class="btn btn-pri btn-block" id="msv">${t("save")}</button></form>`, sh => {
+    let seq = 0;
+    const calc = async () => {
+      M.start = $("#ms",sh).value; M.end = $("#me",sh).value; M.sh = $("#msh",sh).checked; M.eh = $("#meh",sh).checked;
+      if (!M.start || !M.end || M.end < M.start) { $("#mdays",sh).textContent = "—"; $("#mdelta",sh).textContent = ""; return; }
+      const my = ++seq;
+      try { const d = Number(await run(sb.rpc("count_leave_days", {p_start:M.start, p_end:M.end, p_start_half:M.sh, p_end_half:M.eh,
+            p_country:r.applicant?.work_country || null})));
+        if (my !== seq) return; M.days = d; $("#mdays",sh).textContent = fmtDays(d);
+        const delta = d - Number(r.days);
+        $("#mdelta",sh).innerHTML = delta ? `<span style="color:${delta<0?"var(--ok)":"var(--warn)"}">(${delta>0?"+":""}${num(delta)})</span>` : "";
+      } catch(e) {}
+    };
+    ["#ms","#me","#msh","#meh"].forEach(q => $(q,sh).onchange = calc);
+    $("#mf", sh).onsubmit = async e => { e.preventDefault(); const b = $("#msv", sh); busy(b, true);
+      try { await run(sb.rpc("modify_leave", {p_id:r.id, p_start:M.start, p_end:M.end, p_start_half:M.sh, p_end_half:M.eh, p_comment:$("#mr",sh).value}));
+        toast(t("modifiedSaved")); closeSheet(); render(); }
+      catch(err){ toast(errMsg(err), true); busy(b, false); } };
   });
 }
 async function viewAttachment(path){
@@ -1038,7 +1168,7 @@ async function admUsers(){
     <div class="body"><div class="top"><span class="ttl">${esc(p.full_name||p.email)}</span>
       ${p.active ? `<span class="pill st-approved">${t("role_"+p.role)}</span>` : `<span class="pill st-cancelled">${t("inactiveL")}</span>`}</div>
       <div class="meta">${esc([p.employee_no, p.position, p.department, countryName(p.work_country)].filter(Boolean).join(" · ") || p.email)}</div>
-      <div class="meta">${t("approverL")} : ${esc(S.cache.pmap[p.approver_id]?.full_name || t("none"))}</div></div></button>`;
+      <div class="meta">${t("approverL")}${C()}${esc(S.cache.pmap[p.approver_id]?.full_name || t("none"))}</div></div></button>`;
   $("#adm").innerHTML = `
     <div class="toolbar"><input class="input" id="uq" placeholder="${t("search")}" value="${esc(f.q)}">
       <button class="btn btn-pri btn-sm" style="height:40px" onclick="editUser()">${IC.plus.replace("<svg","<svg width='16' height='16'")} ${t("newUser")}</button></div>
@@ -1083,7 +1213,7 @@ function editUser(id){
     <p class="small muted" style="margin:-8px 0 14px">${t("daysHint", {a:num(S.settings.default_annual_days), s:num(S.settings.default_sick_days)})}</p>
     <div class="row2">
       <div class="field"><label for="u_role">${t("role")}</label><select class="input" id="u_role">${["employee","approver","admin"].map(r=>`<option value="${r}" ${p.role===r?"selected":""}>${t("role_"+r)}</option>`).join("")}</select></div>
-      <div class="field"><label for="u_lang">${t("lang")}</label><select class="input" id="u_lang"><option value="fr" ${p.lang==="fr"?"selected":""}>Français</option><option value="zh" ${p.lang==="zh"?"selected":""}>中文</option></select></div></div>
+      <div class="field"><label for="u_lang">${t("lang")}</label><select class="input" id="u_lang"><option value="fr" ${p.lang==="fr"?"selected":""}>Français</option><option value="zh" ${p.lang==="zh"?"selected":""}>中文</option><option value="en" ${p.lang==="en"?"selected":""}>English</option></select></div></div>
     <div class="field"><label for="u_approver">${t("approver")}</label><select class="input" id="u_approver"><option value="">${t("none")}</option>
       ${approvers.map(a=>`<option value="${a.id}" ${p.approver_id===a.id?"selected":""}>${esc(a.full_name)} — ${t("role_"+a.role)}</option>`).join("")}</select></div>
     ${isNew ? `<div class="field"><label for="u_pwd">${t("tempPwd")}</label><input class="input" id="u_pwd" type="text" autocomplete="off" placeholder="${t("optional")}">
@@ -1132,7 +1262,7 @@ function editUser(id){
 }
 function showCreds(title, email, pwd){
   const url = location.origin + location.pathname;
-  const text = `${t("loginUrl")} : ${url}\n${t("email")} : ${email}\n${t("password")} : ${pwd}`;
+  const text = `${t("loginUrl")}${C()}${url}\n${t("email")}${C()}${email}\n${t("password")}${C()}${pwd}`;
   openSheet(title, `<div class="creds">${esc(text).replace(/\n/g,"<br>")}</div>
     <p class="small muted" style="margin:10px 0 16px">${t("credsNote")}</p>
     <button class="btn btn-pri btn-block" id="cpy">${t("copy")}</button>`, sh => {
@@ -1175,12 +1305,12 @@ function editBalance(uid){
   const nv = v => v === null || v === undefined ? "" : num(v);
   openSheet(t("editBalance"), `<p style="font-weight:700;margin-bottom:14px">${esc(r.p.full_name)}</p>
     <form id="bf">
-      <div class="label" style="margin-bottom:8px">${S.lang==="zh"?"每年额度（适用于所有年份）":"Droits par an (toutes années)"}</div>
+      <div class="label" style="margin-bottom:8px">${t("perYearAll")}</div>
       <div class="row2">
         <div class="field"><label>${t("annualDaysL")}</label><input class="input" id="b0a" type="number" step="0.5" min="0" value="${nv(r.p.annual_days)}" placeholder="${num(S.settings.default_annual_days)}"></div>
         <div class="field"><label>${t("sickDaysL")}</label><input class="input" id="b0s" type="number" step="0.5" min="0" value="${nv(r.p.sick_days)}" placeholder="${num(S.settings.default_sick_days)}"></div></div>
       <p class="small muted" style="margin:-8px 0 6px">${t("daysHint", {a:num(S.settings.default_annual_days), s:num(S.settings.default_sick_days)})}</p>
-      ${r.a.prorated || r.s.prorated ? `<p class="small" style="margin-bottom:6px">${t("hireDate")} ${fmtDate(r.p.hire_date,{day:"numeric",month:"long",year:"numeric"})} → ${y} : ${t("annualShort")} ${fmtDays(r.a.entitled)}, ${t("sickShort")} ${fmtDays(r.s.entitled)} (${t("prorated")})</p>` : ""}
+      ${r.a.prorated || r.s.prorated ? `<p class="small" style="margin-bottom:6px">${t("hireDate")} ${fmtDate(r.p.hire_date,{day:"numeric",month:"long",year:"numeric"})} → ${y}${C()}${t("annualShort")} ${fmtDays(r.a.entitled)}, ${t("sickShort")} ${fmtDays(r.s.entitled)} (${t("prorated")})</p>` : ""}
       <div class="hr"></div>
       <div class="label" style="margin-bottom:8px">${t("thisYear", {y})}</div>
       <div class="row2">
@@ -1189,7 +1319,7 @@ function editBalance(uid){
       <div class="row2">
         <div class="field"><label>${t("sickShort")} · ${t("adjustment")} (±)</label><input class="input" id="b3" type="number" step="0.5" value="${num(es.adjustment||0)}"></div>
         <div class="field"><label>${t("note")}</label><input class="input" id="b4" value="${esc(ea.note||"")}"></div></div>
-      <p class="small muted" style="margin-bottom:14px">${t("annualShort")} : ${t("used")} ${fmtDays(r.a.used)} · ${t("pending")} ${fmtDays(r.a.pending)} — ${t("sickShort")} : ${t("used")} ${fmtDays(r.s.used)} · ${t("pending")} ${fmtDays(r.s.pending)}</p>
+      <p class="small muted" style="margin-bottom:14px">${t("annualShort")}${C()}${t("used")} ${fmtDays(r.a.used)} · ${t("pending")} ${fmtDays(r.a.pending)} — ${t("sickShort")}${C()}${t("used")} ${fmtDays(r.s.used)} · ${t("pending")} ${fmtDays(r.s.pending)}</p>
       <button class="btn btn-pri btn-block" id="bsv">${t("save")}</button></form>`, sh => {
     $("#bf", sh).onsubmit = async ev => { ev.preventDefault(); const b = $("#bsv", sh); busy(b, true);
       const nn = id => { const x = $(id, sh).value.trim(); return x === "" ? null : Number(x); };
@@ -1231,7 +1361,7 @@ async function admSettings(){
       <select class="input" onchange="S.filters.admin.year=+this.value;admSettings()">${yearsOpts(y)}</select></div>
     <div class="notice info" style="margin:0 0 10px">${IC.info}<div>${t("holidayHint")}</div></div>
     <div class="card">${hol.length ? hol.map(h => `<div class="who" style="padding:11px 14px;border-bottom:1px solid var(--line2)">
-      <div style="flex:1"><div class="n">${esc(S.lang==="zh"?h.name_zh:h.name_fr)}</div><div class="s">${fmtDate(h.day)}</div></div>
+      <div style="flex:1"><div class="n">${esc(lname(h))}</div><div class="s">${fmtDate(h.day)}</div></div>
       <button class="btn btn-ghost btn-sm" onclick="delHoliday('${h.day}','${h.country_code}')">${t("del")}</button></div>`).join("") : emptyHtml(t("noResults"))}</div>
 
     <div class="section-h"><h2>${t("countries")}</h2><button onclick="editCountry()">+ ${t("add")}</button></div>
@@ -1251,6 +1381,7 @@ function editType(code){
     ${code ? "" : `<div class="field"><label>${t("code")}</label><input class="input" id="t0" pattern="[a-z0-9_]+" required placeholder="ex: training" autocapitalize="none"></div>`}
     <div class="field"><label>${t("nameFr")}</label><input class="input" id="t1" value="${esc(x.name_fr)}" required></div>
     <div class="field"><label>${t("nameZh")}</label><input class="input" id="t2" value="${esc(x.name_zh)}" required></div>
+    <div class="field"><label>${t("nameEn")}</label><input class="input" id="t7" value="${esc(x.name_en||"")}"></div>
     <div class="row2">
       <div class="field"><label>${t("balanceKind")}</label><select class="input" id="t4">${[["",t("kind_none")],["annual",t("kind_annual")],["sick",t("kind_sick")]].map(([k,l]) =>
         `<option value="${k}" ${(x.balance_kind||"")===k?"selected":""}>${l}</option>`).join("")}</select></div>
@@ -1259,7 +1390,7 @@ function editType(code){
     <label class="check"><input type="checkbox" id="t6" ${x.active?"checked":""}> ${t("activeType")}</label>
     <button class="btn btn-pri btn-block" style="margin-top:10px" id="tsv">${t("save")}</button></form>`, sh => {
     $("#tf", sh).onsubmit = async e => { e.preventDefault(); const b = $("#tsv", sh); busy(b, true);
-      const row = { code: code || $("#t0",sh).value.trim().toLowerCase(), name_fr:$("#t1",sh).value.trim(), name_zh:$("#t2",sh).value.trim(),
+      const row = { code: code || $("#t0",sh).value.trim().toLowerCase(), name_fr:$("#t1",sh).value.trim(), name_zh:$("#t2",sh).value.trim(), name_en:$("#t7",sh).value.trim()||null,
         color:$("#t3",sh).value, balance_kind:$("#t4",sh).value||null, requires_attachment:$("#t5",sh).checked, active:$("#t6",sh).checked, sort_order:x.sort_order };
       try { await run(sb.from("leave_types").upsert(row)); S.types = await run(sb.from("leave_types").select("*").order("sort_order"));
         toast(t("saved")); closeSheet(); admSettings(); }
@@ -1273,10 +1404,11 @@ function addHoliday(){
       <div class="field"><label>${t("date")}</label><input class="input" id="h0" type="date" min="${firstYear()}-01-01" required></div></div>
     <div class="field"><label>${t("nameFr")}</label><input class="input" id="h1" required placeholder="Aïd el-Fitr"></div>
     <div class="field"><label>${t("nameZh")}</label><input class="input" id="h2" required placeholder="开斋节"></div>
+    <div class="field"><label>${t("nameEn")}</label><input class="input" id="h3" placeholder="Eid al-Fitr"></div>
     <button class="btn btn-pri btn-block" id="hsv">${t("save")}</button></form>`, sh => {
     $("#hf", sh).onsubmit = async e => { e.preventDefault(); const b = $("#hsv", sh); busy(b, true);
       try { await run(sb.from("holidays").upsert({ day:$("#h0",sh).value, country_code:$("#hc",sh).value,
-          name_fr:$("#h1",sh).value.trim(), name_zh:$("#h2",sh).value.trim() }));
+          name_fr:$("#h1",sh).value.trim(), name_zh:$("#h2",sh).value.trim(), name_en:$("#h3",sh).value.trim()||null }));
         S.filters.admin.hc = $("#hc",sh).value; toast(t("saved")); closeSheet(); admSettings(); }
       catch(err){ toast(errMsg(err), true); busy(b, false); } };
   });
@@ -1293,10 +1425,11 @@ function editCountry(code){
            : `<div class="field"><label>${t("countryCode")}</label><input class="input" id="c0" maxlength="2" pattern="[A-Za-z]{2}" required autocapitalize="characters"></div>`}
     <div class="field"><label>${t("nameFr")}</label><input class="input" id="c1" value="${esc(c.name_fr)}" required></div>
     <div class="field"><label>${t("nameZh")}</label><input class="input" id="c2" value="${esc(c.name_zh)}" required></div>
+    <div class="field"><label>${t("nameEn")}</label><input class="input" id="c4" value="${esc(c.name_en||"")}"></div>
     <label class="check"><input type="checkbox" id="c3" ${c.is_work_country?"checked":""}> ${t("isWorkCountry")}</label>
     <button class="btn btn-pri btn-block" style="margin-top:10px" id="csv">${t("save")}</button></form>`, sh => {
     $("#cf", sh).onsubmit = async e => { e.preventDefault(); const b = $("#csv", sh); busy(b, true);
-      const row = { code: code || $("#c0",sh).value.trim().toUpperCase(), name_fr:$("#c1",sh).value.trim(), name_zh:$("#c2",sh).value.trim(),
+      const row = { code: code || $("#c0",sh).value.trim().toUpperCase(), name_fr:$("#c1",sh).value.trim(), name_zh:$("#c2",sh).value.trim(), name_en:$("#c4",sh).value.trim()||null,
         is_work_country:$("#c3",sh).checked, sort_order:c.sort_order };
       try { await run(sb.from("countries").upsert(row)); S.countries = await run(sb.from("countries").select("*").order("sort_order"));
         toast(t("saved")); closeSheet(); admSettings(); }
