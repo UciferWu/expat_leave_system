@@ -312,6 +312,7 @@ zh:{
   dayUnit:"天", from:"从", to:"至", noResults:"没有符合条件的记录", count:"条",
   modifyLeave:"修改休假", modifyHint:"如员工提前返岗，把结束日期改为实际休假的最后一天，多出的天数会自动退回余额。也可延长，但会重新校验余额。", modifyReason:"修改原因", modifyReasonPh:"例：提前返岗", newDuration:"修改后", oldDuration:"原天数", modified:"已修改", ev_modified:"修改休假", modifiedSaved:"休假已更新", nameEn:"英文名称", perYearAll:"每年额度（适用于所有年份）", unitDays:"天", unitShort:"天", ERR_NOT_APPROVED:"只能修改已批准的申请", ERR_NO_CHANGE:"日期没有变化",
   countModeDefault:"默认天数计算方式（国家未单独设置时）", useDefault:"使用默认方式", workdayOverride:"调休上班日（周末补班，计入休假天数）", workdayBadge:"调休上班", 
+  initTitle:"{y} 年初始数据（系统上线前）", initHint:"用于录入系统上线前的数据：上年未休年假会加入本年额度，本年已休天数会从余额中扣除。之后在系统里批准的假期会自动累加。", carriedInit:"上年未休年假天数", openAnnual:"本年已休年假天数", openSick:"本年已休病假天数", openUsed:"系统外已休", 
   ERR_PROBATION:"试用期至 {d}，试用期结束前不能申请年假", ERR_BEFORE_START:"系统从 {d} 年开始使用，不能申请更早的假期",
   ERR_ACCOUNT_INACTIVE:"账号已停用，请联系人力资源部", ERR_TYPE:"请选择假期类型", ERR_DATES:"结束日期不能早于开始日期",
   ERR_HALF:"同一天不能既从下午开始又在上午结束", ERR_TOO_OLD:"不能补报 60 天以前的假期", ERR_CROSS_YEAR:"年假不能跨年，请按年度分两次申请",
@@ -386,6 +387,7 @@ fr:{
   dayUnit:"j", from:"du", to:"au", noResults:"Aucun résultat", count:"",
   modifyLeave:"Modifier le congé", modifyHint:"En cas de retour anticipé, indiquez le dernier jour de congé réellement pris : les jours non utilisés sont recrédités. Une prolongation est possible, sous réserve du solde.", modifyReason:"Motif de la modification", modifyReasonPh:"ex. retour anticipé", newDuration:"Nouvelle durée", oldDuration:"Durée initiale", modified:"Modifiée", ev_modified:"Congé modifié", modifiedSaved:"Congé mis à jour", nameEn:"Nom (anglais)", perYearAll:"Droits par an (toutes années)", unitDays:"jours", unitShort:"j", ERR_NOT_APPROVED:"Seule une demande approuvée peut être modifiée", ERR_NO_CHANGE:"Aucune modification des dates",
   countModeDefault:"Mode de décompte par défaut (pays sans réglage propre)", useDefault:"Utiliser le mode par défaut", workdayOverride:"Jour travaillé exceptionnel (week-end travaillé, décompté)", workdayBadge:"Jour travaillé", 
+  initTitle:"Données initiales {y} (avant la mise en service)", initHint:"Pour reprendre l'historique : les congés annuels non pris l'an dernier s'ajoutent aux droits, les jours déjà pris cette année sont déduits du solde. Les congés validés ensuite dans la plateforme s'ajoutent automatiquement.", carriedInit:"Congés annuels non pris N-1", openAnnual:"Congés annuels déjà pris cette année", openSick:"Congés maladie déjà pris cette année", openUsed:"Pris hors plateforme", 
   ERR_PROBATION:"Période d'essai jusqu'au {d} : pas de congé annuel avant cette date", ERR_BEFORE_START:"La plateforme démarre en {d} : impossible de déclarer un congé antérieur",
   ERR_ACCOUNT_INACTIVE:"Compte désactivé. Contactez les RH.", ERR_TYPE:"Choisissez un type de congé", ERR_DATES:"La date de fin précède la date de début",
   ERR_HALF:"Un même jour ne peut pas commencer l'après-midi et finir à midi", ERR_TOO_OLD:"Impossible de déclarer un congé de plus de 60 jours dans le passé",
@@ -465,6 +467,7 @@ en:{
   ev_modified:"Leave edited", modifiedSaved:"Leave updated", perYearAll:"Yearly entitlement (all years)",
   unitDays:"days", unitShort:"d", ERR_NOT_APPROVED:"Only approved requests can be edited", ERR_NO_CHANGE:"The dates have not changed",
   countModeDefault:"Default day-count method (countries without their own)", useDefault:"Use the default method", workdayOverride:"Make-up working day (weekend worked, counted as leave)", workdayBadge:"Working day", 
+  initTitle:"Opening data {y} (before go-live)", initHint:"To load history: unused annual leave from last year is added to the entitlement, and days already taken this year are deducted from the balance. Leave approved in the platform afterwards is added automatically.", carriedInit:"Unused annual leave from last year", openAnnual:"Annual leave already taken this year", openSick:"Sick leave already taken this year", openUsed:"Taken outside the platform", 
   ERR_PROBATION:"On probation until {d}: no annual leave before then", ERR_BEFORE_START:"The platform starts in {d}: earlier leave cannot be recorded",
   ERR_ACCOUNT_INACTIVE:"Account deactivated. Please contact HR.", ERR_TYPE:"Choose a leave type", ERR_DATES:"The end date is before the start date",
   ERR_HALF:"The same day cannot start in the afternoon and end at noon", ERR_TOO_OLD:"Leave more than 60 days in the past cannot be recorded",
@@ -539,6 +542,7 @@ const countryOpts = (sel, workOnly, blank) => (blank ? `<option value="">${t("no
     .map(c => `<option value="${c.code}" ${c.code===sel?"selected":""}>${esc(lname(c))}</option>`).join("");
 const myCountMode = () => (S.countries.find(c => c.code === S.me?.work_country) || {}).count_mode || S.settings?.count_mode || "ouvrables";
 const tri = x => `${esc(x.name_zh)} · ${esc(x.name_fr)} · ${x.name_en ? esc(x.name_en) : `<span class="muted" style="font-weight:500">EN —</span>`}`;
+const initYear = () => Math.max(new Date().getFullYear(), Number(S.settings?.first_year || 2026));
 const firstYear = () => Number(S.settings?.first_year || 2026);
 function yearsList(){ const out = []; const top = Math.max(new Date().getFullYear() + 1, firstYear());
   for (let y = top; y >= firstYear(); y--) out.push(y); return out; }
@@ -1239,6 +1243,14 @@ function editUser(id){
       <div class="field"><label for="u_annual">${t("annualDaysL")}</label><input class="input" id="u_annual" type="number" step="0.5" min="0" inputmode="decimal" value="${numVal(p.annual_days)}" placeholder="${num(S.settings.default_annual_days)}"></div>
       <div class="field"><label for="u_sick">${t("sickDaysL")}</label><input class="input" id="u_sick" type="number" step="0.5" min="0" inputmode="decimal" value="${numVal(p.sick_days)}" placeholder="${num(S.settings.default_sick_days)}"></div></div>
     <p class="small muted" style="margin:-8px 0 14px">${t("daysHint", {a:num(S.settings.default_annual_days), s:num(S.settings.default_sick_days)})}</p>
+    <div class="card card-pad" style="background:var(--bg);box-shadow:none;margin-bottom:16px">
+      <div class="label" style="margin-bottom:4px">${t("initTitle", {y:initYear()})}</div>
+      <p class="small muted" style="margin-bottom:12px">${t("initHint")}</p>
+      <div class="field"><label for="u_carry">${t("carriedInit")}</label><input class="input" id="u_carry" type="number" step="0.5" min="0" inputmode="decimal" placeholder="0"></div>
+      <div class="row2" style="margin-bottom:-16px">
+        <div class="field"><label for="u_oa">${t("openAnnual")}</label><input class="input" id="u_oa" type="number" step="0.5" min="0" inputmode="decimal" placeholder="0"></div>
+        <div class="field"><label for="u_os">${t("openSick")}</label><input class="input" id="u_os" type="number" step="0.5" min="0" inputmode="decimal" placeholder="0"></div></div>
+    </div>
     <div class="row2">
       <div class="field"><label for="u_role">${t("role")}</label><select class="input" id="u_role">${["employee","approver","admin"].map(r=>`<option value="${r}" ${p.role===r?"selected":""}>${t("role_"+r)}</option>`).join("")}</select></div>
       <div class="field"><label for="u_lang">${t("lang")}</label><select class="input" id="u_lang"><option value="fr" ${p.lang==="fr"?"selected":""}>Français</option><option value="zh" ${p.lang==="zh"?"selected":""}>中文</option><option value="en" ${p.lang==="en"?"selected":""}>English</option></select></div></div>
@@ -1252,6 +1264,16 @@ function editUser(id){
   </form>`, sh => {
     const v = k => $("#u_"+k, sh)?.value.trim();
     const numOrNull = k => { const x = v(k); return x === "" || x === undefined ? null : Number(x); };
+    const iy = initYear();
+    if (!isNew) sb.from("leave_entitlements").select("*").eq("user_id", id).eq("year", iy).then(({ data }) => {
+      const a = (data||[]).find(e => e.kind === "annual") || {}, k = (data||[]).find(e => e.kind === "sick") || {};
+      if (Number(a.carried_over)) $("#u_carry", sh).value = num(a.carried_over);
+      if (Number(a.opening_used)) $("#u_oa", sh).value = num(a.opening_used);
+      if (Number(k.opening_used)) $("#u_os", sh).value = num(k.opening_used);
+    });
+    const saveInit = uid => run(sb.from("leave_entitlements").upsert([
+      { user_id:uid, year:iy, kind:"annual", carried_over:numOrNull("carry")||0, opening_used:numOrNull("oa")||0 },
+      { user_id:uid, year:iy, kind:"sick", opening_used:numOrNull("os")||0 } ], { onConflict:"user_id,year,kind" }));
     $("#uf", sh).onsubmit = async e => {
       e.preventDefault(); const b = $("#usv", sh); busy(b, true);
       const fields = { full_name:v("full_name"), employee_no:v("employee_no")||null, position:v("position")||null, department:v("department")||null,
@@ -1266,9 +1288,11 @@ function editUser(id){
           const res = await callAdminFn({ action:"create", email:v("email"), password:v("pwd"),
             full_name:fields.full_name, lang:fields.lang, role:fields.role });
           await run(sb.from("profiles").update(fields).eq("id", res.user_id));
+          await saveInit(res.user_id);
           showCreds(t("credsTitle"), res.email, res.password);
         } else {
           await run(sb.from("profiles").update(fields).eq("id", id));
+          await saveInit(id);
           toast(t("saved")); closeSheet();
         }
         if (id === S.me.id) await loadContext();
@@ -1346,6 +1370,9 @@ function editBalance(uid){
         <div class="field"><label>${t("annualShort")} · ${t("adjustment")} (±)</label><input class="input" id="b2" type="number" step="0.5" value="${num(ea.adjustment||0)}"></div></div>
       <div class="row2">
         <div class="field"><label>${t("sickShort")} · ${t("adjustment")} (±)</label><input class="input" id="b3" type="number" step="0.5" value="${num(es.adjustment||0)}"></div>
+        <div class="field"><label>${t("annualShort")} · ${t("openUsed")}</label><input class="input" id="b5" type="number" step="0.5" min="0" value="${num(ea.opening_used||0)}"></div></div>
+      <div class="row2">
+        <div class="field"><label>${t("sickShort")} · ${t("openUsed")}</label><input class="input" id="b6" type="number" step="0.5" min="0" value="${num(es.opening_used||0)}"></div>
         <div class="field"><label>${t("note")}</label><input class="input" id="b4" value="${esc(ea.note||"")}"></div></div>
       <p class="small muted" style="margin-bottom:14px">${t("annualShort")}${C()}${t("used")} ${fmtDays(r.a.used)} · ${t("pending")} ${fmtDays(r.a.pending)} — ${t("sickShort")}${C()}${t("used")} ${fmtDays(r.s.used)} · ${t("pending")} ${fmtDays(r.s.pending)}</p>
       <button class="btn btn-pri btn-block" id="bsv">${t("save")}</button></form>`, sh => {
@@ -1354,8 +1381,8 @@ function editBalance(uid){
       try {
         await run(sb.from("profiles").update({ annual_days:nn("#b0a"), sick_days:nn("#b0s") }).eq("id", uid));
         await run(sb.from("leave_entitlements").upsert([
-          { user_id:uid, year:y, kind:"annual", carried_over:nn("#b1")||0, adjustment:nn("#b2")||0, note:$("#b4",sh).value.trim()||null },
-          { user_id:uid, year:y, kind:"sick",   carried_over:0,             adjustment:nn("#b3")||0 } ]));
+          { user_id:uid, year:y, kind:"annual", carried_over:nn("#b1")||0, adjustment:nn("#b2")||0, opening_used:nn("#b5")||0, note:$("#b4",sh).value.trim()||null },
+          { user_id:uid, year:y, kind:"sick",   carried_over:0,             adjustment:nn("#b3")||0, opening_used:nn("#b6")||0 } ], { onConflict:"user_id,year,kind" }));
         toast(t("saved")); closeSheet(); await pageAdmin();
       } catch(err){ toast(errMsg(err), true); busy(b, false); } };
   });

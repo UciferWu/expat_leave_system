@@ -34,7 +34,7 @@ Plateforme de demande, de suivi et de validation des congés des salariés fran�
 
 ### 1. Supabase 数据库 / Base de données
 1. 在 [supabase.com](https://supabase.com) 新建项目（区域建议 West EU / Paris）。
-2. **SQL Editor** → 依次粘贴并运行 `001_schema.sql`、`002_storage.sql`、`003_entitlements_probation_countries.sql`、`004_modify_leave_english.sql`、`005_country_count_mode_holidays.sql`、`006_email_notifications.sql`（都在 `supabase/migrations/`）。
+2. **SQL Editor** → 依次粘贴并运行 `001_schema.sql`、`002_storage.sql`、`003_entitlements_probation_countries.sql`、`004_modify_leave_english.sql`、`005_country_count_mode_holidays.sql`、`006_email_notifications.sql`、`007_opening_balances.sql`（都在 `supabase/migrations/`）。
 3. **Authentication → Sign In / Providers**：关闭 **Allow new users to sign up**（禁止自助注册，只有管理员能建号）。
 4. **Authentication → URL Configuration**：Site URL 填 `https://uciferwu.github.io/expat_leave_system/`。
 
