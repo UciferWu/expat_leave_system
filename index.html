@@ -544,8 +544,11 @@ const myCountMode = () => (S.countries.find(c => c.code === S.me?.work_country) 
 const tri = x => `${esc(x.name_zh)} · ${esc(x.name_fr)} · ${x.name_en ? esc(x.name_en) : `<span class="muted" style="font-weight:500">EN —</span>`}`;
 const initYear = () => Math.max(new Date().getFullYear(), Number(S.settings?.first_year || 2026));
 const firstYear = () => Number(S.settings?.first_year || 2026);
-function yearsList(){ const out = []; const top = Math.max(new Date().getFullYear() + 1, firstYear());
-  for (let y = top; y >= firstYear(); y--) out.push(y); return out; }
+// 年份下拉：2026–2035，到期后自动顺延到"今年 + 1"
+// Années proposées : 2026–2035, prolongées automatiquement au-delà
+const LAST_YEAR = 2035;
+function yearsList(){ const out = []; const top = Math.max(LAST_YEAR, new Date().getFullYear() + 1);
+  for (let y = firstYear(); y <= top; y++) out.push(y); return out; }
 const balOf = (rows, kind) => (rows || []).find(b => b.kind === kind) || null;
 const inProbation = () => S.me?.probation_end && S.me.probation_end >= todayISO();
 
