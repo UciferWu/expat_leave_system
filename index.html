@@ -533,6 +533,7 @@ const countryOpts = (sel, workOnly, blank) => (blank ? `<option value="">${t("no
   S.countries.filter(c => !workOnly || c.is_work_country)
     .map(c => `<option value="${c.code}" ${c.code===sel?"selected":""}>${esc(lname(c))}</option>`).join("");
 const myCountMode = () => (S.countries.find(c => c.code === S.me?.work_country) || {}).count_mode || S.settings?.count_mode || "ouvrables";
+const tri = x => `${esc(x.name_zh)} · ${esc(x.name_fr)} · ${x.name_en ? esc(x.name_en) : `<span class="muted" style="font-weight:500">EN —</span>`}`;
 const firstYear = () => Number(S.settings?.first_year || 2026);
 function yearsList(){ const out = []; const top = Math.max(new Date().getFullYear() + 1, firstYear());
   for (let y = top; y >= firstYear(); y--) out.push(y); return out; }
@@ -1356,7 +1357,7 @@ async function admSettings(){
     <div class="section-h"><h2>${t("leaveTypes")}</h2><button onclick="editType()">+ ${t("add")}</button></div>
     <div class="card">${S.types.map(x => `<button class="req" style="border-bottom:1px solid var(--line2);align-items:center;${x.active?"":"opacity:.5"}" onclick="editType('${esc(x.code)}')">
       <span class="dot" style="background:${esc(x.color)};width:12px;height:12px"></span>
-      <div class="body"><div class="ttl" style="font-size:14px">${esc(x.name_fr)} · ${esc(x.name_zh)}</div>
+      <div class="body"><div class="ttl" style="font-size:14px;white-space:normal">${tri(x)}</div>
         <div class="meta">${kindLbl(x.balance_kind)}${x.requires_attachment?` · ✓ ${t("requiresAtt")}`:""}${x.active?"":` · ${t("inactiveL")}`}</div></div></button>`).join("")}</div>
 
     <div class="section-h"><h2>${t("holidays")}</h2><button onclick="addHoliday()">+ ${t("add")}</button></div>
@@ -1365,13 +1366,13 @@ async function admSettings(){
       <select class="input" onchange="S.filters.admin.year=+this.value;admSettings()">${yearsOpts(y)}</select></div>
     <div class="notice info" style="margin:0 0 10px">${IC.info}<div>${t("holidayHint")}</div></div>
     <div class="card">${hol.length ? hol.map(h => `<div class="who" style="padding:11px 14px;border-bottom:1px solid var(--line2)">
-      <div style="flex:1"><div class="n">${esc(lname(h))}${h.is_workday?` <span class="pill st-pending">${t("workdayBadge")}</span>`:""}</div><div class="s">${fmtDate(h.day)}</div></div>
+      <div style="flex:1"><div class="n" style="white-space:normal">${tri(h)}${h.is_workday?` <span class="pill st-pending">${t("workdayBadge")}</span>`:""}</div><div class="s">${fmtDate(h.day)}</div></div>
       <button class="btn btn-ghost btn-sm" onclick="delHoliday('${h.day}','${h.country_code}')">${t("del")}</button></div>`).join("") : emptyHtml(t("noResults"))}</div>
 
     <div class="section-h"><h2>${t("countries")}</h2><button onclick="editCountry()">+ ${t("add")}</button></div>
     <div class="card">${S.countries.map(c => `<button class="req" style="border-bottom:1px solid var(--line2);align-items:center;padding:11px 14px" onclick="editCountry('${c.code}')">
       <span class="pill st-cancelled" style="font-family:ui-monospace,monospace">${c.code}</span>
-      <div class="body"><div class="ttl" style="font-size:14px">${esc(lname(c))}${S.lang!=="zh"?` · ${esc(c.name_zh)}`:` · ${esc(c.name_fr)}`}</div>
+      <div class="body"><div class="ttl" style="font-size:14px;white-space:normal">${tri(c)}</div>
         <div class="meta">${t("countMode")}${C()}${c.count_mode ? t("mode_"+c.count_mode+"_s") : `${t("useDefault")} (${t("mode_"+S.settings.count_mode+"_s")})`}</div></div>
       ${c.is_work_country ? `<span class="pill st-approved">${t("workCountry")}</span>` : ""}</button>`).join("")}</div>`;
   $("#sf").onsubmit = async e => { e.preventDefault(); const b = $("#ssv"); busy(b, true);
