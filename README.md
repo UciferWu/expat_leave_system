@@ -34,7 +34,7 @@ Plateforme de demande, de suivi et de validation des congés des salariés fran�
 
 ### 1. Supabase 数据库 / Base de données
 1. 在 [supabase.com](https://supabase.com) 新建项目（区域建议 West EU / Paris）。
-2. **SQL Editor** → 依次粘贴并运行 `001_schema.sql`、`002_storage.sql`、`003_entitlements_probation_countries.sql`、`004_modify_leave_english.sql`、`005_country_count_mode_holidays.sql`（都在 `supabase/migrations/`）。
+2. **SQL Editor** → 依次粘贴并运行 `001_schema.sql`、`002_storage.sql`、`003_entitlements_probation_countries.sql`、`004_modify_leave_english.sql`、`005_country_count_mode_holidays.sql`、`006_email_notifications.sql`（都在 `supabase/migrations/`）。
 3. **Authentication → Sign In / Providers**：关闭 **Allow new users to sign up**（禁止自助注册，只有管理员能建号）。
 4. **Authentication → URL Configuration**：Site URL 填 `https://uciferwu.github.io/expat_leave_system/`。
 
@@ -47,6 +47,18 @@ Plateforme de demande, de suivi et de validation des congés des salariés fran�
 （或命令行 / ou en CLI : `supabase functions deploy admin-users`）
 
 这个函数在服务器端使用 service_role 密钥，**网页里永远不会出现 service_role 密钥**。
+
+### 3b. 邮件通知（可选）/ Notifications par e-mail (facultatif)
+员工提交申请后，系统自动给审批人发邮件（按审批人的界面语言），附申请信息和"查看并审批"链接；未指定审批人时发给所有管理员。
+
+1. 注册 [Resend](https://resend.com)（每月免费 3000 封）→ **Domains → Add Domain**，添加公司域名（或其子域名，如 `mail.公司域名`），按提示在域名 DNS 里添加记录，等待显示 *Verified*。
+2. Resend → **API Keys → Create API Key**，复制 `re_` 开头的密钥。
+3. Supabase → **Edge Functions → Secrets**，添加：
+   - `RESEND_API_KEY` = 上一步的密钥
+   - `MAIL_FROM` = `员工休假系统 <leave@你的已验证域名>`
+4. **Edge Functions → Deploy a new function → Via Editor**，函数名 `notify-leave`，粘贴 `supabase/functions/notify-leave/index.ts` → Deploy。
+
+邮件发送失败不会影响申请提交；同一申请只发送一次。
 
 ### 4. 填写配置 / Configuration
 编辑 `config.js`，填入 **Settings → API** 中的 Project URL 和 anon public key，提交到 GitHub。

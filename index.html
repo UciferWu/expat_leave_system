@@ -271,7 +271,7 @@ zh:{
   comment:"审批意见", commentReq:"驳回时必须填写原因", commentOpt:"批准时可不填",
   approve:"批准", reject:"驳回", approved:"已批准", rejected:"已驳回", cancelled:"已撤回",
   toApprove:"待审批", decided:"已处理", applicant:"申请人", nothingToApprove:"目前没有待审批的申请",
-  balanceOfApplicant:"申请人年假", viewAttachment:"查看附件",
+  balanceOfApplicant:"申请人余额", viewAttachment:"查看附件",
   close:"关闭", cancel:"取消", save:"保存", edit:"编辑", add:"新增", del:"删除",
   search:"搜索姓名 / 工号 / 部门", export:"导出 CSV",
   users:"用户", requestsAll:"全部申请", balances:"假期额度", settings:"设置",
@@ -666,7 +666,9 @@ function renderLogin(){
     try{
       const { data, error } = await sb.auth.signInWithPassword({ email: $("#le").value.trim(), password: $("#lp").value });
       if (error) { S.loginError = /banned/i.test(error.message) ? t("ERR_ACCOUNT_INACTIVE") : t("badLogin"); return renderLogin(); }
-      S.session = data.session; await loadContext(); location.hash = "#home"; render();
+      S.session = data.session; await loadContext();
+      if (!/^#req\//.test(location.hash)) location.hash = "#home";
+      render();
     }catch(err){ S.loginError = errMsg(err); renderLogin(); }
   };
 }
@@ -678,7 +680,7 @@ function renderMustChange(){
     ${pwdFormHtml()}
     <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="logout()">${t("logout")}</button>
   </div></div>`;
-  bindPwdForm(()=>{ S.me.must_change_password = false; location.hash = "#home"; render(); });
+  bindPwdForm(()=>{ S.me.must_change_password = false; if (!/^#req\//.test(location.hash)) location.hash = "#home"; render(); });
 }
 const pwdFormHtml = () => `<form id="pwdForm">
   <div class="field"><label>${t("newPwd")}</label><input class="input" id="p1" type="password" autocomplete="new-password" minlength="8" required></div>
@@ -707,6 +709,12 @@ function render(){
   if (!S.session || !S.me) return renderLogin();
   if (S.me.must_change_password) return renderMustChange();
   let r = route();
+  if (r === "req") {
+    const id = location.hash.split("/")[1];
+    r = isApprover() ? "approve" : "mine";
+    if (id) S.openAfter = id;
+    history.replaceState(null, "", "#" + r);
+  }
   if (r === "approve" && !isApprover()) r = "home";
   if (r === "admin" && !isAdmin()) r = "home";
   const titles = { home:t("appShort"), new:t("newRequest"), mine:t("navMine"), approve:t("navApprove"), admin:t("navAdmin"), me:t("navMe") };
@@ -725,7 +733,9 @@ function render(){
     <nav class="nav"><div class="nav-inner">${navItems.map(([k,ic,l,b]) =>
       `<a href="#${k}" class="${active===k?"on":""}">${ic}<span>${l}</span>${b?`<span class="badge">${b}</span>`:""}</a>`).join("")}</div></nav>`;
   const pages = { home:pageHome, new:pageNew, mine:pageMine, approve:pageApprove, admin:pageAdmin, me:pageMe };
-  (pages[r] || pageHome)().catch(err => { $("#main").innerHTML = `<div class="err-box">${esc(errMsg(err))}</div>`; });
+  (pages[r] || pageHome)().then(() => {
+    if (S.openAfter) { const id = S.openAfter; S.openAfter = null; openRequest(id); }
+  }).catch(err => { $("#main").innerHTML = `<div class="err-box">${esc(errMsg(err))}</div>`; });
 }
 
 /* =====================================================================
@@ -881,6 +891,13 @@ async function recalc(){
     el.innerHTML = `<div class="lbl">${t("duration")}</div><div class="big tabnum">${fmtDays(F.days)}</div>${extra}`;
   } catch(e) { el.innerHTML = `<div class="warnline">${esc(errMsg(e))}</div>`; }
 }
+// 通知审批人（邮件）；失败不影响申请本身 / l'échec n'affecte pas la demande
+function notifyApprover(id){
+  if (!id) return;
+  sb.functions.invoke("notify-leave", { body:{ request_id:id } })
+    .then(({ data, error }) => { if (error || data?.error) console.warn("notify-leave", error || data); })
+    .catch(e => console.warn("notify-leave", e));
+}
 async function submitNew(){
   const F = S.newForm, b = $("#fsub");
   if (!F.type) return toast(t("ERR_TYPE"), true);
@@ -896,8 +913,9 @@ async function submitNew(){
       await run(sb.storage.from("leave-attachments").upload(path, F.file, { contentType: F.file.type || undefined }));
     }
     const {sh, eh} = halfFlags(F);
-    await run(sb.rpc("submit_leave", { p_type:F.type, p_start:F.start, p_end:F.end, p_start_half:sh, p_end_half:eh,
+    const created = await run(sb.rpc("submit_leave", { p_type:F.type, p_start:F.start, p_end:F.end, p_start_half:sh, p_end_half:eh,
       p_reason:F.reason, p_destination:F.destination, p_contact:F.contact, p_attachment:path }));
+    notifyApprover(created?.id);
     S.newForm = null; toast(t("submitted")); location.hash = "#mine";
   } catch(err) {
     if (path) sb.storage.from("leave-attachments").remove([path]);
