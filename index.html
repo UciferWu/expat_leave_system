@@ -1141,6 +1141,7 @@ const matchQ = (p, q) => !q || [p?.full_name, p?.employee_no, p?.department, p?.
 
 async function admRequests(){
   const f = S.filters.admin;
+  if (f.type !== "all" && !S.types.some(x => x.code === f.type && x.active)) f.type = "all";
   let q = sb.from("leave_requests").select("*, applicant:profiles!leave_requests_user_id_fkey(full_name,employee_no,department,position,nationality,work_country)")
     .gte("start_date", `${f.year}-01-01`).lte("start_date", `${f.year}-12-31`).order("start_date", {ascending:false}).limit(1000);
   if (f.status !== "all") q = q.eq("status", f.status);
@@ -1163,7 +1164,7 @@ async function admRequests(){
       <input class="input" id="aq" placeholder="${t("search")}" value="${esc(f.q)}">
       <select class="input" onchange="S.filters.admin.year=+this.value;admRequests()">${yearsOpts(f.year)}</select>
       <select class="input" onchange="S.filters.admin.status=this.value;admRequests()">${["all","pending","approved","rejected","cancelled"].map(s=>`<option value="${s}" ${f.status===s?"selected":""}>${s==="all"?t("all"):t("status_"+s)}</option>`).join("")}</select>
-      <select class="input" onchange="S.filters.admin.type=this.value;admRequests()"><option value="all">${t("leaveType")} · ${t("all")}</option>${S.types.map(x=>`<option value="${esc(x.code)}" ${f.type===x.code?"selected":""}>${esc(typeName(x.code))}</option>`).join("")}</select>
+      <select class="input" onchange="S.filters.admin.type=this.value;admRequests()"><option value="all">${t("leaveType")} · ${t("all")}</option>${S.types.filter(x=>x.active).map(x=>`<option value="${esc(x.code)}" ${f.type===x.code?"selected":""}>${esc(typeName(x.code))}</option>`).join("")}</select>
       <button class="btn btn-ghost btn-sm" style="height:40px" onclick="exportCsv()">${IC.down} ${t("export")}</button>
     </div>
     <div class="m-only"><div class="list">${rows.length ? rows.map(r=>reqCard(r,{showWho:true})).join("") : emptyHtml(t("noResults"))}</div></div>
