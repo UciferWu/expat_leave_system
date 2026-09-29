@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Congés">
-<title>Congés · 休假</title>
+<title>员工休假系统 · Congés · Leave</title>
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="manifest" href="manifest.webmanifest">
@@ -245,7 +245,7 @@ table.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
    ===================================================================== */
 const I18N = {
 zh:{
-  appName:"法籍员工休假平台", appShort:"休假申请",
+  appName:"员工休假系统", appShort:"休假申请",
   login:"登录", email:"邮箱", password:"密码", signIn:"登录",
   forgot:"忘记密码？请联系人力资源部重置。", badLogin:"邮箱或密码错误",
   navHome:"首页", navMine:"我的申请", navApprove:"审批", navAdmin:"管理", navMe:"我的",
@@ -319,7 +319,7 @@ zh:{
   ERR_GENERIC:"操作失败，请重试", ERR_NETWORK:"网络连接失败，请检查网络后重试",
 },
 fr:{
-  appName:"Congés des expatriés", appShort:"Congés",
+  appName:"Gestion des congés", appShort:"Congés",
   login:"Connexion", email:"E-mail", password:"Mot de passe", signIn:"Se connecter",
   forgot:"Mot de passe oublié ? Contactez les Ressources humaines.", badLogin:"E-mail ou mot de passe incorrect",
   navHome:"Accueil", navMine:"Mes demandes", navApprove:"Validation", navAdmin:"Admin", navMe:"Profil",
@@ -395,7 +395,7 @@ fr:{
   ERR_GENERIC:"L'opération a échoué, réessayez", ERR_NETWORK:"Connexion impossible, vérifiez le réseau"
 },
 en:{
-  appName:"Expatriate Leave", appShort:"Leave",
+  appName:"Employee Leave System", appShort:"Leave",
   login:"Sign in", email:"Email", password:"Password", signIn:"Sign in",
   forgot:"Forgot your password? Please contact Human Resources.", badLogin:"Incorrect email or password",
   navHome:"Home", navMine:"My requests", navApprove:"Approvals", navAdmin:"Admin", navMe:"Profile",
@@ -647,7 +647,7 @@ function renderSetup(){
 }
 function brand(){
   return `<div class="brand"><div class="logo">${IC.sun}</div><div><h1>${t("appName")}</h1>
-    <p>${esc(S.settings?.company_name || "Winning Consortium")} · Guinée</p>
+    <p>${esc(S.settings?.company_name || "Winning Consortium")}</p>
     <div class="flag"><i style="background:#ce1126"></i><i style="background:#fcd116"></i><i style="background:#009460"></i></div></div></div>`;
 }
 function renderLogin(){
