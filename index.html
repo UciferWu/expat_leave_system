@@ -306,6 +306,7 @@ zh:{
   onLeaveNow:"正在休假", stats_pending:"待审批", stats_onleave:"今日休假", stats_month:"本月批准天数", stats_users:"在职人数",
   dayUnit:"天", from:"从", to:"至", noResults:"没有符合条件的记录", count:"条",
   modifyLeave:"修改休假", modifyHint:"如员工提前返岗，把结束日期改为实际休假的最后一天，多出的天数会自动退回余额。也可延长，但会重新校验余额。", modifyReason:"修改原因", modifyReasonPh:"例：提前返岗", newDuration:"修改后", oldDuration:"原天数", modified:"已修改", ev_modified:"修改休假", modifiedSaved:"休假已更新", nameEn:"英文名称", perYearAll:"每年额度（适用于所有年份）", unitDays:"天", unitShort:"天", ERR_NOT_APPROVED:"只能修改已批准的申请", ERR_NO_CHANGE:"日期没有变化",
+  countModeDefault:"默认天数计算方式（国家未单独设置时）", useDefault:"使用默认方式", workdayOverride:"调休上班日（周末补班，计入休假天数）", workdayBadge:"调休上班", 
   ERR_PROBATION:"试用期至 {d}，试用期结束前不能申请年假", ERR_BEFORE_START:"系统从 {d} 年开始使用，不能申请更早的假期",
   ERR_ACCOUNT_INACTIVE:"账号已停用，请联系人力资源部", ERR_TYPE:"请选择假期类型", ERR_DATES:"结束日期不能早于开始日期",
   ERR_HALF:"同一天不能既从下午开始又在上午结束", ERR_TOO_OLD:"不能补报 60 天以前的假期", ERR_CROSS_YEAR:"年假不能跨年，请按年度分两次申请",
@@ -379,6 +380,7 @@ fr:{
   onLeaveNow:"En congé", stats_pending:"En attente", stats_onleave:"En congé aujourd'hui", stats_month:"Jours approuvés ce mois", stats_users:"Comptes actifs",
   dayUnit:"j", from:"du", to:"au", noResults:"Aucun résultat", count:"",
   modifyLeave:"Modifier le congé", modifyHint:"En cas de retour anticipé, indiquez le dernier jour de congé réellement pris : les jours non utilisés sont recrédités. Une prolongation est possible, sous réserve du solde.", modifyReason:"Motif de la modification", modifyReasonPh:"ex. retour anticipé", newDuration:"Nouvelle durée", oldDuration:"Durée initiale", modified:"Modifiée", ev_modified:"Congé modifié", modifiedSaved:"Congé mis à jour", nameEn:"Nom (anglais)", perYearAll:"Droits par an (toutes années)", unitDays:"jours", unitShort:"j", ERR_NOT_APPROVED:"Seule une demande approuvée peut être modifiée", ERR_NO_CHANGE:"Aucune modification des dates",
+  countModeDefault:"Mode de décompte par défaut (pays sans réglage propre)", useDefault:"Utiliser le mode par défaut", workdayOverride:"Jour travaillé exceptionnel (week-end travaillé, décompté)", workdayBadge:"Jour travaillé", 
   ERR_PROBATION:"Période d'essai jusqu'au {d} : pas de congé annuel avant cette date", ERR_BEFORE_START:"La plateforme démarre en {d} : impossible de déclarer un congé antérieur",
   ERR_ACCOUNT_INACTIVE:"Compte désactivé. Contactez les RH.", ERR_TYPE:"Choisissez un type de congé", ERR_DATES:"La date de fin précède la date de début",
   ERR_HALF:"Un même jour ne peut pas commencer l'après-midi et finir à midi", ERR_TOO_OLD:"Impossible de déclarer un congé de plus de 60 jours dans le passé",
@@ -457,6 +459,7 @@ en:{
   modifyReason:"Reason for change", modifyReasonPh:"e.g. returned early", newDuration:"New duration", oldDuration:"Original duration", modified:"Edited",
   ev_modified:"Leave edited", modifiedSaved:"Leave updated", perYearAll:"Yearly entitlement (all years)",
   unitDays:"days", unitShort:"d", ERR_NOT_APPROVED:"Only approved requests can be edited", ERR_NO_CHANGE:"The dates have not changed",
+  countModeDefault:"Default day-count method (countries without their own)", useDefault:"Use the default method", workdayOverride:"Make-up working day (weekend worked, counted as leave)", workdayBadge:"Working day", 
   ERR_PROBATION:"On probation until {d}: no annual leave before then", ERR_BEFORE_START:"The platform starts in {d}: earlier leave cannot be recorded",
   ERR_ACCOUNT_INACTIVE:"Account deactivated. Please contact HR.", ERR_TYPE:"Choose a leave type", ERR_DATES:"The end date is before the start date",
   ERR_HALF:"The same day cannot start in the afternoon and end at noon", ERR_TOO_OLD:"Leave more than 60 days in the past cannot be recorded",
@@ -529,6 +532,7 @@ const countryName = code => { const c = S.countries.find(x => x.code === code); 
 const countryOpts = (sel, workOnly, blank) => (blank ? `<option value="">${t("none")}</option>` : "") +
   S.countries.filter(c => !workOnly || c.is_work_country)
     .map(c => `<option value="${c.code}" ${c.code===sel?"selected":""}>${esc(lname(c))}</option>`).join("");
+const myCountMode = () => (S.countries.find(c => c.code === S.me?.work_country) || {}).count_mode || S.settings?.count_mode || "ouvrables";
 const firstYear = () => Number(S.settings?.first_year || 2026);
 function yearsList(){ const out = []; const top = Math.max(new Date().getFullYear() + 1, firstYear());
   for (let y = top; y >= firstYear(); y--) out.push(y); return out; }
@@ -804,7 +808,7 @@ async function pageNew(){
       <div class="field"><label for="fe">${t("endDate")}</label><input class="input" type="date" id="fe" value="${F.end}" required></div>
     </div>
     <div id="halfBox"></div>
-    <p class="small muted" style="margin:-4px 2px 16px">${t("mode_"+(S.settings?.count_mode||"ouvrables"))}</p>
+    <p class="small muted" style="margin:-4px 2px 16px">${t("mode_"+myCountMode())}${S.me.work_country?` · ${esc(countryName(S.me.work_country))}`:""}</p>
     <div class="field"><label for="fr">${t("reason")} <span class="muted">· ${t("optional")}</span></label><textarea class="input" id="fr" rows="2">${esc(F.reason)}</textarea></div>
     <div class="row2">
       <div class="field"><label for="fd">${t("destination")}</label><input class="input" id="fd" value="${esc(F.destination)}" placeholder="${t("optional")}"></div>
@@ -1343,7 +1347,7 @@ async function admSettings(){
   const kindLbl = k => k ? t("kind_"+k) : t("kind_none");
   $("#adm").innerHTML = `
     <div class="card card-pad"><form id="sf">
-      <div class="field"><label>${t("countMode")}</label><select class="input" id="s1">${["ouvrables","ouvres","calendaires"].map(m=>`<option value="${m}" ${s.count_mode===m?"selected":""}>${t("mode_"+m+"_s")}</option>`).join("")}</select></div>
+      <div class="field"><label>${t("countModeDefault")}</label><select class="input" id="s1">${["ouvrables","ouvres","calendaires"].map(m=>`<option value="${m}" ${s.count_mode===m?"selected":""}>${t("mode_"+m+"_s")}</option>`).join("")}</select></div>
       <div class="row2"><div class="field"><label>${t("defaultDays")}</label><input class="input" id="s2" type="number" step="0.5" min="0" value="${num(s.default_annual_days)}"></div>
         <div class="field"><label>${t("defaultSickDays")}</label><input class="input" id="s4" type="number" step="0.5" min="0" value="${num(s.default_sick_days)}"></div></div>
       <div class="field"><label>${t("companyName")}</label><input class="input" id="s3" value="${esc(s.company_name)}"></div>
@@ -1361,13 +1365,14 @@ async function admSettings(){
       <select class="input" onchange="S.filters.admin.year=+this.value;admSettings()">${yearsOpts(y)}</select></div>
     <div class="notice info" style="margin:0 0 10px">${IC.info}<div>${t("holidayHint")}</div></div>
     <div class="card">${hol.length ? hol.map(h => `<div class="who" style="padding:11px 14px;border-bottom:1px solid var(--line2)">
-      <div style="flex:1"><div class="n">${esc(lname(h))}</div><div class="s">${fmtDate(h.day)}</div></div>
+      <div style="flex:1"><div class="n">${esc(lname(h))}${h.is_workday?` <span class="pill st-pending">${t("workdayBadge")}</span>`:""}</div><div class="s">${fmtDate(h.day)}</div></div>
       <button class="btn btn-ghost btn-sm" onclick="delHoliday('${h.day}','${h.country_code}')">${t("del")}</button></div>`).join("") : emptyHtml(t("noResults"))}</div>
 
     <div class="section-h"><h2>${t("countries")}</h2><button onclick="editCountry()">+ ${t("add")}</button></div>
     <div class="card">${S.countries.map(c => `<button class="req" style="border-bottom:1px solid var(--line2);align-items:center;padding:11px 14px" onclick="editCountry('${c.code}')">
       <span class="pill st-cancelled" style="font-family:ui-monospace,monospace">${c.code}</span>
-      <div class="body"><div class="ttl" style="font-size:14px">${esc(c.name_fr)} · ${esc(c.name_zh)}</div></div>
+      <div class="body"><div class="ttl" style="font-size:14px">${esc(lname(c))}${S.lang!=="zh"?` · ${esc(c.name_zh)}`:` · ${esc(c.name_fr)}`}</div>
+        <div class="meta">${t("countMode")}${C()}${c.count_mode ? t("mode_"+c.count_mode+"_s") : `${t("useDefault")} (${t("mode_"+S.settings.count_mode+"_s")})`}</div></div>
       ${c.is_work_country ? `<span class="pill st-approved">${t("workCountry")}</span>` : ""}</button>`).join("")}</div>`;
   $("#sf").onsubmit = async e => { e.preventDefault(); const b = $("#ssv"); busy(b, true);
     try { const upd = { count_mode:$("#s1").value, default_annual_days:+$("#s2").value||0, default_sick_days:+$("#s4").value||0,
@@ -1405,10 +1410,11 @@ function addHoliday(){
     <div class="field"><label>${t("nameFr")}</label><input class="input" id="h1" required placeholder="Aïd el-Fitr"></div>
     <div class="field"><label>${t("nameZh")}</label><input class="input" id="h2" required placeholder="开斋节"></div>
     <div class="field"><label>${t("nameEn")}</label><input class="input" id="h3" placeholder="Eid al-Fitr"></div>
+    <label class="check" style="padding-top:0;margin-bottom:10px"><input type="checkbox" id="h4"> ${t("workdayOverride")}</label>
     <button class="btn btn-pri btn-block" id="hsv">${t("save")}</button></form>`, sh => {
     $("#hf", sh).onsubmit = async e => { e.preventDefault(); const b = $("#hsv", sh); busy(b, true);
       try { await run(sb.from("holidays").upsert({ day:$("#h0",sh).value, country_code:$("#hc",sh).value,
-          name_fr:$("#h1",sh).value.trim(), name_zh:$("#h2",sh).value.trim(), name_en:$("#h3",sh).value.trim()||null }));
+          name_fr:$("#h1",sh).value.trim(), name_zh:$("#h2",sh).value.trim(), name_en:$("#h3",sh).value.trim()||null, is_workday:$("#h4",sh).checked }));
         S.filters.admin.hc = $("#hc",sh).value; toast(t("saved")); closeSheet(); admSettings(); }
       catch(err){ toast(errMsg(err), true); busy(b, false); } };
   });
@@ -1426,11 +1432,14 @@ function editCountry(code){
     <div class="field"><label>${t("nameFr")}</label><input class="input" id="c1" value="${esc(c.name_fr)}" required></div>
     <div class="field"><label>${t("nameZh")}</label><input class="input" id="c2" value="${esc(c.name_zh)}" required></div>
     <div class="field"><label>${t("nameEn")}</label><input class="input" id="c4" value="${esc(c.name_en||"")}"></div>
+    <div class="field"><label>${t("countMode")}</label><select class="input" id="c5">
+      <option value="">${t("useDefault")} (${t("mode_"+S.settings.count_mode+"_s")})</option>
+      ${["ouvrables","ouvres","calendaires"].map(m=>`<option value="${m}" ${c.count_mode===m?"selected":""}>${t("mode_"+m+"_s")}</option>`).join("")}</select></div>
     <label class="check"><input type="checkbox" id="c3" ${c.is_work_country?"checked":""}> ${t("isWorkCountry")}</label>
     <button class="btn btn-pri btn-block" style="margin-top:10px" id="csv">${t("save")}</button></form>`, sh => {
     $("#cf", sh).onsubmit = async e => { e.preventDefault(); const b = $("#csv", sh); busy(b, true);
       const row = { code: code || $("#c0",sh).value.trim().toUpperCase(), name_fr:$("#c1",sh).value.trim(), name_zh:$("#c2",sh).value.trim(), name_en:$("#c4",sh).value.trim()||null,
-        is_work_country:$("#c3",sh).checked, sort_order:c.sort_order };
+        is_work_country:$("#c3",sh).checked, count_mode:$("#c5",sh).value||null, sort_order:c.sort_order };
       try { await run(sb.from("countries").upsert(row)); S.countries = await run(sb.from("countries").select("*").order("sort_order"));
         toast(t("saved")); closeSheet(); admSettings(); }
       catch(err){ toast(errMsg(err), true); busy(b, false); } };

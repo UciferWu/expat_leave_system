@@ -21,7 +21,7 @@ Plateforme de demande, de suivi et de validation des congés des salariés fran�
 - 入职当年按剩余自然日比例自动折算，四舍五入到半天。例：年假 25 天、7 月 1 日入职 → 当年 12.5 天。
 - 余额 = 当年额度 + 上年结转 + 调整 − 已批准 − 审批中；年假、病假分别计算，不足时无法提交也无法批准。
 - 设置了试用期截止日期的员工，试用期结束前不能申请年假（病假等其他假期不受限）。
-- 天数按员工**工作国家**的法定假日计算；工作国家默认列表：中国、几内亚、科特迪瓦、新加坡（可在设置里维护）。
+- 天数按员工**工作国家**的计算方式和法定假日计算，每个国家可单独设置计算方式（几内亚、科特迪瓦默认周一至周六；中国、新加坡默认周一至周五）；支持中国的调休上班日；工作国家默认列表：中国、几内亚、科特迪瓦、新加坡（可在设置里维护）。
 - 系统从 2026 年开始使用，不显示也不能申请 2026 年以前的假期。
 - 已批准的休假可由该申请的审批人或管理员修改日期（如提前返岗），必须填写原因；天数和余额自动重算，修改前后的日期记入流转记录。员工本人不能修改自己已批准的休假。
 - 年假不能跨年申请；同一员工的申请日期不能重叠；最多补报 60 天前的假期。
@@ -34,7 +34,7 @@ Plateforme de demande, de suivi et de validation des congés des salariés fran�
 
 ### 1. Supabase 数据库 / Base de données
 1. 在 [supabase.com](https://supabase.com) 新建项目（区域建议 West EU / Paris）。
-2. **SQL Editor** → 依次粘贴并运行 `001_schema.sql`、`002_storage.sql`、`003_entitlements_probation_countries.sql`、`004_modify_leave_english.sql`（都在 `supabase/migrations/`）。
+2. **SQL Editor** → 依次粘贴并运行 `001_schema.sql`、`002_storage.sql`、`003_entitlements_probation_countries.sql`、`004_modify_leave_english.sql`、`005_country_count_mode_holidays.sql`（都在 `supabase/migrations/`）。
 3. **Authentication → Sign In / Providers**：关闭 **Allow new users to sign up**（禁止自助注册，只有管理员能建号）。
 4. **Authentication → URL Configuration**：Site URL 填 `https://uciferwu.github.io/expat_leave_system/`。
 
