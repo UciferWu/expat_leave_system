@@ -29,8 +29,8 @@ function tempPassword(len = 10): string {
 }
 
 const PROFILE_FIELDS = [
-  "full_name", "employee_no", "position", "department", "site",
-  "role", "approver_id", "hire_date", "lang",
+  "full_name", "employee_no", "position", "department", "nationality", "work_country",
+  "role", "approver_id", "hire_date", "probation_end", "annual_days", "sick_days", "lang",
 ] as const;
 
 Deno.serve(async (req) => {
@@ -91,14 +91,6 @@ Deno.serve(async (req) => {
         return json({ error: pErr.message }, 400);
       }
 
-      if (body.annual_days !== undefined && body.annual_days !== "" && body.annual_days !== null) {
-        await admin.from("leave_entitlements").upsert({
-          user_id: uid,
-          year: new Date().getFullYear(),
-          annual_days: Number(body.annual_days),
-          carried_over: Number(body.carried_over ?? 0),
-        });
-      }
       return json({ ok: true, user_id: uid, email, password });
     }
 

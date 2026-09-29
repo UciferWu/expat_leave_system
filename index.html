@@ -256,7 +256,7 @@ zh:{
   leaveType:"假期类型", startDate:"开始日期", endDate:"结束日期",
   fullDay:"全天", morning:"仅上午", afternoon:"仅下午",
   startPm:"首日从下午开始", endAm:"末日只休上午",
-  duration:"共计", afterBalance:"批准后年假剩余", notDeducted:"不扣年假余额",
+  duration:"共计", afterBalance:"批准后{k}剩余", notDeducted:"不扣减额度",
   reason:"事由", destination:"休假期间所在地", contact:"紧急联系方式", optional:"选填",
   attachment:"附件（病假证明等）", addFile:"上传文件或拍照", fileTooBig:"文件不能超过 10 MB",
   submit:"提交", submitted:"申请已提交，等待审批", required:"必填",
@@ -274,20 +274,27 @@ zh:{
   balanceOfApplicant:"申请人年假", viewAttachment:"查看附件",
   close:"关闭", cancel:"取消", save:"保存", edit:"编辑", add:"新增", del:"删除",
   search:"搜索姓名 / 工号 / 部门", export:"导出 CSV",
-  users:"用户", requestsAll:"全部申请", balances:"年假额度", settings:"设置",
+  users:"用户", requestsAll:"全部申请", balances:"假期额度", settings:"设置",
   newUser:"新建账号", editUser:"编辑用户",
-  fullName:"姓名", employeeNo:"工号", position:"职位", department:"部门", site:"工作地点",
-  role:"角色", approver:"审批人", hireDate:"入职日期", lang:"界面语言", annualDays:"本年年假天数",
+  fullName:"姓名", employeeNo:"工号", position:"职位", department:"部门", workCountry:"工作国家", nationality:"国籍",
+  probationEnd:"试用期截止日期", probationHint:"试用期结束前不能申请年假", annualDaysL:"年假天数 / 年", sickDaysL:"病假天数 / 年",
+  daysHint:"设置一次，适用于所有年份；入职当年按剩余天数自动折算。留空则使用默认值 {a} / {s} 天。",
+  annualShort:"年假", sickShort:"病假", kl_annual:"年假", kl_sick:"病假", prorated:"入职当年折算", fullYear:"全年额度", thisYear:"{y} 年",
+  sickTitle:"{y} 年病假可用", inProbation:"试用期至 {d}，此前不能申请年假。",
+  balanceKind:"扣减哪项额度", kind_none:"不扣减", kind_annual:"年假额度", kind_sick:"病假额度",
+  defaultSickDays:"默认病假天数 / 年", countries:"国家列表", isWorkCountry:"可选为工作国家", newCountry:"新增国家",
+  countryCode:"国家代码（2 位大写字母，如 FR）", holidayCountry:"适用国家",
+  role:"角色", approver:"审批人", hireDate:"入职日期", lang:"界面语言",
   tempPwd:"初始密码", tempPwdHint:"留空将自动生成 10 位密码",
   role_employee:"员工", role_approver:"审批人", role_admin:"管理员",
   activeL:"在职", inactiveL:"已停用", none:"（无）",
   deactivate:"停用账号", activate:"重新启用", resetPwd:"重置密码", confirmDeactivate:"停用后该员工将无法登录，确定吗？",
   credsTitle:"账号已创建，请把以下信息发给员工", pwdResetTitle:"密码已重置，请把新密码发给员工",
   copy:"复制", copied:"已复制", loginUrl:"登录地址", credsNote:"员工首次登录后须自行修改密码。",
-  entitled:"年度额度", carried:"上年结转", adjustment:"调整", note:"备注", editBalance:"调整年假额度",
+  entitled:"本年额度", carried:"上年结转", adjustment:"调整", note:"备注", editBalance:"额度设置",
   countMode:"天数计算方式", mode_ouvrables_s:"工作日（周一至周六）", mode_ouvres_s:"工作日（周一至周五）", mode_calendaires_s:"自然日",
-  defaultDays:"默认年假天数（未单独设置时）", companyName:"公司名称",
-  leaveTypes:"假期类型", deducts:"扣年假余额", requiresAtt:"必须上传附件", activeType:"启用",
+  defaultDays:"默认年假天数 / 年", companyName:"公司名称",
+  leaveTypes:"假期类型", requiresAtt:"必须上传附件", activeType:"启用",
   holidays:"法定假日", holidayHint:"伊斯兰节日（开斋节、宰牲节、圣纪节等）日期每年由政府公布，请及时在此补充。",
   nameZh:"中文名称", nameFr:"法文名称", code:"代码（英文，不可修改）", date:"日期", color:"颜色",
   newType:"新增假期类型", newHoliday:"新增假日",
@@ -298,10 +305,11 @@ zh:{
   setupTitle:"尚未连接数据库", setupBody:"请在 config.js 中填入 Supabase 的 Project URL 和 anon key，然后刷新页面。",
   onLeaveNow:"正在休假", stats_pending:"待审批", stats_onleave:"今日休假", stats_month:"本月批准天数", stats_users:"在职人数",
   dayUnit:"天", from:"从", to:"至", noResults:"没有符合条件的记录", count:"条",
+  ERR_PROBATION:"试用期至 {d}，试用期结束前不能申请年假", ERR_BEFORE_START:"系统从 {d} 年开始使用，不能申请更早的假期",
   ERR_ACCOUNT_INACTIVE:"账号已停用，请联系人力资源部", ERR_TYPE:"请选择假期类型", ERR_DATES:"结束日期不能早于开始日期",
   ERR_HALF:"同一天不能既从下午开始又在上午结束", ERR_TOO_OLD:"不能补报 60 天以前的假期", ERR_CROSS_YEAR:"年假不能跨年，请按年度分两次申请",
   ERR_ZERO_DAYS:"所选日期内没有需要计算的工作日", ERR_OVERLAP:"与你已有的申请时间重叠", ERR_ATTACHMENT:"附件无效",
-  ERR_ATTACHMENT_REQUIRED:"此类假期必须上传附件", ERR_BALANCE:"年假余额不足，当前可用 {d} 天", ERR_FORBIDDEN:"没有权限执行此操作",
+  ERR_ATTACHMENT_REQUIRED:"此类假期必须上传附件", ERR_BALANCE:"{k}余额不足，当前可用 {d} 天", ERR_FORBIDDEN:"没有权限执行此操作",
   ERR_NOT_FOUND:"申请不存在", ERR_SELF_APPROVAL:"不能审批自己的申请", ERR_NOT_PENDING:"该申请已被处理",
   ERR_COMMENT_REQUIRED:"驳回时必须填写原因", ERR_NOT_CANCELLABLE:"当前状态不能撤回", ERR_EMAIL:"邮箱格式不正确",
   ERR_NAME:"请填写姓名", ERR_PASSWORD_SHORT:"密码至少 8 位", ERR_EMAIL_EXISTS:"该邮箱已经有账号",
@@ -320,7 +328,7 @@ fr:{
   leaveType:"Type de congé", startDate:"Date de début", endDate:"Date de fin",
   fullDay:"Journée", morning:"Matin", afternoon:"Après-midi",
   startPm:"Début l'après-midi du premier jour", endAm:"Fin à midi le dernier jour",
-  duration:"Durée", afterBalance:"Solde après validation", notDeducted:"Non décompté du solde",
+  duration:"Durée", afterBalance:"Solde {k} après validation", notDeducted:"Non décompté",
   reason:"Motif", destination:"Lieu pendant le congé", contact:"Contact d'urgence", optional:"facultatif",
   attachment:"Justificatif (certificat médical…)", addFile:"Joindre un fichier ou une photo", fileTooBig:"Fichier limité à 10 Mo",
   submit:"Envoyer", submitted:"Demande envoyée, en attente de validation", required:"obligatoire",
@@ -340,18 +348,25 @@ fr:{
   search:"Rechercher nom / matricule / service", export:"Exporter CSV",
   users:"Utilisateurs", requestsAll:"Demandes", balances:"Soldes", settings:"Paramètres",
   newUser:"Nouveau compte", editUser:"Modifier l'utilisateur",
-  fullName:"Nom complet", employeeNo:"Matricule", position:"Poste", department:"Service", site:"Site",
-  role:"Rôle", approver:"Valideur", hireDate:"Date d'entrée", lang:"Langue", annualDays:"Droits annuels",
+  fullName:"Nom complet", employeeNo:"Matricule", position:"Poste", department:"Service", workCountry:"Pays d'affectation", nationality:"Nationalité",
+  probationEnd:"Fin de période d'essai", probationHint:"Pas de congé annuel avant la fin de la période d'essai", annualDaysL:"Congés annuels / an", sickDaysL:"Congés maladie / an",
+  daysHint:"Défini une fois pour toutes les années ; proratisé automatiquement l'année d'entrée. Vide = valeurs par défaut ({a} / {s} j).",
+  annualShort:"Congés annuels", sickShort:"Maladie", kl_annual:"congés annuels", kl_sick:"congés maladie", prorated:"Proratisé (année d'entrée)", fullYear:"Droits annuels pleins", thisYear:"{y}",
+  sickTitle:"Congés maladie disponibles {y}", inProbation:"Période d'essai jusqu'au {d} : pas de congé annuel avant cette date.",
+  balanceKind:"Imputé sur", kind_none:"Non décompté", kind_annual:"Solde congés annuels", kind_sick:"Solde congés maladie",
+  defaultSickDays:"Congés maladie par défaut / an", countries:"Pays", isWorkCountry:"Proposé comme pays d'affectation", newCountry:"Nouveau pays",
+  countryCode:"Code pays (2 lettres majuscules, ex. FR)", holidayCountry:"Pays concerné",
+  role:"Rôle", approver:"Valideur", hireDate:"Date d'entrée", lang:"Langue",
   tempPwd:"Mot de passe initial", tempPwdHint:"Laisser vide pour générer un mot de passe de 10 caractères",
   role_employee:"Employé", role_approver:"Valideur", role_admin:"Administrateur",
   activeL:"Actif", inactiveL:"Désactivé", none:"(aucun)",
   deactivate:"Désactiver le compte", activate:"Réactiver", resetPwd:"Réinitialiser le mot de passe", confirmDeactivate:"L'employé ne pourra plus se connecter. Confirmer ?",
   credsTitle:"Compte créé — identifiants à transmettre à l'employé", pwdResetTitle:"Mot de passe réinitialisé — à transmettre à l'employé",
   copy:"Copier", copied:"Copié", loginUrl:"Adresse", credsNote:"L'employé devra changer ce mot de passe à sa première connexion.",
-  entitled:"Droits de l'année", carried:"Report N-1", adjustment:"Ajustement", note:"Note", editBalance:"Ajuster les droits",
+  entitled:"Droits de l'année", carried:"Report N-1", adjustment:"Ajustement", note:"Note", editBalance:"Droits à congés",
   countMode:"Mode de décompte", mode_ouvrables_s:"Jours ouvrables (lun.–sam.)", mode_ouvres_s:"Jours ouvrés (lun.–ven.)", mode_calendaires_s:"Jours calendaires",
-  defaultDays:"Droits annuels par défaut", companyName:"Nom de la société",
-  leaveTypes:"Types de congé", deducts:"Décompté du solde", requiresAtt:"Justificatif obligatoire", activeType:"Actif",
+  defaultDays:"Congés annuels par défaut / an", companyName:"Nom de la société",
+  leaveTypes:"Types de congé", requiresAtt:"Justificatif obligatoire", activeType:"Actif",
   holidays:"Jours fériés", holidayHint:"Les fêtes musulmanes (Aïd el-Fitr, Tabaski, Maouloud…) sont fixées chaque année par décret : pensez à les ajouter ici.",
   nameZh:"Nom (chinois)", nameFr:"Nom (français)", code:"Code (non modifiable)", date:"Date", color:"Couleur",
   newType:"Nouveau type de congé", newHoliday:"Nouveau jour férié",
@@ -362,11 +377,12 @@ fr:{
   setupTitle:"Base de données non connectée", setupBody:"Renseignez l'URL du projet Supabase et la clé anon dans config.js, puis rechargez la page.",
   onLeaveNow:"En congé", stats_pending:"En attente", stats_onleave:"En congé aujourd'hui", stats_month:"Jours approuvés ce mois", stats_users:"Comptes actifs",
   dayUnit:"j", from:"du", to:"au", noResults:"Aucun résultat", count:"",
+  ERR_PROBATION:"Période d'essai jusqu'au {d} : pas de congé annuel avant cette date", ERR_BEFORE_START:"La plateforme démarre en {d} : impossible de déclarer un congé antérieur",
   ERR_ACCOUNT_INACTIVE:"Compte désactivé. Contactez les RH.", ERR_TYPE:"Choisissez un type de congé", ERR_DATES:"La date de fin précède la date de début",
   ERR_HALF:"Un même jour ne peut pas commencer l'après-midi et finir à midi", ERR_TOO_OLD:"Impossible de déclarer un congé de plus de 60 jours dans le passé",
   ERR_CROSS_YEAR:"Un congé annuel ne peut pas chevaucher deux années : faites deux demandes", ERR_ZERO_DAYS:"Aucun jour décompté sur cette période",
   ERR_OVERLAP:"Chevauche une demande existante", ERR_ATTACHMENT:"Justificatif invalide", ERR_ATTACHMENT_REQUIRED:"Justificatif obligatoire pour ce type de congé",
-  ERR_BALANCE:"Solde insuffisant : {d} j disponibles", ERR_FORBIDDEN:"Action non autorisée", ERR_NOT_FOUND:"Demande introuvable",
+  ERR_BALANCE:"Solde {k} insuffisant : {d} j disponibles", ERR_FORBIDDEN:"Action non autorisée", ERR_NOT_FOUND:"Demande introuvable",
   ERR_SELF_APPROVAL:"Vous ne pouvez pas valider votre propre demande", ERR_NOT_PENDING:"Cette demande a déjà été traitée",
   ERR_COMMENT_REQUIRED:"Motif obligatoire en cas de refus", ERR_NOT_CANCELLABLE:"Cette demande ne peut plus être annulée",
   ERR_EMAIL:"Adresse e-mail invalide", ERR_NAME:"Le nom est obligatoire", ERR_PASSWORD_SHORT:"8 caractères minimum",
@@ -384,7 +400,7 @@ const store = {
 };
 const S = {
   lang: store.get("lang") || ((navigator.language||"").toLowerCase().startsWith("zh") ? "zh" : "fr"),
-  session:null, me:null, settings:null, types:[], ctx:null, pendingCount:0,
+  session:null, me:null, settings:null, types:[], countries:[], ctx:null, pendingCount:0,
   filters:{ mine:{status:"all", year:new Date().getFullYear()},
             admin:{tab:"requests", status:"all", year:new Date().getFullYear(), type:"all", q:""},
             approve:{tab:"todo"} },
@@ -426,12 +442,25 @@ const statusPill = s => `<span class="pill st-${s}">${t("status_"+s)}</span>`;
 const initials = n => (n||"?").trim().split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase();
 const isAdmin = () => S.me?.role === "admin";
 const isApprover = () => S.me && (S.me.role === "approver" || S.me.role === "admin");
+const countryName = code => { const c = S.countries.find(x => x.code === code); return c ? (S.lang==="zh" ? c.name_zh : c.name_fr) : (code || ""); };
+const countryOpts = (sel, workOnly, blank) => (blank ? `<option value="">${t("none")}</option>` : "") +
+  S.countries.filter(c => !workOnly || c.is_work_country)
+    .map(c => `<option value="${c.code}" ${c.code===sel?"selected":""}>${esc(S.lang==="zh"?c.name_zh:c.name_fr)}</option>`).join("");
+const firstYear = () => Number(S.settings?.first_year || 2026);
+function yearsList(){ const out = []; const top = Math.max(new Date().getFullYear() + 1, firstYear());
+  for (let y = top; y >= firstYear(); y--) out.push(y); return out; }
+const balOf = (rows, kind) => (rows || []).find(b => b.kind === kind) || null;
+const inProbation = () => S.me?.probation_end && S.me.probation_end >= todayISO();
 
 function errMsg(e){
   if (!e) return t("ERR_GENERIC");
   const m = String(e.message || e.error || e);
   const code = (m.match(/ERR_[A-Z_]+/)||[])[0];
-  if (code) return t(code, {d: num(e.details || e.detail || 0)});
+  if (code) {
+    const det = e.details || e.detail || "";
+    const d = /^\d{4}-\d{2}-\d{2}$/.test(det) ? fmtDate(det, {day:"numeric", month:"long", year:"numeric"}) : (/^\d{4}$/.test(det) ? det : num(det||0));
+    return t(code, {d, k: t("kl_" + (e.hint || "annual"))});
+  }
   if (/fetch|network|Failed to fetch/i.test(m)) return t("ERR_NETWORK");
   return m || t("ERR_GENERIC");
 }
@@ -498,13 +527,14 @@ async function boot(){
 }
 async function loadContext(){
   const uid = S.session.user.id;
-  const [me, settings, types, ctx] = await Promise.all([
+  const [me, settings, types, ctx, countries] = await Promise.all([
     run(sb.from("profiles").select("*").eq("id", uid).single()),
     run(sb.from("app_settings").select("*").eq("id", 1).single()),
     run(sb.from("leave_types").select("*").order("sort_order")),
     run(sb.rpc("my_context")),
+    run(sb.from("countries").select("*").order("sort_order")),
   ]);
-  S.me = me; S.settings = settings; S.types = types; S.ctx = (ctx||[])[0] || {};
+  S.me = me; S.settings = settings; S.types = types; S.countries = countries; S.ctx = (ctx||[])[0] || {};
   if (!me.active) { await sb.auth.signOut(); S.me = null; S.loginError = t("ERR_ACCOUNT_INACTIVE"); return; }
   if (!store.get("lang") && me.lang) S.lang = me.lang;
   document.documentElement.lang = S.lang === "zh" ? "zh-CN" : "fr";
@@ -623,7 +653,17 @@ function heroHtml(b, y){
       <div><b class="tabnum">${num(b.used)}</b><span>● ${t("used")}</span></div>
       <div><b class="tabnum">${num(b.pending)}</b><span style="color:#fde68a">● ${t("pending")}</span></div>
       <div><b class="tabnum">${num(b.total)}</b><span>${t("total")}${Number(b.carried_over)?` (+${num(b.carried_over)} ${t("carried")})`:""}</span></div>
-    </div></div>`;
+    </div>${b.prorated ? `<div style="font-size:11.5px;opacity:.7;margin-top:10px">${t("prorated")} · ${t("fullYear")} ${fmtDays(b.base)}</div>` : ""}</div>`;
+}
+function sickCard(b, y){
+  if (!b) return "";
+  const tot = Math.max(Number(b.total), 0.0001), pu = Math.min(100, (Number(b.used)+Number(b.pending))/tot*100);
+  return `<div class="card card-pad" style="margin-top:12px;display:flex;align-items:center;gap:14px">
+    <span class="dot" style="background:${esc(typeOf("sick").color || "#dc2626")};width:12px;height:12px"></span>
+    <div style="flex:1;min-width:0"><div class="small muted" style="font-weight:600">${t("sickTitle", {y})}</div>
+      <div style="height:6px;border-radius:3px;background:var(--off-soft);margin-top:8px;overflow:hidden"><i style="display:block;height:100%;width:${pu}%;background:#dc2626"></i></div>
+      <div class="small muted" style="margin-top:6px">${t("used")} ${num(b.used)}${Number(b.pending)?` · ${t("pending")} ${num(b.pending)}`:""} · ${t("total")} ${num(b.total)}${b.prorated?` · ${t("prorated")}`:""}</div></div>
+    <div style="font-size:26px;font-weight:760" class="tabnum">${num(b.available)}<small class="muted" style="font-size:12px;font-weight:600;margin-left:3px">${S.lang==="zh"?"天":"j"}</small></div></div>`;
 }
 function reqCard(r, opts={}){
   const ty = typeOf(r.type_code);
@@ -647,7 +687,9 @@ async function pageHome(){
   const next = recent.filter(r => r.status==="approved" && r.end_date >= todayISO()).sort((a,b)=>a.start_date.localeCompare(b.start_date))[0];
   $("#main").innerHTML = `
     <p style="margin:4px 2px 12px;font-size:15px">${t("hello")}, <b>${esc(S.me.full_name || S.me.email)}</b></p>
-    ${heroHtml(bal[0], y)}
+    ${heroHtml(balOf(bal,"annual"), y)}
+    ${sickCard(balOf(bal,"sick"), y)}
+    ${inProbation() ? `<div class="notice">${IC.info}<div>${t("inProbation", {d:fmtDate(S.me.probation_end,{day:"numeric",month:"long",year:"numeric"})})}</div></div>` : ""}
     <div class="cta-row"><a class="btn btn-pri" href="#new">${IC.plus.replace("<svg","<svg width='20' height='20'")} ${t("newRequest")}</a></div>
     ${S.pendingCount ? `<a class="notice info" href="#approve">${IC.info}<div><b>${t("toApproveBanner", {n:S.pendingCount})}</b></div></a>` : ""}
     ${next ? `<div class="section-h"><h2>${t("nextLeave")}</h2></div>${reqCard(next)}` : ""}
@@ -666,12 +708,13 @@ function freshForm(){ return { type: (S.types.find(x=>x.active)||{}).code, start
 async function pageNew(){
   if (!S.newForm) S.newForm = freshForm();
   const F = S.newForm, y = new Date().getFullYear();
-  try { F.bal = (await run(sb.rpc("leave_balance", {p_user:S.me.id, p_year:y})))[0]; } catch(e) {}
+  try { F.bal = await run(sb.rpc("leave_balance", {p_user:S.me.id, p_year:y})); F.balYear = y; } catch(e) {}
   const active = S.types.filter(x=>x.active);
   $("#main").innerHTML = `<form id="nf" novalidate>
     <div class="field"><span class="label">${t("leaveType")}</span>
       <div class="type-grid">${active.map(x => `<button type="button" class="type-opt ${F.type===x.code?"on":""}" data-type="${esc(x.code)}">
         <span class="dot" style="background:${esc(x.color)}"></span>${esc(S.lang==="zh"?x.name_zh:x.name_fr)}</button>`).join("")}</div></div>
+    ${inProbation() ? `<div class="notice" style="margin:-4px 0 16px">${IC.info}<div>${t("inProbation", {d:fmtDate(S.me.probation_end,{day:"numeric",month:"long",year:"numeric"})})}</div></div>` : ""}
     <div class="row2">
       <div class="field"><label for="fs">${t("startDate")}</label><input class="input" type="date" id="fs" value="${F.start}" required></div>
       <div class="field"><label for="fe">${t("endDate")}</label><input class="input" type="date" id="fe" value="${F.end}" required></div>
@@ -729,12 +772,22 @@ async function recalc(){
   const seq = ++recalcSeq; const {sh, eh} = halfFlags(F);
   try {
     const d = await run(sb.rpc("count_leave_days", {p_start:F.start, p_end:F.end, p_start_half:sh, p_end_half:eh}));
+    const sy = +F.start.slice(0,4);
+    if (ty.balance_kind && F.balYear !== sy && sy >= firstYear()) {
+      try { F.bal = await run(sb.rpc("leave_balance", {p_user:S.me.id, p_year:sy})); F.balYear = sy; } catch(e) {}
+    }
     if (seq !== recalcSeq) return; F.days = Number(d);
     let extra = "";
-    if (ty.deducts_balance && F.bal) {
-      const after = Number(F.bal.available) - F.days;
-      extra = after < 0 ? `<div class="warnline">${t("ERR_BALANCE", {d:num(F.bal.available)})}</div>`
-                        : `<div class="lbl">${t("afterBalance")} : <b style="opacity:1">${fmtDays(after)}</b></div>`;
+    const b = ty.balance_kind ? balOf(F.bal, ty.balance_kind) : null;
+    const k = ty.balance_kind ? t("kl_" + ty.balance_kind) : "";
+    if (sy < firstYear()) {
+      extra = `<div class="warnline">${t("ERR_BEFORE_START", {d:firstYear()})}</div>`;
+    } else if (ty.balance_kind === "annual" && S.me.probation_end && F.start <= S.me.probation_end) {
+      extra = `<div class="warnline">${t("ERR_PROBATION", {d:fmtDate(S.me.probation_end,{day:"numeric",month:"long",year:"numeric"})})}</div>`;
+    } else if (b) {
+      const after = Number(b.available) - F.days;
+      extra = after < 0 ? `<div class="warnline">${t("ERR_BALANCE", {d:num(b.available), k})}</div>`
+                        : `<div class="lbl">${t("afterBalance", {k})} : <b style="opacity:1">${fmtDays(after)}</b></div>`;
     } else extra = `<div class="lbl">${t("notDeducted")}</div>`;
     el.innerHTML = `<div class="lbl">${t("duration")}</div><div class="big tabnum">${fmtDays(F.days)}</div>${extra}`;
   } catch(e) { el.innerHTML = `<div class="warnline">${esc(errMsg(e))}</div>`; }
@@ -773,7 +826,7 @@ async function pageMine(){
   S.cache.requests = Object.fromEntries(rows.map(r=>[r.id,r]));
   const list = f.status === "all" ? rows : rows.filter(r => r.status === f.status);
   const cnt = s => rows.filter(r=>r.status===s).length;
-  const years = []; for (let y = new Date().getFullYear()+1; y >= new Date().getFullYear()-3; y--) years.push(y);
+  const years = yearsList(); if (f.year < firstYear()) f.year = firstYear();
   $("#main").innerHTML = `
     <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
       <a class="btn btn-pri btn-sm" href="#new">${IC.plus.replace("<svg","<svg width='16' height='16'")} ${t("newRequest")}</a>
@@ -799,9 +852,10 @@ async function openRequest(id){
   const canDecide = r.status === "pending" && !mine && (r.approver_id === S.me.id || isAdmin());
   const canCancel = (mine && r.status === "pending") || (isAdmin() && ["pending","approved"].includes(r.status));
   let balHtml = "";
-  if (!mine && typeOf(r.type_code).deducts_balance) {
-    try { const b = (await run(sb.rpc("leave_balance", {p_user:r.user_id, p_year:+r.start_date.slice(0,4)})))[0];
-      balHtml = `<dt>${t("balanceOfApplicant")}</dt><dd>${fmtDays(b.available)} ${t("available").toLowerCase()} / ${fmtDays(b.total)}</dd>`; } catch(e){}
+  const kind = typeOf(r.type_code).balance_kind;
+  if (!mine && kind) {
+    try { const b = balOf(await run(sb.rpc("leave_balance", {p_user:r.user_id, p_year:+r.start_date.slice(0,4)})), kind);
+      balHtml = `<dt>${t("balanceOfApplicant")}<br><span class="small">${t("kl_"+kind)}</span></dt><dd>${fmtDays(b.available)} ${t("available").toLowerCase()} / ${fmtDays(b.total)}</dd>`; } catch(e){}
   }
   const evCls = a => a==="approved"?"ok":a==="rejected"?"bad":"";
   openSheet(t("detail"), `
@@ -891,12 +945,17 @@ async function pageMe(){
       <div class="avatar" style="width:54px;height:54px;border-radius:27px;font-size:18px">${esc(initials(m.full_name))}</div>
       <div style="min-width:0"><div style="font-weight:750;font-size:17px">${esc(m.full_name)}</div>
         <div class="small muted">${esc(m.email)}</div>
-        <div class="small muted">${[m.position, m.department, m.site].filter(Boolean).map(esc).join(" · ")}</div></div></div>
+        <div class="small muted">${[m.position, m.department, countryName(m.work_country)].filter(Boolean).map(esc).join(" · ")}</div></div></div>
     <div class="card card-pad" style="margin-top:12px"><dl class="kv">
       ${m.employee_no?`<dt>${t("employeeNo")}</dt><dd>${esc(m.employee_no)}</dd>`:""}
       <dt>${t("role")}</dt><dd>${t("role_"+m.role)}</dd>
       <dt>${t("yourApprover")}</dt><dd>${esc(S.ctx?.approver_name || t("none"))}</dd>
+      ${m.nationality?`<dt>${t("nationality")}</dt><dd>${esc(countryName(m.nationality))}</dd>`:""}
+      ${m.work_country?`<dt>${t("workCountry")}</dt><dd>${esc(countryName(m.work_country))}</dd>`:""}
       ${m.hire_date?`<dt>${t("hireDate")}</dt><dd>${fmtDate(m.hire_date,{day:"numeric",month:"long",year:"numeric"})}</dd>`:""}
+      ${m.probation_end?`<dt>${t("probationEnd")}</dt><dd>${fmtDate(m.probation_end,{day:"numeric",month:"long",year:"numeric"})}</dd>`:""}
+      <dt>${t("annualDaysL")}</dt><dd>${fmtDays(m.annual_days ?? S.settings.default_annual_days)}</dd>
+      <dt>${t("sickDaysL")}</dt><dd>${fmtDays(m.sick_days ?? S.settings.default_sick_days)}</dd>
     </dl></div>
     <div class="section-h"><h2>${t("changePwd")}</h2></div>
     <div class="card card-pad">${pwdFormHtml()}</div>
@@ -915,12 +974,12 @@ async function pageAdmin(){
   S.cache.pmap = Object.fromEntries(S.cache.profiles.map(p=>[p.id,p]));
   await ({ requests:admRequests, users:admUsers, balances:admBalances, settings:admSettings }[f.tab])();
 }
-const yearsOpts = sel => { const out=[]; for (let y=new Date().getFullYear()+1; y>=new Date().getFullYear()-4; y--) out.push(`<option ${y===sel?"selected":""}>${y}</option>`); return out.join(""); };
+const yearsOpts = sel => yearsList().map(y => `<option ${y===sel?"selected":""}>${y}</option>`).join("");
 const matchQ = (p, q) => !q || [p?.full_name, p?.employee_no, p?.department, p?.email].some(v => (v||"").toLowerCase().includes(q.toLowerCase()));
 
 async function admRequests(){
   const f = S.filters.admin;
-  let q = sb.from("leave_requests").select("*, applicant:profiles!leave_requests_user_id_fkey(full_name,employee_no,department,position)")
+  let q = sb.from("leave_requests").select("*, applicant:profiles!leave_requests_user_id_fkey(full_name,employee_no,department,position,nationality,work_country)")
     .gte("start_date", `${f.year}-01-01`).lte("start_date", `${f.year}-12-31`).order("start_date", {ascending:false}).limit(1000);
   if (f.status !== "all") q = q.eq("status", f.status);
   if (f.type !== "all") q = q.eq("type_code", f.type);
@@ -958,9 +1017,10 @@ async function admRequests(){
 }
 function exportCsv(){
   const rows = S.cache.exportRows || [];
-  const head = ["Référence/编号","Nom/姓名","Matricule/工号","Service/部门","Type/类型","Début/开始","Fin/结束","Demi-journée/半天","Jours/天数","Statut/状态","Valideur/审批人","Décision le/审批时间","Motif/事由","Commentaire/意见"];
+  const head = ["Référence/编号","Nom/姓名","Matricule/工号","Service/部门","Nationalité/国籍","Pays d'affectation/工作国家","Type/类型","Début/开始","Fin/结束","Demi-journée/半天","Jours/天数","Statut/状态","Valideur/审批人","Décision le/审批时间","Motif/事由","Commentaire/意见"];
   const cell = v => `"${String(v ?? "").replace(/"/g,'""')}"`;
-  const lines = rows.map(r => [r.ref_no, r.applicant?.full_name, r.applicant?.employee_no, r.applicant?.department,
+  const cn = c => { const x = S.countries.find(y=>y.code===c); return x ? `${x.name_fr} / ${x.name_zh}` : (c||""); };
+  const lines = rows.map(r => [r.ref_no, r.applicant?.full_name, r.applicant?.employee_no, r.applicant?.department, cn(r.applicant?.nationality), cn(r.applicant?.work_country),
     `${typeOf(r.type_code).name_fr} / ${typeOf(r.type_code).name_zh}`, r.start_date, r.end_date,
     [r.start_half?"début PM":"", r.end_half?"fin AM":""].filter(Boolean).join(", "), num(r.days),
     `${I18N.fr["status_"+r.status]} / ${I18N.zh["status_"+r.status]}`,
@@ -977,16 +1037,16 @@ async function admUsers(){
     <div class="avatar">${esc(initials(p.full_name))}</div>
     <div class="body"><div class="top"><span class="ttl">${esc(p.full_name||p.email)}</span>
       ${p.active ? `<span class="pill st-approved">${t("role_"+p.role)}</span>` : `<span class="pill st-cancelled">${t("inactiveL")}</span>`}</div>
-      <div class="meta">${esc([p.employee_no, p.position, p.department].filter(Boolean).join(" · ") || p.email)}</div>
+      <div class="meta">${esc([p.employee_no, p.position, p.department, countryName(p.work_country)].filter(Boolean).join(" · ") || p.email)}</div>
       <div class="meta">${t("approverL")} : ${esc(S.cache.pmap[p.approver_id]?.full_name || t("none"))}</div></div></button>`;
   $("#adm").innerHTML = `
     <div class="toolbar"><input class="input" id="uq" placeholder="${t("search")}" value="${esc(f.q)}">
       <button class="btn btn-pri btn-sm" style="height:40px" onclick="editUser()">${IC.plus.replace("<svg","<svg width='16' height='16'")} ${t("newUser")}</button></div>
     <div class="m-only"><div class="list">${P.map(card).join("") || emptyHtml(t("noResults"))}</div></div>
-    <div class="d-only card tbl-wrap"><table class="tbl"><thead><tr><th>${t("fullName")}</th><th>${t("email")}</th><th>${t("position")}</th><th>${t("department")}</th><th>${t("role")}</th><th>${t("approverL")}</th><th></th></tr></thead><tbody>
+    <div class="d-only card tbl-wrap"><table class="tbl"><thead><tr><th>${t("fullName")}</th><th>${t("email")}</th><th>${t("position")}</th><th>${t("department")}</th><th>${t("workCountry")}</th><th>${t("role")}</th><th>${t("approverL")}</th><th></th></tr></thead><tbody>
       ${P.map(p => `<tr class="click" onclick="editUser('${p.id}')" style="${p.active?"":"opacity:.55"}">
         <td><div class="who"><div class="avatar">${esc(initials(p.full_name))}</div><div><div class="n">${esc(p.full_name)}</div><div class="s">${esc(p.employee_no||"")}</div></div></div></td>
-        <td class="small">${esc(p.email)}</td><td class="small">${esc(p.position||"")}</td><td class="small">${esc(p.department||"")}</td>
+        <td class="small">${esc(p.email)}</td><td class="small">${esc(p.position||"")}</td><td class="small">${esc(p.department||"")}</td><td class="small">${esc(countryName(p.work_country))}</td>
         <td>${t("role_"+p.role)}</td><td class="small">${esc(S.cache.pmap[p.approver_id]?.full_name||"—")}</td>
         <td>${p.active?"":`<span class="pill st-cancelled">${t("inactiveL")}</span>`}</td></tr>`).join("")}</tbody></table></div>`;
   let deb; $("#uq").oninput = e => { clearTimeout(deb); deb = setTimeout(()=>{ S.filters.admin.q = e.target.value; admUsers().then(()=>{ const i=$("#uq"); i.focus(); i.setSelectionRange(i.value.length,i.value.length); }); }, 250); };
@@ -1002,38 +1062,52 @@ async function callAdminFn(body){
   return data;
 }
 function editUser(id){
-  const p = id ? S.cache.pmap[id] : { role:"employee", lang:"fr", active:true };
+  const p = id ? S.cache.pmap[id] : { role:"employee", lang:"fr", active:true, work_country:"GN", nationality:"FR" };
   const isNew = !id;
   const approvers = S.cache.profiles.filter(x => x.active && ["approver","admin"].includes(x.role) && x.id !== id);
-  const f = (k, label, type="text", extra="") => `<div class="field"><label for="u_${k}">${label}</label><input class="input" id="u_${k}" type="${type}" value="${esc(p[k]||"")}" ${extra}></div>`;
+  const f = (k, label, type="text", extra="") => `<div class="field"><label for="u_${k}">${label}</label><input class="input" id="u_${k}" type="${type}" value="${esc(p[k] ?? "")}" ${extra}></div>`;
+  const numVal = v => v === null || v === undefined ? "" : num(v);
   openSheet(isNew ? t("newUser") : t("editUser"), `<form id="uf">
     ${isNew ? f("email", t("email")+" *", "email", 'required autocapitalize="none"') : `<div class="field"><span class="label">${t("email")}</span><div class="small">${esc(p.email)}</div></div>`}
     ${f("full_name", t("fullName")+" *", "text", "required")}
-    <div class="row2">${f("employee_no", t("employeeNo"))}${f("hire_date", t("hireDate"), "date")}</div>
-    <div class="row2">${f("position", t("position"))}${f("department", t("department"))}</div>
-    ${f("site", t("site"), "text", 'placeholder="Boké, Conakry…"')}
+    <div class="row2">
+      <div class="field"><label for="u_nationality">${t("nationality")}</label><select class="input" id="u_nationality">${countryOpts(p.nationality, false, true)}</select></div>
+      <div class="field"><label for="u_work_country">${t("workCountry")}</label><select class="input" id="u_work_country">${countryOpts(p.work_country, true, false)}</select></div></div>
+    <div class="row2">${f("employee_no", t("employeeNo"))}${f("position", t("position"))}</div>
+    ${f("department", t("department"))}
+    <div class="row2">${f("hire_date", t("hireDate"), "date")}${f("probation_end", t("probationEnd"), "date")}</div>
+    <p class="small muted" style="margin:-8px 0 14px">${t("probationHint")}</p>
+    <div class="row2">
+      <div class="field"><label for="u_annual">${t("annualDaysL")}</label><input class="input" id="u_annual" type="number" step="0.5" min="0" inputmode="decimal" value="${numVal(p.annual_days)}" placeholder="${num(S.settings.default_annual_days)}"></div>
+      <div class="field"><label for="u_sick">${t("sickDaysL")}</label><input class="input" id="u_sick" type="number" step="0.5" min="0" inputmode="decimal" value="${numVal(p.sick_days)}" placeholder="${num(S.settings.default_sick_days)}"></div></div>
+    <p class="small muted" style="margin:-8px 0 14px">${t("daysHint", {a:num(S.settings.default_annual_days), s:num(S.settings.default_sick_days)})}</p>
     <div class="row2">
       <div class="field"><label for="u_role">${t("role")}</label><select class="input" id="u_role">${["employee","approver","admin"].map(r=>`<option value="${r}" ${p.role===r?"selected":""}>${t("role_"+r)}</option>`).join("")}</select></div>
       <div class="field"><label for="u_lang">${t("lang")}</label><select class="input" id="u_lang"><option value="fr" ${p.lang==="fr"?"selected":""}>Français</option><option value="zh" ${p.lang==="zh"?"selected":""}>中文</option></select></div></div>
     <div class="field"><label for="u_approver">${t("approver")}</label><select class="input" id="u_approver"><option value="">${t("none")}</option>
       ${approvers.map(a=>`<option value="${a.id}" ${p.approver_id===a.id?"selected":""}>${esc(a.full_name)} — ${t("role_"+a.role)}</option>`).join("")}</select></div>
-    ${isNew ? `<div class="row2">
-      <div class="field"><label for="u_days">${t("annualDays")}</label><input class="input" id="u_days" type="number" step="0.5" min="0" value="${num(S.settings.default_annual_days)}"></div>
-      <div class="field"><label for="u_pwd">${t("tempPwd")}</label><input class="input" id="u_pwd" type="text" autocomplete="off" placeholder="${t("optional")}"></div></div>
-      <p class="small muted" style="margin:-8px 0 12px">${t("tempPwdHint")}</p>` : ""}
+    ${isNew ? `<div class="field"><label for="u_pwd">${t("tempPwd")}</label><input class="input" id="u_pwd" type="text" autocomplete="off" placeholder="${t("optional")}">
+      <div class="hint">${t("tempPwdHint")}</div></div>` : ""}
     <button class="btn btn-pri btn-block" id="usv" type="submit">${t("save")}</button>
     ${!isNew ? `<div class="actions"><button type="button" class="btn btn-ghost" id="urp">${t("resetPwd")}</button>
       ${p.id !== S.me.id ? `<button type="button" class="btn ${p.active?"btn-bad":"btn-ghost"}" id="uac">${p.active?t("deactivate"):t("activate")}</button>` : ""}</div>` : ""}
   </form>`, sh => {
     const v = k => $("#u_"+k, sh)?.value.trim();
+    const numOrNull = k => { const x = v(k); return x === "" || x === undefined ? null : Number(x); };
     $("#uf", sh).onsubmit = async e => {
       e.preventDefault(); const b = $("#usv", sh); busy(b, true);
-      const fields = { full_name:v("full_name"), employee_no:v("employee_no")||null, hire_date:v("hire_date")||null, position:v("position")||null,
-        department:v("department")||null, site:v("site")||null, role:v("role"), lang:v("lang"), approver_id:v("approver")||null };
+      const fields = { full_name:v("full_name"), employee_no:v("employee_no")||null, position:v("position")||null, department:v("department")||null,
+        nationality:v("nationality")||null, work_country:v("work_country")||null,
+        hire_date:v("hire_date")||null, probation_end:v("probation_end")||null,
+        annual_days:numOrNull("annual"), sick_days:numOrNull("sick"),
+        role:v("role"), lang:v("lang"), approver_id:v("approver")||null };
       try {
         if (!fields.full_name) throw new Error("ERR_NAME");
         if (isNew) {
-          const res = await callAdminFn({ action:"create", email:v("email"), password:v("pwd"), annual_days:v("days"), ...fields });
+          // 函数只负责创建登录账号；其余资料由管理员直接写入档案
+          const res = await callAdminFn({ action:"create", email:v("email"), password:v("pwd"),
+            full_name:fields.full_name, lang:fields.lang, role:fields.role });
+          await run(sb.from("profiles").update(fields).eq("id", res.user_id));
           showCreds(t("credsTitle"), res.email, res.password);
         } else {
           await run(sb.from("profiles").update(fields).eq("id", id));
@@ -1066,85 +1140,127 @@ function showCreds(title, email, pwd){
   });
 }
 
+/* ---------- Balances ---------- */
 async function admBalances(){
   const f = S.filters.admin;
+  if (f.year < firstYear()) f.year = firstYear();
   const [bals, ents] = await Promise.all([ run(sb.rpc("all_balances", {p_year:f.year})), run(sb.from("leave_entitlements").select("*").eq("year", f.year)) ]);
-  const emap = Object.fromEntries(ents.map(e=>[e.user_id, e]));
-  const rows = bals.map(b => ({...b, p:S.cache.pmap[b.user_id]})).filter(r => r.p?.active && matchQ(r.p, f.q));
-  S.cache.bal = { rows, emap };
+  const by = {};
+  for (const b of bals) (by[b.user_id] ||= {})[b.kind] = b;
+  const rows = Object.entries(by).map(([uid, k]) => ({ user_id:uid, a:k.annual, s:k.sick, p:S.cache.pmap[uid] }))
+    .filter(r => r.p?.active && matchQ(r.p, f.q)).sort((x,y) => (x.p.full_name||"").localeCompare(y.p.full_name||""));
+  S.cache.bal = { rows, ents };
+  const cell = (v, strong, bad) => `<td class="num" style="${strong?"font-weight:750;":""}${bad?"color:var(--bad)":""}">${num(v)}</td>`;
   $("#adm").innerHTML = `
     <div class="toolbar"><input class="input" id="bq" placeholder="${t("search")}" value="${esc(f.q)}">
       <select class="input" onchange="S.filters.admin.year=+this.value;admBalances()">${yearsOpts(f.year)}</select></div>
-    <div class="card tbl-wrap"><table class="tbl"><thead><tr><th>${t("fullName")}</th><th class="num">${t("entitled")}</th><th class="num">${t("carried")}</th>
-      <th class="num">${t("adjustment")}</th><th class="num">${t("used")}</th><th class="num">${t("pending")}</th><th class="num">${t("available")}</th></tr></thead><tbody>
+    <div class="card tbl-wrap"><table class="tbl"><thead>
+      <tr><th rowspan="2" style="vertical-align:bottom">${t("fullName")}</th>
+        <th colspan="4" style="text-align:center;border-left:1px solid var(--line)">${t("annualShort")}</th>
+        <th colspan="3" style="text-align:center;border-left:1px solid var(--line)">${t("sickShort")}</th></tr>
+      <tr><th class="num" style="border-left:1px solid var(--line)">${t("total")}</th><th class="num">${t("used")}</th><th class="num">${t("pending")}</th><th class="num">${t("available")}</th>
+        <th class="num" style="border-left:1px solid var(--line)">${t("total")}</th><th class="num">${t("used")}</th><th class="num">${t("available")}</th></tr></thead><tbody>
       ${rows.map(r => `<tr class="click" onclick="editBalance('${r.user_id}')">
-        <td><div class="n" style="font-weight:650">${esc(r.p.full_name)}</div><div class="small muted">${esc(r.p.employee_no||"")}${emap[r.user_id]?"":` · <i>${S.lang==="zh"?"默认":"défaut"}</i>`}</div></td>
-        <td class="num">${num(r.entitled)}</td><td class="num">${num(r.carried_over)}</td><td class="num">${num(r.adjustment)}</td>
-        <td class="num">${num(r.used)}</td><td class="num">${num(r.pending)}</td>
-        <td class="num" style="font-weight:750;color:${Number(r.available)<0?"var(--bad)":"var(--ink)"}">${num(r.available)}</td></tr>`).join("") || `<tr><td colspan="7">${emptyHtml(t("noResults"))}</td></tr>`}
-    </tbody></table></div>`;
+        <td><div style="font-weight:650">${esc(r.p.full_name)}</div><div class="small muted">${esc([r.p.employee_no, countryName(r.p.work_country)].filter(Boolean).join(" · "))}${r.a.prorated?` · <i>${t("prorated")}</i>`:""}</div></td>
+        <td class="num" style="border-left:1px solid var(--line2)">${num(r.a.total)}${r.a.prorated?"*":""}</td>${cell(r.a.used)}${cell(r.a.pending)}${cell(r.a.available, true, Number(r.a.available)<0)}
+        <td class="num" style="border-left:1px solid var(--line2)">${num(r.s.total)}${r.s.prorated?"*":""}</td>${cell(Number(r.s.used)+Number(r.s.pending))}${cell(r.s.available, true, Number(r.s.available)<0)}</tr>`).join("")
+        || `<tr><td colspan="8">${emptyHtml(t("noResults"))}</td></tr>`}
+    </tbody></table></div>
+    <p class="small muted" style="margin-top:8px">* ${t("prorated")}</p>`;
   let deb; $("#bq").oninput = e => { clearTimeout(deb); deb = setTimeout(()=>{ S.filters.admin.q = e.target.value; admBalances().then(()=>{ const i=$("#bq"); i.focus(); i.setSelectionRange(i.value.length,i.value.length); }); }, 250); };
 }
 function editBalance(uid){
-  const { rows, emap } = S.cache.bal, r = rows.find(x=>x.user_id===uid), e = emap[uid], y = S.filters.admin.year;
-  openSheet(`${t("editBalance")} · ${y}`, `<p style="font-weight:700;margin-bottom:14px">${esc(r.p.full_name)}</p>
-    <form id="bf"><div class="row2">
-      <div class="field"><label>${t("entitled")}</label><input class="input" id="b1" type="number" step="0.5" min="0" value="${num(e?e.annual_days:r.entitled)}"></div>
-      <div class="field"><label>${t("carried")}</label><input class="input" id="b2" type="number" step="0.5" value="${num(e?.carried_over||0)}"></div></div>
-      <div class="field"><label>${t("adjustment")} (±)</label><input class="input" id="b3" type="number" step="0.5" value="${num(e?.adjustment||0)}"></div>
-      <div class="field"><label>${t("note")}</label><input class="input" id="b4" value="${esc(e?.note||"")}"></div>
-      <p class="small muted" style="margin-bottom:14px">${t("used")} ${fmtDays(r.used)} · ${t("pending")} ${fmtDays(r.pending)}</p>
+  const { rows, ents } = S.cache.bal, r = rows.find(x => x.user_id === uid), y = S.filters.admin.year;
+  const ea = ents.find(e => e.user_id === uid && e.kind === "annual") || {}, es = ents.find(e => e.user_id === uid && e.kind === "sick") || {};
+  const nv = v => v === null || v === undefined ? "" : num(v);
+  openSheet(t("editBalance"), `<p style="font-weight:700;margin-bottom:14px">${esc(r.p.full_name)}</p>
+    <form id="bf">
+      <div class="label" style="margin-bottom:8px">${S.lang==="zh"?"每年额度（适用于所有年份）":"Droits par an (toutes années)"}</div>
+      <div class="row2">
+        <div class="field"><label>${t("annualDaysL")}</label><input class="input" id="b0a" type="number" step="0.5" min="0" value="${nv(r.p.annual_days)}" placeholder="${num(S.settings.default_annual_days)}"></div>
+        <div class="field"><label>${t("sickDaysL")}</label><input class="input" id="b0s" type="number" step="0.5" min="0" value="${nv(r.p.sick_days)}" placeholder="${num(S.settings.default_sick_days)}"></div></div>
+      <p class="small muted" style="margin:-8px 0 6px">${t("daysHint", {a:num(S.settings.default_annual_days), s:num(S.settings.default_sick_days)})}</p>
+      ${r.a.prorated || r.s.prorated ? `<p class="small" style="margin-bottom:6px">${t("hireDate")} ${fmtDate(r.p.hire_date,{day:"numeric",month:"long",year:"numeric"})} → ${y} : ${t("annualShort")} ${fmtDays(r.a.entitled)}, ${t("sickShort")} ${fmtDays(r.s.entitled)} (${t("prorated")})</p>` : ""}
+      <div class="hr"></div>
+      <div class="label" style="margin-bottom:8px">${t("thisYear", {y})}</div>
+      <div class="row2">
+        <div class="field"><label>${t("annualShort")} · ${t("carried")}</label><input class="input" id="b1" type="number" step="0.5" value="${num(ea.carried_over||0)}"></div>
+        <div class="field"><label>${t("annualShort")} · ${t("adjustment")} (±)</label><input class="input" id="b2" type="number" step="0.5" value="${num(ea.adjustment||0)}"></div></div>
+      <div class="row2">
+        <div class="field"><label>${t("sickShort")} · ${t("adjustment")} (±)</label><input class="input" id="b3" type="number" step="0.5" value="${num(es.adjustment||0)}"></div>
+        <div class="field"><label>${t("note")}</label><input class="input" id="b4" value="${esc(ea.note||"")}"></div></div>
+      <p class="small muted" style="margin-bottom:14px">${t("annualShort")} : ${t("used")} ${fmtDays(r.a.used)} · ${t("pending")} ${fmtDays(r.a.pending)} — ${t("sickShort")} : ${t("used")} ${fmtDays(r.s.used)} · ${t("pending")} ${fmtDays(r.s.pending)}</p>
       <button class="btn btn-pri btn-block" id="bsv">${t("save")}</button></form>`, sh => {
     $("#bf", sh).onsubmit = async ev => { ev.preventDefault(); const b = $("#bsv", sh); busy(b, true);
-      try { await run(sb.from("leave_entitlements").upsert({ user_id:uid, year:y, annual_days:+$("#b1",sh).value||0, carried_over:+$("#b2",sh).value||0,
-          adjustment:+$("#b3",sh).value||0, note:$("#b4",sh).value.trim()||null }));
-        toast(t("saved")); closeSheet(); admBalances(); }
-      catch(err){ toast(errMsg(err), true); busy(b, false); } };
+      const nn = id => { const x = $(id, sh).value.trim(); return x === "" ? null : Number(x); };
+      try {
+        await run(sb.from("profiles").update({ annual_days:nn("#b0a"), sick_days:nn("#b0s") }).eq("id", uid));
+        await run(sb.from("leave_entitlements").upsert([
+          { user_id:uid, year:y, kind:"annual", carried_over:nn("#b1")||0, adjustment:nn("#b2")||0, note:$("#b4",sh).value.trim()||null },
+          { user_id:uid, year:y, kind:"sick",   carried_over:0,             adjustment:nn("#b3")||0 } ]));
+        toast(t("saved")); closeSheet(); await pageAdmin();
+      } catch(err){ toast(errMsg(err), true); busy(b, false); } };
   });
 }
 
+/* ---------- Settings ---------- */
 async function admSettings(){
-  const s = S.settings, y = S.filters.admin.year;
-  const hol = await run(sb.from("holidays").select("*").gte("day", `${y}-01-01`).lte("day", `${y}-12-31`).order("day"));
+  const s = S.settings, f = S.filters.admin;
+  if (f.year < firstYear()) f.year = firstYear();
+  f.hc = f.hc || "GN";
+  const y = f.year;
+  const hol = await run(sb.from("holidays").select("*").eq("country_code", f.hc).gte("day", `${y}-01-01`).lte("day", `${y}-12-31`).order("day"));
+  const kindLbl = k => k ? t("kind_"+k) : t("kind_none");
   $("#adm").innerHTML = `
     <div class="card card-pad"><form id="sf">
       <div class="field"><label>${t("countMode")}</label><select class="input" id="s1">${["ouvrables","ouvres","calendaires"].map(m=>`<option value="${m}" ${s.count_mode===m?"selected":""}>${t("mode_"+m+"_s")}</option>`).join("")}</select></div>
       <div class="row2"><div class="field"><label>${t("defaultDays")}</label><input class="input" id="s2" type="number" step="0.5" min="0" value="${num(s.default_annual_days)}"></div>
-      <div class="field"><label>${t("companyName")}</label><input class="input" id="s3" value="${esc(s.company_name)}"></div></div>
+        <div class="field"><label>${t("defaultSickDays")}</label><input class="input" id="s4" type="number" step="0.5" min="0" value="${num(s.default_sick_days)}"></div></div>
+      <div class="field"><label>${t("companyName")}</label><input class="input" id="s3" value="${esc(s.company_name)}"></div>
       <button class="btn btn-pri" id="ssv">${t("save")}</button></form></div>
 
     <div class="section-h"><h2>${t("leaveTypes")}</h2><button onclick="editType()">+ ${t("add")}</button></div>
     <div class="card">${S.types.map(x => `<button class="req" style="border-bottom:1px solid var(--line2);align-items:center;${x.active?"":"opacity:.5"}" onclick="editType('${esc(x.code)}')">
       <span class="dot" style="background:${esc(x.color)};width:12px;height:12px"></span>
       <div class="body"><div class="ttl" style="font-size:14px">${esc(x.name_fr)} · ${esc(x.name_zh)}</div>
-        <div class="meta">${x.deducts_balance?`✓ ${t("deducts")}`:""}${x.requires_attachment?` · ✓ ${t("requiresAtt")}`:""}${x.active?"":` · ${t("inactiveL")}`}</div></div></button>`).join("")}</div>
+        <div class="meta">${kindLbl(x.balance_kind)}${x.requires_attachment?` · ✓ ${t("requiresAtt")}`:""}${x.active?"":` · ${t("inactiveL")}`}</div></div></button>`).join("")}</div>
 
-    <div class="section-h"><h2>${t("holidays")} ${y}</h2>
-      <span><select class="input" style="height:32px;width:auto;font-size:13px;display:inline-block;margin-right:8px" onchange="S.filters.admin.year=+this.value;admSettings()">${yearsOpts(y)}</select>
-      <button onclick="addHoliday()">+ ${t("add")}</button></span></div>
+    <div class="section-h"><h2>${t("holidays")}</h2><button onclick="addHoliday()">+ ${t("add")}</button></div>
+    <div class="toolbar">
+      <select class="input" onchange="S.filters.admin.hc=this.value;admSettings()">${countryOpts(f.hc, true, false)}</select>
+      <select class="input" onchange="S.filters.admin.year=+this.value;admSettings()">${yearsOpts(y)}</select></div>
     <div class="notice info" style="margin:0 0 10px">${IC.info}<div>${t("holidayHint")}</div></div>
     <div class="card">${hol.length ? hol.map(h => `<div class="who" style="padding:11px 14px;border-bottom:1px solid var(--line2)">
       <div style="flex:1"><div class="n">${esc(S.lang==="zh"?h.name_zh:h.name_fr)}</div><div class="s">${fmtDate(h.day)}</div></div>
-      <button class="btn btn-ghost btn-sm" onclick="delHoliday('${h.day}')">${t("del")}</button></div>`).join("") : emptyHtml(t("noResults"))}</div>`;
+      <button class="btn btn-ghost btn-sm" onclick="delHoliday('${h.day}','${h.country_code}')">${t("del")}</button></div>`).join("") : emptyHtml(t("noResults"))}</div>
+
+    <div class="section-h"><h2>${t("countries")}</h2><button onclick="editCountry()">+ ${t("add")}</button></div>
+    <div class="card">${S.countries.map(c => `<button class="req" style="border-bottom:1px solid var(--line2);align-items:center;padding:11px 14px" onclick="editCountry('${c.code}')">
+      <span class="pill st-cancelled" style="font-family:ui-monospace,monospace">${c.code}</span>
+      <div class="body"><div class="ttl" style="font-size:14px">${esc(c.name_fr)} · ${esc(c.name_zh)}</div></div>
+      ${c.is_work_country ? `<span class="pill st-approved">${t("workCountry")}</span>` : ""}</button>`).join("")}</div>`;
   $("#sf").onsubmit = async e => { e.preventDefault(); const b = $("#ssv"); busy(b, true);
-    try { const upd = { count_mode:$("#s1").value, default_annual_days:+$("#s2").value||0, company_name:$("#s3").value.trim()||s.company_name };
+    try { const upd = { count_mode:$("#s1").value, default_annual_days:+$("#s2").value||0, default_sick_days:+$("#s4").value||0,
+        company_name:$("#s3").value.trim()||s.company_name };
       await run(sb.from("app_settings").update(upd).eq("id",1)); Object.assign(S.settings, upd); toast(t("saved")); }
     catch(err){ toast(errMsg(err), true); } busy(b, false); };
 }
 function editType(code){
-  const x = code ? typeOf(code) : { code:"", name_zh:"", name_fr:"", color:"#0ea5e9", active:true, deducts_balance:false, requires_attachment:false, sort_order:S.types.length+1 };
+  const x = code ? typeOf(code) : { code:"", name_zh:"", name_fr:"", color:"#0ea5e9", active:true, balance_kind:null, requires_attachment:false, sort_order:S.types.length+1 };
   openSheet(code ? t("edit") : t("newType"), `<form id="tf">
     ${code ? "" : `<div class="field"><label>${t("code")}</label><input class="input" id="t0" pattern="[a-z0-9_]+" required placeholder="ex: training" autocapitalize="none"></div>`}
     <div class="field"><label>${t("nameFr")}</label><input class="input" id="t1" value="${esc(x.name_fr)}" required></div>
     <div class="field"><label>${t("nameZh")}</label><input class="input" id="t2" value="${esc(x.name_zh)}" required></div>
-    <div class="field"><label>${t("color")}</label><input class="input" id="t3" type="color" value="${esc(x.color)}" style="padding:4px;height:46px"></div>
-    <label class="check"><input type="checkbox" id="t4" ${x.deducts_balance?"checked":""}> ${t("deducts")}</label>
+    <div class="row2">
+      <div class="field"><label>${t("balanceKind")}</label><select class="input" id="t4">${[["",t("kind_none")],["annual",t("kind_annual")],["sick",t("kind_sick")]].map(([k,l]) =>
+        `<option value="${k}" ${(x.balance_kind||"")===k?"selected":""}>${l}</option>`).join("")}</select></div>
+      <div class="field"><label>${t("color")}</label><input class="input" id="t3" type="color" value="${esc(x.color)}" style="padding:4px;height:46px"></div></div>
     <label class="check"><input type="checkbox" id="t5" ${x.requires_attachment?"checked":""}> ${t("requiresAtt")}</label>
     <label class="check"><input type="checkbox" id="t6" ${x.active?"checked":""}> ${t("activeType")}</label>
     <button class="btn btn-pri btn-block" style="margin-top:10px" id="tsv">${t("save")}</button></form>`, sh => {
     $("#tf", sh).onsubmit = async e => { e.preventDefault(); const b = $("#tsv", sh); busy(b, true);
       const row = { code: code || $("#t0",sh).value.trim().toLowerCase(), name_fr:$("#t1",sh).value.trim(), name_zh:$("#t2",sh).value.trim(),
-        color:$("#t3",sh).value, deducts_balance:$("#t4",sh).checked, requires_attachment:$("#t5",sh).checked, active:$("#t6",sh).checked, sort_order:x.sort_order };
+        color:$("#t3",sh).value, balance_kind:$("#t4",sh).value||null, requires_attachment:$("#t5",sh).checked, active:$("#t6",sh).checked, sort_order:x.sort_order };
       try { await run(sb.from("leave_types").upsert(row)); S.types = await run(sb.from("leave_types").select("*").order("sort_order"));
         toast(t("saved")); closeSheet(); admSettings(); }
       catch(err){ toast(errMsg(err), true); busy(b, false); } };
@@ -1152,19 +1268,40 @@ function editType(code){
 }
 function addHoliday(){
   openSheet(t("newHoliday"), `<form id="hf">
-    <div class="field"><label>${t("date")}</label><input class="input" id="h0" type="date" required></div>
+    <div class="row2">
+      <div class="field"><label>${t("holidayCountry")}</label><select class="input" id="hc">${countryOpts(S.filters.admin.hc || "GN", true, false)}</select></div>
+      <div class="field"><label>${t("date")}</label><input class="input" id="h0" type="date" min="${firstYear()}-01-01" required></div></div>
     <div class="field"><label>${t("nameFr")}</label><input class="input" id="h1" required placeholder="Aïd el-Fitr"></div>
     <div class="field"><label>${t("nameZh")}</label><input class="input" id="h2" required placeholder="开斋节"></div>
     <button class="btn btn-pri btn-block" id="hsv">${t("save")}</button></form>`, sh => {
     $("#hf", sh).onsubmit = async e => { e.preventDefault(); const b = $("#hsv", sh); busy(b, true);
-      try { await run(sb.from("holidays").upsert({ day:$("#h0",sh).value, name_fr:$("#h1",sh).value.trim(), name_zh:$("#h2",sh).value.trim() }));
-        toast(t("saved")); closeSheet(); admSettings(); }
+      try { await run(sb.from("holidays").upsert({ day:$("#h0",sh).value, country_code:$("#hc",sh).value,
+          name_fr:$("#h1",sh).value.trim(), name_zh:$("#h2",sh).value.trim() }));
+        S.filters.admin.hc = $("#hc",sh).value; toast(t("saved")); closeSheet(); admSettings(); }
       catch(err){ toast(errMsg(err), true); busy(b, false); } };
   });
 }
-async function delHoliday(day){
+async function delHoliday(day, cc){
   if (!confirm(`${t("del")} ${fmtDate(day)} ?`)) return;
-  try { await run(sb.from("holidays").delete().eq("day", day)); toast(t("saved")); admSettings(); } catch(err){ toast(errMsg(err), true); }
+  try { await run(sb.from("holidays").delete().eq("day", day).eq("country_code", cc)); toast(t("saved")); admSettings(); }
+  catch(err){ toast(errMsg(err), true); }
+}
+function editCountry(code){
+  const c = code ? S.countries.find(x => x.code === code) : { code:"", name_zh:"", name_fr:"", is_work_country:false, sort_order:100 };
+  openSheet(code ? t("edit") : t("newCountry"), `<form id="cf">
+    ${code ? `<div class="field"><span class="label">${t("countryCode")}</span><div class="small">${c.code}</div></div>`
+           : `<div class="field"><label>${t("countryCode")}</label><input class="input" id="c0" maxlength="2" pattern="[A-Za-z]{2}" required autocapitalize="characters"></div>`}
+    <div class="field"><label>${t("nameFr")}</label><input class="input" id="c1" value="${esc(c.name_fr)}" required></div>
+    <div class="field"><label>${t("nameZh")}</label><input class="input" id="c2" value="${esc(c.name_zh)}" required></div>
+    <label class="check"><input type="checkbox" id="c3" ${c.is_work_country?"checked":""}> ${t("isWorkCountry")}</label>
+    <button class="btn btn-pri btn-block" style="margin-top:10px" id="csv">${t("save")}</button></form>`, sh => {
+    $("#cf", sh).onsubmit = async e => { e.preventDefault(); const b = $("#csv", sh); busy(b, true);
+      const row = { code: code || $("#c0",sh).value.trim().toUpperCase(), name_fr:$("#c1",sh).value.trim(), name_zh:$("#c2",sh).value.trim(),
+        is_work_country:$("#c3",sh).checked, sort_order:c.sort_order };
+      try { await run(sb.from("countries").upsert(row)); S.countries = await run(sb.from("countries").select("*").order("sort_order"));
+        toast(t("saved")); closeSheet(); admSettings(); }
+      catch(err){ toast(errMsg(err), true); busy(b, false); } };
+  });
 }
 
 boot();
