@@ -1,0 +1,74 @@
+# 法籍员工休假申请审批平台 · Plateforme de congés des expatriés
+
+几内亚法籍员工的休假申请、查询与审批平台。纯静态网页（GitHub Pages）+ Supabase，手机可直接使用，中法双语一键切换，账号只能由管理员创建。
+
+Plateforme de demande, de suivi et de validation des congés des salariés français en Guinée. Site statique (GitHub Pages) + Supabase, utilisable sur mobile, bilingue chinois / français, comptes créés uniquement par l'administrateur.
+
+---
+
+## 功能 / Fonctionnalités
+
+| 角色 Rôle | 能做什么 Ce qu'il peut faire |
+|---|---|
+| 员工 Employé | 申请休假（全天/半天、附件、事由、休假地、紧急联系方式）；查看年假余额；按年份和状态查询自己的申请；撤回待审批的申请<br>Demander un congé (journée / demi-journée, justificatif…) ; consulter son solde ; suivre et annuler ses demandes en attente |
+| 审批人 Valideur | 审批被分配给自己的员工申请（驳回必须写原因）；查看申请人年假余额；查看今天在休假的下属<br>Valider ou refuser (motif obligatoire) ; voir le solde du demandeur ; voir qui est en congé aujourd'hui |
+| 管理员 Administrateur | 创建账号、重置密码、停用账号；指定每人的审批人；调整每人每年的年假额度、结转与调整；维护假期类型和法定假日；查看全部申请、导出 CSV；撤销已批准的假期<br>Créer / désactiver des comptes, réinitialiser les mots de passe ; désigner les valideurs ; gérer les droits annuels, types de congé et jours fériés ; exporter en CSV ; révoquer un congé approuvé |
+
+### 业务规则 / Règles métier
+- 一级审批：申请提交时自动路由到该员工的审批人；未指定审批人时由管理员审批。任何人都不能审批自己的申请。
+- 天数由数据库计算，默认**几内亚劳动法口径：工作日 = 周一至周六，扣除法定假日**；可在「设置」改为周一至周五或自然日。
+- 年假（及其他勾选"扣年假余额"的类型）余额 = 年度额度 + 上年结转 + 调整 − 已批准 − 审批中；余额不足时无法提交，也无法批准。
+- 年假不能跨年申请；同一员工的申请日期不能重叠；最多补报 60 天前的假期。
+- 所有写操作都经过数据库函数校验，网页端无法绕过（行级安全 RLS）。
+- Validation à un niveau ; décompte calculé côté base (par défaut jours ouvrables lundi–samedi hors fériés, modifiable) ; contrôle du solde à la demande et à la validation ; pas de chevauchement ; pas d'auto-validation.
+
+---
+
+## 部署步骤 / Déploiement (≈ 15 min)
+
+### 1. Supabase 数据库 / Base de données
+1. 在 [supabase.com](https://supabase.com) 新建项目（区域建议 West EU / Paris）。
+2. **SQL Editor** → 依次粘贴并运行 `supabase/migrations/001_schema.sql`、`supabase/migrations/002_storage.sql`。
+3. **Authentication → Sign In / Providers**：关闭 **Allow new users to sign up**（禁止自助注册，只有管理员能建号）。
+4. **Authentication → URL Configuration**：Site URL 填 `https://uciferwu.github.io/expat_leave_system/`。
+
+### 2. 创建第一个管理员 / Premier administrateur
+**Authentication → Users → Add user → Create new user**，填你的邮箱和密码，勾选 *Auto Confirm User*。
+系统中的**第一个用户会自动成为管理员**，之后的账号都在平台「管理 → 用户」里创建。
+
+### 3. 部署账号管理函数 / Fonction de gestion des comptes
+**Edge Functions → Deploy a new function → Via Editor**，函数名填 `admin-users`，把 `supabase/functions/admin-users/index.ts` 的全部内容粘贴进去 → **Deploy**。
+（或命令行 / ou en CLI : `supabase functions deploy admin-users`）
+
+这个函数在服务器端使用 service_role 密钥，**网页里永远不会出现 service_role 密钥**。
+
+### 4. 填写配置 / Configuration
+编辑 `config.js`，填入 **Settings → API** 中的 Project URL 和 anon public key，提交到 GitHub。
+
+### 5. 开启 GitHub Pages
+仓库 **Settings → Pages** → Source 选 *Deploy from a branch* → `main` / `/ (root)` → Save。
+几分钟后访问：`https://uciferwu.github.io/expat_leave_system/`
+
+### 6. 上线前检查 / Avant la mise en service
+- 「管理 → 设置」确认天数计算方式和默认年假天数。
+- 「法定假日」里补充当年伊斯兰节日（开斋节、宰牲节、圣纪节等，日期每年由政府公布）。已预置 2026、2027 年固定日期假日，请核对。
+- 在「用户」里给每位员工指定审批人；在「年假额度」里录入上年结转。
+
+员工在手机浏览器打开网址后，可「添加到主屏幕」，像 App 一样使用。
+Sur mobile, « Ajouter à l'écran d'accueil » pour l'utiliser comme une application.
+
+---
+
+## 文件结构 / Structure
+
+```
+index.html                                  前端（单文件）/ interface
+config.js                                   Supabase 地址与公开密钥 / URL + clé anon
+manifest.webmanifest, icon.svg              添加到主屏幕 / écran d'accueil
+supabase/migrations/001_schema.sql          表、权限、业务函数、初始数据
+supabase/migrations/002_storage.sql         附件存储桶与权限
+supabase/functions/admin-users/index.ts     管理员建号 / 重置密码 / 停用
+```
+
+## 暂未包含 / Non inclus (évolutions possibles)
+邮件或企业微信通知、多级审批、日历视图、按入职时间自动计算年假。

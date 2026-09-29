@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1e3a8a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Congés">
+<title>Congés · 休假</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{
+  --bg:#f3f5f9; --surface:#fff; --ink:#0f172a; --ink2:#334155; --muted:#64748b; --line:#e2e8f0; --line2:#eef2f7;
+  --pri:#1e40af; --pri2:#2563eb; --pri-soft:#eaf0ff;
+  --ok:#15803d; --ok-soft:#e8f6ed; --warn:#b45309; --warn-soft:#fdf3e2; --bad:#b91c1c; --bad-soft:#fdecec; --off:#64748b; --off-soft:#eef1f5;
+  --r:14px; --shadow:0 1px 2px rgba(15,23,42,.05),0 4px 14px rgba(15,23,42,.05);
+  --nav-h:64px; --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--ink);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+a{color:var(--pri2);text-decoration:none}
+.hidden{display:none!important}
+.tabnum{font-variant-numeric:tabular-nums}
+
+/* ---------- Shell ---------- */
+.topbar{position:sticky;top:0;z-index:20;background:rgba(243,245,249,.92);backdrop-filter:saturate(1.4) blur(10px);
+  -webkit-backdrop-filter:saturate(1.4) blur(10px);padding:calc(10px + var(--safe-t)) 16px 10px;display:flex;align-items:center;gap:12px}
+.topbar h1{font-size:19px;font-weight:700;flex:1;letter-spacing:-.01em}
+.topbar .sub{font-size:12px;color:var(--muted);font-weight:500}
+.wrap{max-width:720px;margin:0 auto;padding:4px 16px calc(var(--nav-h) + var(--safe-b) + 28px)}
+.wrap.wide{max-width:1120px}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);
+  padding-bottom:var(--safe-b);display:flex;justify-content:center}
+.nav-inner{display:flex;width:100%;max-width:720px}
+.nav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:var(--nav-h);
+  color:var(--muted);font-size:11px;font-weight:600;position:relative}
+.nav a svg{width:23px;height:23px}
+.nav a.on{color:var(--pri)}
+.nav .badge{position:absolute;top:8px;left:calc(50% + 6px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;
+  background:var(--bad);color:#fff;font-size:11px;line-height:18px;text-align:center}
+
+/* ---------- Common ---------- */
+.card{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--line2)}
+.card-pad{padding:16px}
+.section-h{display:flex;align-items:baseline;justify-content:space-between;margin:22px 2px 10px}
+.section-h h2{font-size:15px;font-weight:700}
+.section-h a,.section-h button{font-size:13px;font-weight:600;color:var(--pri2)}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 18px;border-radius:12px;
+  font-weight:650;font-size:15px;transition:transform .08s,background .15s}
+.btn:active{transform:scale(.98)}
+.btn-pri{background:var(--pri);color:#fff}
+.btn-pri:hover{background:#1c3a9e}
+.btn-ghost{background:var(--surface);border:1px solid var(--line);color:var(--ink2)}
+.btn-ok{background:var(--ok);color:#fff}
+.btn-bad{background:var(--surface);color:var(--bad);border:1px solid #f3c4c4}
+.btn-block{width:100%}
+.btn-sm{height:34px;padding:0 12px;font-size:13px;border-radius:9px}
+.btn[disabled]{opacity:.55;pointer-events:none}
+.chip{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 13px;border-radius:16px;background:var(--surface);
+  border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--ink2);white-space:nowrap}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;margin:0 -2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.pill{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:11px;font-size:12px;font-weight:650;white-space:nowrap}
+.st-pending{background:var(--warn-soft);color:var(--warn)}
+.st-approved{background:var(--ok-soft);color:var(--ok)}
+.st-rejected{background:var(--bad-soft);color:var(--bad)}
+.st-cancelled{background:var(--off-soft);color:var(--off)}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;display:inline-block}
+.empty{text-align:center;padding:36px 16px;color:var(--muted);font-size:14px}
+.empty svg{width:40px;height:40px;opacity:.35;margin-bottom:8px}
+.spinner{width:22px;height:22px;border:2.5px solid var(--line);border-top-color:var(--pri2);border-radius:50%;animation:spin .7s linear infinite;margin:40px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.lang-switch{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:3px}
+.lang-switch button{height:28px;padding:0 10px;border-radius:7px;font-size:13px;font-weight:650;color:var(--muted)}
+.lang-switch button.on{background:var(--ink);color:#fff}
+
+/* ---------- Forms ---------- */
+.field{margin-bottom:16px}
+.field label,.label{display:block;font-size:13px;font-weight:650;color:var(--ink2);margin-bottom:6px}
+.field .hint{font-size:12px;color:var(--muted);margin-top:5px}
+.input,select.input,textarea.input{width:100%;height:46px;padding:0 13px;border:1px solid var(--line);border-radius:11px;
+  background:var(--surface);font-size:16px;outline:none;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none}
+select.input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.6' fill='none'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center;padding-right:34px}
+textarea.input{height:auto;min-height:84px;padding:11px 13px;resize:vertical}
+.input:focus{border-color:var(--pri2);box-shadow:0 0 0 3px rgba(37,99,235,.14)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.seg{display:flex;background:var(--off-soft);border-radius:11px;padding:3px}
+.seg button{flex:1;height:38px;border-radius:9px;font-size:14px;font-weight:600;color:var(--muted)}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(15,23,42,.12)}
+.check,.field label.check{display:flex;align-items:center;gap:10px;padding:10px 0;margin:0;font-size:14px;font-weight:550;color:var(--ink);cursor:pointer}
+.check input{width:20px;height:20px;accent-color:var(--pri)}
+.type-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.type-opt{display:flex;align-items:center;gap:9px;padding:11px 12px;border:1.5px solid var(--line);border-radius:11px;background:var(--surface);
+  font-size:14px;font-weight:600;text-align:left;line-height:1.25}
+.type-opt.on{border-color:var(--pri2);background:var(--pri-soft);color:var(--pri)}
+.file-drop{display:flex;align-items:center;gap:12px;padding:13px;border:1.5px dashed var(--line);border-radius:11px;background:var(--surface);
+  color:var(--muted);font-size:14px;cursor:pointer}
+.file-drop svg{width:22px;height:22px;flex-shrink:0}
+.summary-bar{position:sticky;bottom:calc(var(--nav-h) + var(--safe-b) + 10px);margin-top:18px;background:var(--ink);color:#fff;border-radius:var(--r);
+  padding:12px 14px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 24px rgba(15,23,42,.25)}
+.summary-bar .big{font-size:22px;font-weight:750;line-height:1}
+.summary-bar .lbl{font-size:12px;opacity:.7}
+.summary-bar .grow{flex:1;min-width:0}
+.summary-bar .btn{height:44px;background:#fff;color:var(--ink)}
+.summary-bar .warnline{font-size:12px;color:#fecaca}
+
+/* ---------- Balance ---------- */
+.hero{background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 55%,#2563eb 100%);color:#fff;border-radius:18px;padding:18px 18px 16px;
+  box-shadow:0 10px 30px rgba(30,64,175,.25);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-50px;top:-60px;width:190px;height:190px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hero .cap{font-size:13px;opacity:.8;font-weight:600}
+.hero .num{font-size:44px;font-weight:780;letter-spacing:-.02em;line-height:1.05;margin-top:6px}
+.hero .num small{font-size:16px;font-weight:600;opacity:.8;margin-left:4px}
+.bar{height:8px;border-radius:4px;background:rgba(255,255,255,.18);overflow:hidden;display:flex;margin:14px 0 12px}
+.bar i{display:block;height:100%}
+.hero .legend{display:flex;gap:16px;font-size:12px;flex-wrap:wrap}
+.hero .legend b{font-size:14px;display:block;font-weight:700}
+.hero .legend span{opacity:.75}
+.cta-row{display:flex;gap:10px;margin-top:14px}
+.cta-row .btn{flex:1}
+.notice{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:12px;background:var(--warn-soft);color:#7c4a0a;font-size:13px;margin-top:12px}
+.notice.info{background:var(--pri-soft);color:#1e3a8a}
+.notice svg{width:18px;height:18px;flex-shrink:0;margin-top:1px}
+
+/* ---------- Request list ---------- */
+.list{display:flex;flex-direction:column;gap:10px}
+.req{display:flex;gap:12px;padding:14px;text-align:left;width:100%;align-items:stretch}
+.req .stripe{width:4px;border-radius:2px;flex-shrink:0}
+.req .body{flex:1;min-width:0}
+.req .top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.req .ttl{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.req .when{font-size:13px;color:var(--ink2);margin-top:3px}
+.req .meta{font-size:12px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.req .days{font-weight:750;font-size:18px;text-align:right;line-height:1.1}
+.req .days small{display:block;font-size:11px;color:var(--muted);font-weight:600}
+
+/* ---------- Sheet ---------- */
+.sheet-back{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:60;opacity:0;transition:opacity .2s}
+.sheet-back.show{opacity:1}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:61;background:var(--surface);border-radius:20px 20px 0 0;max-height:92vh;
+  display:flex;flex-direction:column;transform:translateY(100%);transition:transform .25s cubic-bezier(.2,.8,.2,1);max-width:720px;margin:0 auto}
+.sheet.show{transform:none}
+.sheet-h{display:flex;align-items:center;padding:14px 16px 10px;border-bottom:1px solid var(--line2)}
+.sheet-h h3{flex:1;font-size:17px;font-weight:700}
+.sheet-h .x{width:34px;height:34px;border-radius:17px;background:var(--off-soft);display:flex;align-items:center;justify-content:center}
+.sheet-b{padding:16px;overflow-y:auto;padding-bottom:calc(20px + var(--safe-b))}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:9px 14px;font-size:14px}
+.kv dt{color:var(--muted)}
+.kv dd{font-weight:550;text-align:right;word-break:break-word}
+.timeline{margin-top:4px;border-left:2px solid var(--line);padding-left:14px}
+.timeline li{list-style:none;position:relative;padding:0 0 12px}
+.timeline li::before{content:"";position:absolute;left:-20px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--surface);border:2px solid var(--muted)}
+.timeline li.ok::before{border-color:var(--ok);background:var(--ok)}
+.timeline li.bad::before{border-color:var(--bad);background:var(--bad)}
+.timeline .t1{font-size:14px;font-weight:600}
+.timeline .t2{font-size:12px;color:var(--muted)}
+.timeline .t3{font-size:13px;color:var(--ink2);margin-top:3px;background:var(--bg);padding:7px 10px;border-radius:8px}
+.actions{display:flex;gap:10px;margin-top:18px}
+.actions .btn{flex:1}
+.hr{height:1px;background:var(--line2);margin:16px 0}
+
+/* ---------- Admin ---------- */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:4px 0 16px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{height:42px;padding:0 14px;font-size:14px;font-weight:650;color:var(--muted);border-bottom:2.5px solid transparent;white-space:nowrap}
+.tabs button.on{color:var(--pri);border-bottom-color:var(--pri)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.toolbar .input{height:40px;font-size:14px;width:auto;flex:1;min-width:150px}
+.toolbar select.input{flex:0 0 auto;min-width:0}
+.tbl-wrap{overflow-x:auto}
+table.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{text-align:left;font-size:12px;color:var(--muted);font-weight:650;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;background:#fafbfd}
+.tbl td{padding:11px 12px;border-bottom:1px solid var(--line2);vertical-align:middle}
+.tbl tr.click{cursor:pointer}
+.tbl tr.click:hover td{background:#f8fafc}
+.tbl .num{text-align:right;font-variant-numeric:tabular-nums}
+.who{display:flex;align-items:center;gap:10px}
+.avatar{width:34px;height:34px;border-radius:17px;background:var(--pri-soft);color:var(--pri);display:flex;align-items:center;justify-content:center;
+  font-weight:750;font-size:13px;flex-shrink:0}
+.who .n{font-weight:650}
+.who .s{font-size:12px;color:var(--muted)}
+.m-only{display:block}.d-only{display:none}
+.creds{background:var(--bg);border-radius:12px;padding:14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;line-height:1.7;word-break:break-all}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.stat{padding:12px}
+.stat .v{font-size:22px;font-weight:750}
+.stat .k{font-size:12px;color:var(--muted);font-weight:600}
+
+/* ---------- Toast ---------- */
+#toast{position:fixed;left:50%;bottom:calc(var(--nav-h) + var(--safe-b) + 18px);transform:translateX(-50%) translateY(20px);z-index:80;
+  background:var(--ink);color:#fff;padding:11px 16px;border-radius:12px;font-size:14px;font-weight:550;opacity:0;pointer-events:none;
+  transition:all .22s;max-width:calc(100% - 32px);box-shadow:0 8px 24px rgba(15,23,42,.3)}
+#toast.show{opacity:1;transform:translateX(-50%)}
+#toast.err{background:var(--bad)}
+
+/* ---------- Login ---------- */
+.login{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding:calc(16px + var(--safe-t)) 20px calc(20px + var(--safe-b))}
+.login .top{display:flex;justify-content:flex-end}
+.login .box{flex:1;display:flex;flex-direction:column;justify-content:center;max-width:400px;width:100%;margin:0 auto}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.brand .logo{width:52px;height:52px;border-radius:15px;background:linear-gradient(135deg,#1e3a8a,#2563eb);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 20px rgba(30,64,175,.3)}
+.brand .logo svg{width:28px;height:28px;color:#fff}
+.brand h1{font-size:21px;font-weight:760;letter-spacing:-.01em;line-height:1.2}
+.brand p{font-size:13px;color:var(--muted)}
+.flag{display:flex;height:4px;border-radius:2px;overflow:hidden;width:54px;margin-top:6px}
+.flag i{flex:1}
+.err-box{background:var(--bad-soft);color:var(--bad);padding:10px 13px;border-radius:10px;font-size:13.5px;margin-bottom:14px}
+
+@media (min-width:900px){
+  .m-only{display:none}.d-only{display:block}
+  .wrap{padding-top:10px}
+  .topbar{padding-left:24px;padding-right:24px}
+  .sheet{bottom:auto;top:50%;left:50%;right:auto;width:560px;border-radius:20px;transform:translate(-50%,-46%);opacity:0;
+    transition:transform .2s,opacity .2s;max-height:86vh}
+  .sheet.show{transform:translate(-50%,-50%);opacity:1}
+}
+@media (max-width:520px){
+  .stat-row{grid-template-columns:repeat(2,1fr)}
+  .hero .num{font-size:40px}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast"></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+"use strict";
+/* =====================================================================
+   i18n
+   ===================================================================== */
+const I18N = {
+zh:{
+  appName:"法籍员工休假平台", appShort:"休假申请",
+  login:"登录", email:"邮箱", password:"密码", signIn:"登录",
+  forgot:"忘记密码？请联系人力资源部重置。", badLogin:"邮箱或密码错误",
+  navHome:"首页", navMine:"我的申请", navApprove:"审批", navAdmin:"管理", navMe:"我的",
+  hello:"你好", balanceTitle:"{y} 年年假可用", available:"可用", used:"已休", pending:"审批中", total:"总额度",
+  newRequest:"申请休假", recent:"最近申请", seeAll:"查看全部", noRequests:"暂无申请记录",
+  nextLeave:"下一次休假", yourApprover:"你的审批人", noApprover:"尚未指定审批人，你的申请将由管理员审批。",
+  toApproveBanner:"有 {n} 条申请等待你审批",
+  leaveType:"假期类型", startDate:"开始日期", endDate:"结束日期",
+  fullDay:"全天", morning:"仅上午", afternoon:"仅下午",
+  startPm:"首日从下午开始", endAm:"末日只休上午",
+  duration:"共计", afterBalance:"批准后年假剩余", notDeducted:"不扣年假余额",
+  reason:"事由", destination:"休假期间所在地", contact:"紧急联系方式", optional:"选填",
+  attachment:"附件（病假证明等）", addFile:"上传文件或拍照", fileTooBig:"文件不能超过 10 MB",
+  submit:"提交", submitted:"申请已提交，等待审批", required:"必填",
+  mode_ouvrables:"按工作日计算：周一至周六，不含法定假日",
+  mode_ouvres:"按工作日计算：周一至周五，不含法定假日",
+  mode_calendaires:"按自然日计算",
+  status_pending:"待审批", status_approved:"已批准", status_rejected:"已驳回", status_cancelled:"已撤回",
+  all:"全部", year:"年份", statusL:"状态",
+  detail:"申请详情", refNo:"编号", period:"休假时间", submittedAt:"提交时间", approverL:"审批人",
+  history:"流转记录", ev_submitted:"提交申请", ev_approved:"批准", ev_rejected:"驳回", ev_cancelled:"撤回",
+  cancelReq:"撤回申请", confirmCancel:"确定撤回这条申请吗？", revoke:"撤销此假期", revokeReason:"撤销原因",
+  comment:"审批意见", commentReq:"驳回时必须填写原因", commentOpt:"批准时可不填",
+  approve:"批准", reject:"驳回", approved:"已批准", rejected:"已驳回", cancelled:"已撤回",
+  toApprove:"待审批", decided:"已处理", applicant:"申请人", nothingToApprove:"目前没有待审批的申请",
+  balanceOfApplicant:"申请人年假", viewAttachment:"查看附件",
+  close:"关闭", cancel:"取消", save:"保存", edit:"编辑", add:"新增", del:"删除",
+  search:"搜索姓名 / 工号 / 部门", export:"导出 CSV",
+  users:"用户", requestsAll:"全部申请", balances:"年假额度", settings:"设置",
+  newUser:"新建账号", editUser:"编辑用户",
+  fullName:"姓名", employeeNo:"工号", position:"职位", department:"部门", site:"工作地点",
+  role:"角色", approver:"审批人", hireDate:"入职日期", lang:"界面语言", annualDays:"本年年假天数",
+  tempPwd:"初始密码", tempPwdHint:"留空将自动生成 10 位密码",
+  role_employee:"员工", role_approver:"审批人", role_admin:"管理员",
+  activeL:"在职", inactiveL:"已停用", none:"（无）",
+  deactivate:"停用账号", activate:"重新启用", resetPwd:"重置密码", confirmDeactivate:"停用后该员工将无法登录，确定吗？",
+  credsTitle:"账号已创建，请把以下信息发给员工", pwdResetTitle:"密码已重置，请把新密码发给员工",
+  copy:"复制", copied:"已复制", loginUrl:"登录地址", credsNote:"员工首次登录后须自行修改密码。",
+  entitled:"年度额度", carried:"上年结转", adjustment:"调整", note:"备注", editBalance:"调整年假额度",
+  countMode:"天数计算方式", mode_ouvrables_s:"工作日（周一至周六）", mode_ouvres_s:"工作日（周一至周五）", mode_calendaires_s:"自然日",
+  defaultDays:"默认年假天数（未单独设置时）", companyName:"公司名称",
+  leaveTypes:"假期类型", deducts:"扣年假余额", requiresAtt:"必须上传附件", activeType:"启用",
+  holidays:"法定假日", holidayHint:"伊斯兰节日（开斋节、宰牲节、圣纪节等）日期每年由政府公布，请及时在此补充。",
+  nameZh:"中文名称", nameFr:"法文名称", code:"代码（英文，不可修改）", date:"日期", color:"颜色",
+  newType:"新增假期类型", newHoliday:"新增假日",
+  profile:"个人信息", changePwd:"修改密码", newPwd:"新密码（至少 8 位）", confirmPwd:"再次输入新密码",
+  pwdMismatch:"两次输入的密码不一致", pwdShort:"密码至少 8 位", pwdChanged:"密码已修改",
+  mustChangeTitle:"首次登录，请设置你自己的密码", mustChangeBody:"为了账号安全，请把管理员给你的初始密码换成只有你知道的密码。",
+  logout:"退出登录", saved:"已保存", loading:"加载中…",
+  setupTitle:"尚未连接数据库", setupBody:"请在 config.js 中填入 Supabase 的 Project URL 和 anon key，然后刷新页面。",
+  onLeaveNow:"正在休假", stats_pending:"待审批", stats_onleave:"今日休假", stats_month:"本月批准天数", stats_users:"在职人数",
+  dayUnit:"天", from:"从", to:"至", noResults:"没有符合条件的记录", count:"条",
+  ERR_ACCOUNT_INACTIVE:"账号已停用，请联系人力资源部", ERR_TYPE:"请选择假期类型", ERR_DATES:"结束日期不能早于开始日期",
+  ERR_HALF:"同一天不能既从下午开始又在上午结束", ERR_TOO_OLD:"不能补报 60 天以前的假期", ERR_CROSS_YEAR:"年假不能跨年，请按年度分两次申请",
+  ERR_ZERO_DAYS:"所选日期内没有需要计算的工作日", ERR_OVERLAP:"与你已有的申请时间重叠", ERR_ATTACHMENT:"附件无效",
+  ERR_ATTACHMENT_REQUIRED:"此类假期必须上传附件", ERR_BALANCE:"年假余额不足，当前可用 {d} 天", ERR_FORBIDDEN:"没有权限执行此操作",
+  ERR_NOT_FOUND:"申请不存在", ERR_SELF_APPROVAL:"不能审批自己的申请", ERR_NOT_PENDING:"该申请已被处理",
+  ERR_COMMENT_REQUIRED:"驳回时必须填写原因", ERR_NOT_CANCELLABLE:"当前状态不能撤回", ERR_EMAIL:"邮箱格式不正确",
+  ERR_NAME:"请填写姓名", ERR_PASSWORD_SHORT:"密码至少 8 位", ERR_EMAIL_EXISTS:"该邮箱已经有账号",
+  ERR_SELF_DEACTIVATE:"不能停用自己的账号", ERR_FUNCTION:"账号管理服务调用失败，请确认已部署 admin-users 函数",
+  ERR_GENERIC:"操作失败，请重试", ERR_NETWORK:"网络连接失败，请检查网络后重试",
+},
+fr:{
+  appName:"Congés des expatriés", appShort:"Congés",
+  login:"Connexion", email:"E-mail", password:"Mot de passe", signIn:"Se connecter",
+  forgot:"Mot de passe oublié ? Contactez les Ressources humaines.", badLogin:"E-mail ou mot de passe incorrect",
+  navHome:"Accueil", navMine:"Mes demandes", navApprove:"Validation", navAdmin:"Admin", navMe:"Profil",
+  hello:"Bonjour", balanceTitle:"Congés annuels disponibles {y}", available:"Disponible", used:"Pris", pending:"En attente", total:"Droits",
+  newRequest:"Demander un congé", recent:"Demandes récentes", seeAll:"Tout voir", noRequests:"Aucune demande pour l'instant",
+  nextLeave:"Prochain congé", yourApprover:"Votre valideur", noApprover:"Aucun valideur désigné : vos demandes seront traitées par un administrateur.",
+  toApproveBanner:"{n} demande(s) en attente de votre validation",
+  leaveType:"Type de congé", startDate:"Date de début", endDate:"Date de fin",
+  fullDay:"Journée", morning:"Matin", afternoon:"Après-midi",
+  startPm:"Début l'après-midi du premier jour", endAm:"Fin à midi le dernier jour",
+  duration:"Durée", afterBalance:"Solde après validation", notDeducted:"Non décompté du solde",
+  reason:"Motif", destination:"Lieu pendant le congé", contact:"Contact d'urgence", optional:"facultatif",
+  attachment:"Justificatif (certificat médical…)", addFile:"Joindre un fichier ou une photo", fileTooBig:"Fichier limité à 10 Mo",
+  submit:"Envoyer", submitted:"Demande envoyée, en attente de validation", required:"obligatoire",
+  mode_ouvrables:"Décompte en jours ouvrables : du lundi au samedi, hors jours fériés",
+  mode_ouvres:"Décompte en jours ouvrés : du lundi au vendredi, hors jours fériés",
+  mode_calendaires:"Décompte en jours calendaires",
+  status_pending:"En attente", status_approved:"Approuvée", status_rejected:"Refusée", status_cancelled:"Annulée",
+  all:"Toutes", year:"Année", statusL:"Statut",
+  detail:"Détail de la demande", refNo:"Référence", period:"Période", submittedAt:"Envoyée le", approverL:"Valideur",
+  history:"Historique", ev_submitted:"Demande envoyée", ev_approved:"Approuvée", ev_rejected:"Refusée", ev_cancelled:"Annulée",
+  cancelReq:"Annuler la demande", confirmCancel:"Voulez-vous vraiment annuler cette demande ?", revoke:"Révoquer ce congé", revokeReason:"Motif de la révocation",
+  comment:"Commentaire", commentReq:"Motif obligatoire en cas de refus", commentOpt:"Facultatif pour une approbation",
+  approve:"Approuver", reject:"Refuser", approved:"Approuvée", rejected:"Refusée", cancelled:"Annulée",
+  toApprove:"À valider", decided:"Traitées", applicant:"Demandeur", nothingToApprove:"Aucune demande en attente",
+  balanceOfApplicant:"Solde du demandeur", viewAttachment:"Voir le justificatif",
+  close:"Fermer", cancel:"Annuler", save:"Enregistrer", edit:"Modifier", add:"Ajouter", del:"Supprimer",
+  search:"Rechercher nom / matricule / service", export:"Exporter CSV",
+  users:"Utilisateurs", requestsAll:"Demandes", balances:"Soldes", settings:"Paramètres",
+  newUser:"Nouveau compte", editUser:"Modifier l'utilisateur",
+  fullName:"Nom complet", employeeNo:"Matricule", position:"Poste", department:"Service", site:"Site",
+  role:"Rôle", approver:"Valideur", hireDate:"Date d'entrée", lang:"Langue", annualDays:"Droits annuels",
+  tempPwd:"Mot de passe initial", tempPwdHint:"Laisser vide pour générer un mot de passe de 10 caractères",
+  role_employee:"Employé", role_approver:"Valideur", role_admin:"Administrateur",
+  activeL:"Actif", inactiveL:"Désactivé", none:"(aucun)",
+  deactivate:"Désactiver le compte", activate:"Réactiver", resetPwd:"Réinitialiser le mot de passe", confirmDeactivate:"L'employé ne pourra plus se connecter. Confirmer ?",
+  credsTitle:"Compte créé — identifiants à transmettre à l'employé", pwdResetTitle:"Mot de passe réinitialisé — à transmettre à l'employé",
+  copy:"Copier", copied:"Copié", loginUrl:"Adresse", credsNote:"L'employé devra changer ce mot de passe à sa première connexion.",
+  entitled:"Droits de l'année", carried:"Report N-1", adjustment:"Ajustement", note:"Note", editBalance:"Ajuster les droits",
+  countMode:"Mode de décompte", mode_ouvrables_s:"Jours ouvrables (lun.–sam.)", mode_ouvres_s:"Jours ouvrés (lun.–ven.)", mode_calendaires_s:"Jours calendaires",
+  defaultDays:"Droits annuels par défaut", companyName:"Nom de la société",
+  leaveTypes:"Types de congé", deducts:"Décompté du solde", requiresAtt:"Justificatif obligatoire", activeType:"Actif",
+  holidays:"Jours fériés", holidayHint:"Les fêtes musulmanes (Aïd el-Fitr, Tabaski, Maouloud…) sont fixées chaque année par décret : pensez à les ajouter ici.",
+  nameZh:"Nom (chinois)", nameFr:"Nom (français)", code:"Code (non modifiable)", date:"Date", color:"Couleur",
+  newType:"Nouveau type de congé", newHoliday:"Nouveau jour férié",
+  profile:"Mon profil", changePwd:"Changer le mot de passe", newPwd:"Nouveau mot de passe (8 caractères min.)", confirmPwd:"Confirmer le mot de passe",
+  pwdMismatch:"Les mots de passe ne correspondent pas", pwdShort:"8 caractères minimum", pwdChanged:"Mot de passe modifié",
+  mustChangeTitle:"Première connexion : choisissez votre mot de passe", mustChangeBody:"Pour sécuriser votre compte, remplacez le mot de passe initial fourni par l'administrateur.",
+  logout:"Se déconnecter", saved:"Enregistré", loading:"Chargement…",
+  setupTitle:"Base de données non connectée", setupBody:"Renseignez l'URL du projet Supabase et la clé anon dans config.js, puis rechargez la page.",
+  onLeaveNow:"En congé", stats_pending:"En attente", stats_onleave:"En congé aujourd'hui", stats_month:"Jours approuvés ce mois", stats_users:"Comptes actifs",
+  dayUnit:"j", from:"du", to:"au", noResults:"Aucun résultat", count:"",
+  ERR_ACCOUNT_INACTIVE:"Compte désactivé. Contactez les RH.", ERR_TYPE:"Choisissez un type de congé", ERR_DATES:"La date de fin précède la date de début",
+  ERR_HALF:"Un même jour ne peut pas commencer l'après-midi et finir à midi", ERR_TOO_OLD:"Impossible de déclarer un congé de plus de 60 jours dans le passé",
+  ERR_CROSS_YEAR:"Un congé annuel ne peut pas chevaucher deux années : faites deux demandes", ERR_ZERO_DAYS:"Aucun jour décompté sur cette période",
+  ERR_OVERLAP:"Chevauche une demande existante", ERR_ATTACHMENT:"Justificatif invalide", ERR_ATTACHMENT_REQUIRED:"Justificatif obligatoire pour ce type de congé",
+  ERR_BALANCE:"Solde insuffisant : {d} j disponibles", ERR_FORBIDDEN:"Action non autorisée", ERR_NOT_FOUND:"Demande introuvable",
+  ERR_SELF_APPROVAL:"Vous ne pouvez pas valider votre propre demande", ERR_NOT_PENDING:"Cette demande a déjà été traitée",
+  ERR_COMMENT_REQUIRED:"Motif obligatoire en cas de refus", ERR_NOT_CANCELLABLE:"Cette demande ne peut plus être annulée",
+  ERR_EMAIL:"Adresse e-mail invalide", ERR_NAME:"Le nom est obligatoire", ERR_PASSWORD_SHORT:"8 caractères minimum",
+  ERR_EMAIL_EXISTS:"Un compte existe déjà avec cet e-mail", ERR_SELF_DEACTIVATE:"Vous ne pouvez pas désactiver votre propre compte",
+  ERR_FUNCTION:"Échec du service de comptes : vérifiez que la fonction admin-users est déployée",
+  ERR_GENERIC:"L'opération a échoué, réessayez", ERR_NETWORK:"Connexion impossible, vérifiez le réseau",
+}};
+
+/* =====================================================================
+   State & helpers
+   ===================================================================== */
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+};
+const S = {
+  lang: store.get("lang") || ((navigator.language||"").toLowerCase().startsWith("zh") ? "zh" : "fr"),
+  session:null, me:null, settings:null, types:[], ctx:null, pendingCount:0,
+  filters:{ mine:{status:"all", year:new Date().getFullYear()},
+            admin:{tab:"requests", status:"all", year:new Date().getFullYear(), type:"all", q:""},
+            approve:{tab:"todo"} },
+  newForm:null, cache:{},
+};
+const CFG = window.APP_CONFIG || {};
+const CONFIGURED = !!(CFG.SUPABASE_URL && !/YOUR_/.test(CFG.SUPABASE_URL) && CFG.SUPABASE_ANON_KEY && !/YOUR_/.test(CFG.SUPABASE_ANON_KEY));
+const sb = CONFIGURED ? window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY) : null;
+
+const $ = (s, r=document) => r.querySelector(s);
+const t = (k, vars) => { let s = (I18N[S.lang] && I18N[S.lang][k]) ?? I18N.fr[k] ?? k;
+  if (vars) for (const [a,b] of Object.entries(vars)) s = s.replace("{"+a+"}", b); return s; };
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const locale = () => S.lang === "zh" ? "zh-CN" : "fr-FR";
+const todayISO = () => { const d=new Date(); return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10); };
+const num = n => { const v = Number(n||0); return Number.isInteger(v) ? String(v) : v.toFixed(1).replace(/\.0$/,""); };
+const fmtDays = n => S.lang==="zh" ? `${num(n)} 天` : `${num(n)} j`;
+function fmtDate(iso, opts){
+  if(!iso) return "";
+  const d = new Date(iso.length<=10 ? iso+"T00:00:00" : iso);
+  return new Intl.DateTimeFormat(locale(), opts || {weekday:"short", day:"numeric", month:"short", year:"numeric"}).format(d);
+}
+const fmtShort = iso => fmtDate(iso, {day:"numeric", month:"short"});
+const fmtDT = iso => fmtDate(iso, {day:"numeric", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit"});
+function fmtRange(r){
+  const a = fmtDate(r.start_date) + (r.start_half ? ` (${t("afternoon")})` : "");
+  if (r.start_date === r.end_date) return r.end_half ? `${fmtDate(r.start_date)} (${t("morning")})` : a;
+  const b = fmtDate(r.end_date) + (r.end_half ? ` (${t("morning")})` : "");
+  return `${a} → ${b}`;
+}
+function fmtRangeShort(r){
+  if (r.start_date === r.end_date) return fmtDate(r.start_date, {weekday:"short", day:"numeric", month:"short"});
+  const sameYear = r.start_date.slice(0,4) === r.end_date.slice(0,4);
+  return `${fmtShort(r.start_date)} – ${fmtDate(r.end_date, sameYear?{day:"numeric",month:"short"}:{day:"numeric",month:"short",year:"numeric"})}`;
+}
+const typeOf = code => S.types.find(x => x.code === code) || {code, name_zh:code, name_fr:code, color:"#64748b"};
+const typeName = code => { const x = typeOf(code); return S.lang==="zh" ? x.name_zh : x.name_fr; };
+const statusPill = s => `<span class="pill st-${s}">${t("status_"+s)}</span>`;
+const initials = n => (n||"?").trim().split(/\s+/).map(w=>w[0]).slice(0,2).join("").toUpperCase();
+const isAdmin = () => S.me?.role === "admin";
+const isApprover = () => S.me && (S.me.role === "approver" || S.me.role === "admin");
+
+function errMsg(e){
+  if (!e) return t("ERR_GENERIC");
+  const m = String(e.message || e.error || e);
+  const code = (m.match(/ERR_[A-Z_]+/)||[])[0];
+  if (code) return t(code, {d: num(e.details || e.detail || 0)});
+  if (/fetch|network|Failed to fetch/i.test(m)) return t("ERR_NETWORK");
+  return m || t("ERR_GENERIC");
+}
+let toastTimer;
+function toast(msg, isErr){
+  const el = $("#toast"); el.textContent = msg; el.className = "show" + (isErr?" err":"");
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>{ el.className = isErr?"err":""; }, isErr?4200:2400);
+}
+async function run(p){ const {data, error} = await p; if (error) throw error; return data; }
+function busy(btn, on){ if(!btn) return; btn.disabled = on; if(on){ btn.dataset.txt = btn.innerHTML; btn.innerHTML = "…"; } else if(btn.dataset.txt){ btn.innerHTML = btn.dataset.txt; } }
+
+/* =====================================================================
+   Icons
+   ===================================================================== */
+const IC = {
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>',
+  list:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2.5"/><path d="M3 9h18M8 2.5v3M16 2.5v3M7.5 13h3M7.5 17h6"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11.5l2.2 2.2L15.5 9"/><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/></svg>',
+  admin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.3-5.5 6.5-5.5s5.9 2.1 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18.5 14.8c1.6.8 2.7 2.5 3 5.2"/></svg>',
+  me:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6.5 8-6.5s7.2 2.5 8 6.5"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  x:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  sun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
+  clip:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5 12.5 20a5 5 0 0 1-7-7l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7L10.2 17.7a1.7 1.7 0 0 1-2.4-2.4L15.5 7.6"/></svg>',
+  info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg>',
+  inbox:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h5l1.5 2.5h5L16 13h5"/><path d="M5.5 5h13L21 13v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-6z"/></svg>',
+  down:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>',
+};
+
+/* =====================================================================
+   Sheet (bottom drawer on mobile, dialog on desktop)
+   ===================================================================== */
+function openSheet(title, html, onMount){
+  closeSheet(true);
+  const back = document.createElement("div"); back.className = "sheet-back"; back.id = "sheetBack";
+  const sh = document.createElement("div"); sh.className = "sheet"; sh.id = "sheet"; sh.setAttribute("role","dialog");
+  sh.innerHTML = `<div class="sheet-h"><h3>${esc(title)}</h3><button class="x" aria-label="${t("close")}" onclick="closeSheet()">${IC.x}</button></div><div class="sheet-b">${html}</div>`;
+  back.onclick = () => closeSheet();
+  document.body.append(back, sh);
+  requestAnimationFrame(()=>{ back.classList.add("show"); sh.classList.add("show"); });
+  if (onMount) onMount(sh);
+}
+function closeSheet(instant){
+  const b = $("#sheetBack"), s = $("#sheet"); if (!s) return;
+  if (instant){ b.remove(); s.remove(); return; }
+  b.classList.remove("show"); s.classList.remove("show"); setTimeout(()=>{ b.remove(); s.remove(); }, 230);
+}
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+
+/* =====================================================================
+   Boot / auth
+   ===================================================================== */
+async function boot(){
+  document.documentElement.lang = S.lang === "zh" ? "zh-CN" : "fr";
+  if (!CONFIGURED) return renderSetup();
+  const { data } = await sb.auth.getSession();
+  S.session = data.session;
+  sb.auth.onAuthStateChange((ev, session) => {
+    const had = !!S.session; S.session = session;
+    if (ev === "SIGNED_OUT" || (had && !session)) { S.me = null; render(); }
+  });
+  if (S.session) await loadContext();
+  render();
+}
+async function loadContext(){
+  const uid = S.session.user.id;
+  const [me, settings, types, ctx] = await Promise.all([
+    run(sb.from("profiles").select("*").eq("id", uid).single()),
+    run(sb.from("app_settings").select("*").eq("id", 1).single()),
+    run(sb.from("leave_types").select("*").order("sort_order")),
+    run(sb.rpc("my_context")),
+  ]);
+  S.me = me; S.settings = settings; S.types = types; S.ctx = (ctx||[])[0] || {};
+  if (!me.active) { await sb.auth.signOut(); S.me = null; S.loginError = t("ERR_ACCOUNT_INACTIVE"); return; }
+  if (!store.get("lang") && me.lang) S.lang = me.lang;
+  document.documentElement.lang = S.lang === "zh" ? "zh-CN" : "fr";
+  await refreshPendingCount();
+}
+async function refreshPendingCount(){
+  if (!isApprover()) { S.pendingCount = 0; return; }
+  let q = sb.from("leave_requests").select("id", {count:"exact", head:true}).eq("status","pending").neq("user_id", S.me.id);
+  q = isAdmin() ? q.or(`approver_id.eq.${S.me.id},approver_id.is.null`) : q.eq("approver_id", S.me.id);
+  const { count } = await q; S.pendingCount = count || 0;
+}
+function setLang(l){
+  S.lang = l; store.set("lang", l); document.documentElement.lang = l === "zh" ? "zh-CN" : "fr";
+  if (S.me) { S.me.lang = l; sb.rpc("set_my_lang", {p_lang:l}); }
+  render();
+}
+const langSwitch = () => `<div class="lang-switch"><button class="${S.lang==="zh"?"on":""}" onclick="setLang('zh')">中文</button><button class="${S.lang==="fr"?"on":""}" onclick="setLang('fr')">FR</button></div>`;
+
+function renderSetup(){
+  $("#app").innerHTML = `<div class="login"><div class="top">${langSwitch()}</div><div class="box">
+    ${brand()}<div class="notice">${IC.info}<div><b>${t("setupTitle")}</b><br>${t("setupBody")}</div></div></div></div>`;
+}
+function brand(){
+  return `<div class="brand"><div class="logo">${IC.sun}</div><div><h1>${t("appName")}</h1>
+    <p>${esc(S.settings?.company_name || "Winning Consortium")} · Guinée</p>
+    <div class="flag"><i style="background:#ce1126"></i><i style="background:#fcd116"></i><i style="background:#009460"></i></div></div></div>`;
+}
+function renderLogin(){
+  $("#app").innerHTML = `<div class="login"><div class="top">${langSwitch()}</div><div class="box">
+    ${brand()}
+    <form id="loginForm" autocomplete="on">
+      ${S.loginError ? `<div class="err-box">${esc(S.loginError)}</div>` : ""}
+      <div class="field"><label for="le">${t("email")}</label><input class="input" id="le" type="email" autocomplete="username" required inputmode="email" autocapitalize="none"></div>
+      <div class="field"><label for="lp">${t("password")}</label><input class="input" id="lp" type="password" autocomplete="current-password" required></div>
+      <button class="btn btn-pri btn-block" id="lb" type="submit">${t("signIn")}</button>
+      <p class="small muted" style="text-align:center;margin-top:16px">${t("forgot")}</p>
+    </form></div></div>`;
+  $("#loginForm").onsubmit = async e => {
+    e.preventDefault(); const b = $("#lb"); busy(b, true); S.loginError = null;
+    try{
+      const { data, error } = await sb.auth.signInWithPassword({ email: $("#le").value.trim(), password: $("#lp").value });
+      if (error) { S.loginError = /banned/i.test(error.message) ? t("ERR_ACCOUNT_INACTIVE") : t("badLogin"); return renderLogin(); }
+      S.session = data.session; await loadContext(); location.hash = "#home"; render();
+    }catch(err){ S.loginError = errMsg(err); renderLogin(); }
+  };
+}
+function renderMustChange(){
+  $("#app").innerHTML = `<div class="login"><div class="top">${langSwitch()}</div><div class="box">
+    ${brand()}
+    <h2 style="font-size:18px;margin-bottom:6px">${t("mustChangeTitle")}</h2>
+    <p class="small muted" style="margin-bottom:18px">${t("mustChangeBody")}</p>
+    ${pwdFormHtml()}
+    <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="logout()">${t("logout")}</button>
+  </div></div>`;
+  bindPwdForm(()=>{ S.me.must_change_password = false; location.hash = "#home"; render(); });
+}
+const pwdFormHtml = () => `<form id="pwdForm">
+  <div class="field"><label>${t("newPwd")}</label><input class="input" id="p1" type="password" autocomplete="new-password" minlength="8" required></div>
+  <div class="field"><label>${t("confirmPwd")}</label><input class="input" id="p2" type="password" autocomplete="new-password" minlength="8" required></div>
+  <button class="btn btn-pri btn-block" id="pb" type="submit">${t("save")}</button></form>`;
+function bindPwdForm(done){
+  $("#pwdForm").onsubmit = async e => {
+    e.preventDefault(); const p1 = $("#p1").value, p2 = $("#p2").value;
+    if (p1.length < 8) return toast(t("pwdShort"), true);
+    if (p1 !== p2) return toast(t("pwdMismatch"), true);
+    const b = $("#pb"); busy(b, true);
+    try{ await run(sb.auth.updateUser({ password: p1 })); await run(sb.rpc("mark_password_changed")); toast(t("pwdChanged")); done(); }
+    catch(err){ toast(errMsg(err), true); busy(b, false); }
+  };
+}
+async function logout(){ closeSheet(true); await sb.auth.signOut(); S.session = null; S.me = null; location.hash = ""; render(); }
+
+/* =====================================================================
+   Router
+   ===================================================================== */
+function route(){ return (location.hash.replace(/^#/, "") || "home").split("/")[0]; }
+window.addEventListener("hashchange", () => { closeSheet(true); render(); });
+
+function render(){
+  if (!CONFIGURED) return renderSetup();
+  if (!S.session || !S.me) return renderLogin();
+  if (S.me.must_change_password) return renderMustChange();
+  let r = route();
+  if (r === "approve" && !isApprover()) r = "home";
+  if (r === "admin" && !isAdmin()) r = "home";
+  const titles = { home:t("appShort"), new:t("newRequest"), mine:t("navMine"), approve:t("navApprove"), admin:t("navAdmin"), me:t("navMe") };
+  const navItems = [
+    ["home", IC.home, t("navHome")],
+    ["mine", IC.list, t("navMine")],
+    ...(isApprover() ? [["approve", IC.check, t("navApprove"), S.pendingCount]] : []),
+    ...(isAdmin() ? [["admin", IC.admin, t("navAdmin")]] : []),
+    ["me", IC.me, t("navMe")],
+  ];
+  const active = r === "new" ? "mine" : r;
+  $("#app").innerHTML = `
+    <header class="topbar"><div style="flex:1;min-width:0"><h1>${esc(titles[r]||"")}</h1>
+      ${r==="home" ? `<div class="sub">${esc(S.settings?.company_name||"")}</div>` : ""}</div>${langSwitch()}</header>
+    <main class="wrap ${r==="admin"?"wide":""}" id="main"><div class="spinner"></div></main>
+    <nav class="nav"><div class="nav-inner">${navItems.map(([k,ic,l,b]) =>
+      `<a href="#${k}" class="${active===k?"on":""}">${ic}<span>${l}</span>${b?`<span class="badge">${b}</span>`:""}</a>`).join("")}</div></nav>`;
+  const pages = { home:pageHome, new:pageNew, mine:pageMine, approve:pageApprove, admin:pageAdmin, me:pageMe };
+  (pages[r] || pageHome)().catch(err => { $("#main").innerHTML = `<div class="err-box">${esc(errMsg(err))}</div>`; });
+}
+
+/* =====================================================================
+   Home
+   ===================================================================== */
+function heroHtml(b, y){
+  const tot = Math.max(Number(b.total), 0.0001);
+  const pu = Math.min(100, Number(b.used)/tot*100), pp = Math.min(100-pu, Number(b.pending)/tot*100);
+  return `<div class="hero">
+    <div class="cap">${t("balanceTitle", {y})}</div>
+    <div class="num tabnum">${num(b.available)}<small>${S.lang==="zh"?"天":"jours"}</small></div>
+    <div class="bar"><i style="width:${pu}%;background:#fff"></i><i style="width:${pp}%;background:#fcd34d"></i></div>
+    <div class="legend">
+      <div><b class="tabnum">${num(b.used)}</b><span>● ${t("used")}</span></div>
+      <div><b class="tabnum">${num(b.pending)}</b><span style="color:#fde68a">● ${t("pending")}</span></div>
+      <div><b class="tabnum">${num(b.total)}</b><span>${t("total")}${Number(b.carried_over)?` (+${num(b.carried_over)} ${t("carried")})`:""}</span></div>
+    </div></div>`;
+}
+function reqCard(r, opts={}){
+  const ty = typeOf(r.type_code);
+  const who = opts.showWho && r.applicant ? `${esc(r.applicant.full_name)}${r.applicant.employee_no?` · ${esc(r.applicant.employee_no)}`:""}` : "";
+  return `<button class="card req" onclick="openRequest('${r.id}')">
+    <span class="stripe" style="background:${esc(ty.color)}"></span>
+    <div class="body">
+      <div class="top"><span class="ttl">${who || esc(typeName(r.type_code))}</span>${statusPill(r.status)}</div>
+      <div class="when">${who ? esc(typeName(r.type_code))+" · " : ""}${fmtRangeShort(r)}</div>
+      <div class="meta">${esc(r.ref_no||"")}${r.reason?` · ${esc(r.reason)}`:""}</div>
+    </div>
+    <div class="days tabnum">${num(r.days)}<small>${S.lang==="zh"?"天":"jours"}</small></div></button>`;
+}
+async function pageHome(){
+  const y = new Date().getFullYear();
+  const [bal, recent] = await Promise.all([
+    run(sb.rpc("leave_balance", {p_user:S.me.id, p_year:y})),
+    run(sb.from("leave_requests").select("*").eq("user_id", S.me.id).order("created_at", {ascending:false}).limit(5)),
+  ]);
+  S.cache.requests = Object.fromEntries(recent.map(r=>[r.id,r]));
+  const next = recent.filter(r => r.status==="approved" && r.end_date >= todayISO()).sort((a,b)=>a.start_date.localeCompare(b.start_date))[0];
+  $("#main").innerHTML = `
+    <p style="margin:4px 2px 12px;font-size:15px">${t("hello")}, <b>${esc(S.me.full_name || S.me.email)}</b></p>
+    ${heroHtml(bal[0], y)}
+    <div class="cta-row"><a class="btn btn-pri" href="#new">${IC.plus.replace("<svg","<svg width='20' height='20'")} ${t("newRequest")}</a></div>
+    ${S.pendingCount ? `<a class="notice info" href="#approve">${IC.info}<div><b>${t("toApproveBanner", {n:S.pendingCount})}</b></div></a>` : ""}
+    ${next ? `<div class="section-h"><h2>${t("nextLeave")}</h2></div>${reqCard(next)}` : ""}
+    <div class="section-h"><h2>${t("recent")}</h2><a href="#mine">${t("seeAll")}</a></div>
+    <div class="list">${recent.length ? recent.map(r=>reqCard(r)).join("") : emptyHtml(t("noRequests"))}</div>
+    <div class="notice ${S.ctx?.approver_name ? "info" : ""}" style="margin-top:18px">${IC.info}<div>${S.ctx?.approver_name
+      ? `${t("yourApprover")} : <b>${esc(S.ctx.approver_name)}</b>` : t("noApprover")}</div></div>`;
+}
+const emptyHtml = msg => `<div class="empty">${IC.inbox}<div>${esc(msg)}</div></div>`;
+
+/* =====================================================================
+   New request
+   ===================================================================== */
+function freshForm(){ return { type: (S.types.find(x=>x.active)||{}).code, start:"", end:"", single:"full", startPm:false, endAm:false,
+  reason:"", destination:"", contact:"", file:null, days:null, bal:null }; }
+async function pageNew(){
+  if (!S.newForm) S.newForm = freshForm();
+  const F = S.newForm, y = new Date().getFullYear();
+  try { F.bal = (await run(sb.rpc("leave_balance", {p_user:S.me.id, p_year:y})))[0]; } catch(e) {}
+  const active = S.types.filter(x=>x.active);
+  $("#main").innerHTML = `<form id="nf" novalidate>
+    <div class="field"><span class="label">${t("leaveType")}</span>
+      <div class="type-grid">${active.map(x => `<button type="button" class="type-opt ${F.type===x.code?"on":""}" data-type="${esc(x.code)}">
+        <span class="dot" style="background:${esc(x.color)}"></span>${esc(S.lang==="zh"?x.name_zh:x.name_fr)}</button>`).join("")}</div></div>
+    <div class="row2">
+      <div class="field"><label for="fs">${t("startDate")}</label><input class="input" type="date" id="fs" value="${F.start}" required></div>
+      <div class="field"><label for="fe">${t("endDate")}</label><input class="input" type="date" id="fe" value="${F.end}" required></div>
+    </div>
+    <div id="halfBox"></div>
+    <p class="small muted" style="margin:-4px 2px 16px">${t("mode_"+(S.settings?.count_mode||"ouvrables"))}</p>
+    <div class="field"><label for="fr">${t("reason")} <span class="muted">· ${t("optional")}</span></label><textarea class="input" id="fr" rows="2">${esc(F.reason)}</textarea></div>
+    <div class="row2">
+      <div class="field"><label for="fd">${t("destination")}</label><input class="input" id="fd" value="${esc(F.destination)}" placeholder="${t("optional")}"></div>
+      <div class="field"><label for="fc">${t("contact")}</label><input class="input" id="fc" type="tel" value="${esc(F.contact)}" placeholder="+224 / +33"></div>
+    </div>
+    <div class="field"><span class="label" id="attLabel">${t("attachment")}</span>
+      <label class="file-drop" for="ff">${IC.clip}<span id="fname">${F.file ? esc(F.file.name) : t("addFile")}</span></label>
+      <input type="file" id="ff" accept="image/*,application/pdf" class="hidden"></div>
+    <div class="summary-bar"><div class="grow" id="sumTxt"></div><button class="btn" id="fsub" type="submit">${t("submit")}</button></div>
+  </form>`;
+
+  const upd = () => { F.start=$("#fs").value; F.end=$("#fe").value; F.reason=$("#fr").value; F.destination=$("#fd").value; F.contact=$("#fc").value; };
+  document.querySelectorAll("[data-type]").forEach(b => b.onclick = () => {
+    F.type = b.dataset.type; document.querySelectorAll("[data-type]").forEach(x=>x.classList.toggle("on", x===b)); recalc(); });
+  $("#fs").onchange = () => { upd(); if (!F.end || F.end < F.start) { F.end = F.start; $("#fe").value = F.start; } renderHalf(); recalc(); };
+  $("#fe").onchange = () => { upd(); renderHalf(); recalc(); };
+  ["#fr","#fd","#fc"].forEach(s => $(s).oninput = upd);
+  $("#ff").onchange = e => { const f = e.target.files[0]; if (f && f.size > 10*1024*1024) { toast(t("fileTooBig"), true); e.target.value=""; return; }
+    F.file = f || null; $("#fname").textContent = f ? f.name : t("addFile"); };
+  $("#nf").onsubmit = e => { e.preventDefault(); upd(); submitNew(); };
+  renderHalf(); recalc();
+}
+function renderHalf(){
+  const F = S.newForm, box = $("#halfBox"); if (!box) return;
+  if (!F.start || !F.end) { box.innerHTML = ""; return; }
+  if (F.start === F.end) {
+    box.innerHTML = `<div class="field"><div class="seg">${[["full",t("fullDay")],["am",t("morning")],["pm",t("afternoon")]].map(([k,l]) =>
+      `<button type="button" class="${F.single===k?"on":""}" data-single="${k}">${l}</button>`).join("")}</div></div>`;
+    box.querySelectorAll("[data-single]").forEach(b => b.onclick = () => { F.single = b.dataset.single; renderHalf(); recalc(); });
+  } else {
+    box.innerHTML = `<div class="field" style="margin-top:-6px">
+      <label class="check"><input type="checkbox" id="hs" ${F.startPm?"checked":""}> ${t("startPm")}</label>
+      <label class="check" style="padding-top:0"><input type="checkbox" id="he" ${F.endAm?"checked":""}> ${t("endAm")}</label></div>`;
+    $("#hs").onchange = e => { F.startPm = e.target.checked; recalc(); };
+    $("#he").onchange = e => { F.endAm = e.target.checked; recalc(); };
+  }
+}
+function halfFlags(F){
+  if (F.start === F.end) return { sh: F.single === "pm", eh: F.single === "am" };
+  return { sh: F.startPm, eh: F.endAm };
+}
+let recalcSeq = 0;
+async function recalc(){
+  const F = S.newForm, el = $("#sumTxt"); if (!el) return;
+  const ty = typeOf(F.type);
+  $("#attLabel").innerHTML = `${t("attachment")} ${ty.requires_attachment ? `<span style="color:var(--bad)">· ${t("required")}</span>` : `<span class="muted">· ${t("optional")}</span>`}`;
+  if (!F.start || !F.end || F.end < F.start) { F.days = null;
+    el.innerHTML = `<div class="lbl">${t("duration")}</div><div class="big">—</div>`; return; }
+  const seq = ++recalcSeq; const {sh, eh} = halfFlags(F);
+  try {
+    const d = await run(sb.rpc("count_leave_days", {p_start:F.start, p_end:F.end, p_start_half:sh, p_end_half:eh}));
+    if (seq !== recalcSeq) return; F.days = Number(d);
+    let extra = "";
+    if (ty.deducts_balance && F.bal) {
+      const after = Number(F.bal.available) - F.days;
+      extra = after < 0 ? `<div class="warnline">${t("ERR_BALANCE", {d:num(F.bal.available)})}</div>`
+                        : `<div class="lbl">${t("afterBalance")} : <b style="opacity:1">${fmtDays(after)}</b></div>`;
+    } else extra = `<div class="lbl">${t("notDeducted")}</div>`;
+    el.innerHTML = `<div class="lbl">${t("duration")}</div><div class="big tabnum">${fmtDays(F.days)}</div>${extra}`;
+  } catch(e) { el.innerHTML = `<div class="warnline">${esc(errMsg(e))}</div>`; }
+}
+async function submitNew(){
+  const F = S.newForm, b = $("#fsub");
+  if (!F.type) return toast(t("ERR_TYPE"), true);
+  if (!F.start || !F.end) return toast(t("ERR_DATES"), true);
+  const ty = typeOf(F.type);
+  if (ty.requires_attachment && !F.file) return toast(t("ERR_ATTACHMENT_REQUIRED"), true);
+  busy(b, true);
+  let path = null;
+  try {
+    if (F.file) {
+      const safe = F.file.name.normalize("NFKD").replace(/[^\w.\-]+/g, "_").slice(-60);
+      path = `${S.me.id}/${Date.now()}-${safe}`;
+      await run(sb.storage.from("leave-attachments").upload(path, F.file, { contentType: F.file.type || undefined }));
+    }
+    const {sh, eh} = halfFlags(F);
+    await run(sb.rpc("submit_leave", { p_type:F.type, p_start:F.start, p_end:F.end, p_start_half:sh, p_end_half:eh,
+      p_reason:F.reason, p_destination:F.destination, p_contact:F.contact, p_attachment:path }));
+    S.newForm = null; toast(t("submitted")); location.hash = "#mine";
+  } catch(err) {
+    if (path) sb.storage.from("leave-attachments").remove([path]);
+    toast(errMsg(err), true); busy(b, false);
+  }
+}
+
+/* =====================================================================
+   My requests
+   ===================================================================== */
+async function pageMine(){
+  const f = S.filters.mine;
+  const rows = await run(sb.from("leave_requests").select("*").eq("user_id", S.me.id)
+    .gte("start_date", `${f.year}-01-01`).lte("start_date", `${f.year}-12-31`).order("start_date", {ascending:false}));
+  S.cache.requests = Object.fromEntries(rows.map(r=>[r.id,r]));
+  const list = f.status === "all" ? rows : rows.filter(r => r.status === f.status);
+  const cnt = s => rows.filter(r=>r.status===s).length;
+  const years = []; for (let y = new Date().getFullYear()+1; y >= new Date().getFullYear()-3; y--) years.push(y);
+  $("#main").innerHTML = `
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+      <a class="btn btn-pri btn-sm" href="#new">${IC.plus.replace("<svg","<svg width='16' height='16'")} ${t("newRequest")}</a>
+      <span style="flex:1"></span>
+      <select class="input" style="height:34px;width:auto;font-size:14px;border-radius:9px" onchange="S.filters.mine.year=+this.value;render()">
+        ${years.map(y=>`<option ${y===f.year?"selected":""}>${y}</option>`).join("")}</select></div>
+    <div class="chips">${["all","pending","approved","rejected","cancelled"].map(s =>
+      `<button class="chip ${f.status===s?"on":""}" onclick="S.filters.mine.status='${s}';render()">${s==="all"?t("all"):t("status_"+s)}${s!=="all"&&cnt(s)?` · ${cnt(s)}`:""}</button>`).join("")}</div>
+    <div class="list" style="margin-top:8px">${list.length ? list.map(r=>reqCard(r)).join("") : emptyHtml(t("noRequests"))}</div>`;
+}
+
+/* =====================================================================
+   Request detail
+   ===================================================================== */
+async function openRequest(id){
+  let r = S.cache.requests?.[id];
+  const [full, events] = await Promise.all([
+    run(sb.from("leave_requests").select("*, applicant:profiles!leave_requests_user_id_fkey(full_name,employee_no,department,position)").eq("id", id).single()),
+    run(sb.from("leave_events").select("*").eq("request_id", id).order("created_at")),
+  ]).catch(e => { toast(errMsg(e), true); return []; });
+  if (!full) return; r = full;
+  const mine = r.user_id === S.me.id;
+  const canDecide = r.status === "pending" && !mine && (r.approver_id === S.me.id || isAdmin());
+  const canCancel = (mine && r.status === "pending") || (isAdmin() && ["pending","approved"].includes(r.status));
+  let balHtml = "";
+  if (!mine && typeOf(r.type_code).deducts_balance) {
+    try { const b = (await run(sb.rpc("leave_balance", {p_user:r.user_id, p_year:+r.start_date.slice(0,4)})))[0];
+      balHtml = `<dt>${t("balanceOfApplicant")}</dt><dd>${fmtDays(b.available)} ${t("available").toLowerCase()} / ${fmtDays(b.total)}</dd>`; } catch(e){}
+  }
+  const evCls = a => a==="approved"?"ok":a==="rejected"?"bad":"";
+  openSheet(t("detail"), `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <span class="dot" style="background:${esc(typeOf(r.type_code).color)};width:12px;height:12px"></span>
+      <b style="font-size:17px;flex:1">${esc(typeName(r.type_code))}</b>${statusPill(r.status)}</div>
+    <dl class="kv">
+      ${!mine ? `<dt>${t("applicant")}</dt><dd>${esc(r.applicant?.full_name||"")}${r.applicant?.employee_no?` · ${esc(r.applicant.employee_no)}`:""}${r.applicant?.department?`<br><span class="muted small">${esc(r.applicant.department)}</span>`:""}</dd>` : ""}
+      <dt>${t("period")}</dt><dd>${fmtRange(r)}</dd>
+      <dt>${t("duration")}</dt><dd class="tabnum">${fmtDays(r.days)}</dd>
+      ${balHtml}
+      ${r.reason ? `<dt>${t("reason")}</dt><dd>${esc(r.reason)}</dd>` : ""}
+      ${r.destination ? `<dt>${t("destination")}</dt><dd>${esc(r.destination)}</dd>` : ""}
+      ${r.contact ? `<dt>${t("contact")}</dt><dd><a href="tel:${esc(r.contact)}">${esc(r.contact)}</a></dd>` : ""}
+      <dt>${t("refNo")}</dt><dd class="tabnum">${esc(r.ref_no||"")}</dd>
+      <dt>${t("submittedAt")}</dt><dd>${fmtDT(r.created_at)}</dd>
+    </dl>
+    ${r.attachment_path ? `<button class="btn btn-ghost btn-block" style="margin-top:14px" onclick="viewAttachment('${esc(r.attachment_path)}')">${IC.clip.replace("<svg","<svg width='18' height='18'")} ${t("viewAttachment")}</button>` : ""}
+    <div class="hr"></div>
+    <div class="label" style="margin-bottom:10px">${t("history")}</div>
+    <ul class="timeline">${(events||[]).map(ev => `<li class="${evCls(ev.action)}"><div class="t1">${t("ev_"+ev.action)} · ${esc(ev.actor_name||"")}</div>
+      <div class="t2">${fmtDT(ev.created_at)}</div>${ev.comment?`<div class="t3">${esc(ev.comment)}</div>`:""}</li>`).join("")}</ul>
+    ${canDecide ? `<div class="hr"></div>
+      <div class="field"><label for="dc">${t("comment")}</label><textarea class="input" id="dc" rows="2" placeholder="${t("commentReq")}"></textarea></div>
+      <div class="actions"><button class="btn btn-bad" id="rj">${t("reject")}</button><button class="btn btn-ok" id="ap">${t("approve")}</button></div>` : ""}
+    ${canCancel && !canDecide ? `<div class="actions"><button class="btn btn-bad" id="cx">${mine && r.status==="pending" ? t("cancelReq") : t("revoke")}</button></div>` : ""}
+  `, sh => {
+    const dec = async (d, btn) => {
+      busy(btn, true);
+      try { await run(sb.rpc("decide_leave", {p_id:r.id, p_decision:d, p_comment:$("#dc").value}));
+        toast(t(d)); closeSheet(); await refreshPendingCount(); render(); }
+      catch(e){ toast(errMsg(e), true); busy(btn, false); }
+    };
+    if (canDecide) { $("#ap", sh).onclick = e => dec("approved", e.currentTarget); $("#rj", sh).onclick = e => dec("rejected", e.currentTarget); }
+    if (canCancel && !canDecide) $("#cx", sh).onclick = async e => {
+      let comment = null;
+      if (!mine || r.status === "approved") { comment = prompt(t("revokeReason")); if (comment === null) return; }
+      else if (!confirm(t("confirmCancel"))) return;
+      const btn = e.currentTarget; busy(btn, true);
+      try { await run(sb.rpc("cancel_leave", {p_id:r.id, p_comment:comment})); toast(t("cancelled")); closeSheet(); await refreshPendingCount(); render(); }
+      catch(err){ toast(errMsg(err), true); busy(btn, false); }
+    };
+  });
+}
+async function viewAttachment(path){
+  const w = window.open("", "_blank");
+  try { const d = await run(sb.storage.from("leave-attachments").createSignedUrl(path, 300));
+    if (w) w.location = d.signedUrl; else location.href = d.signedUrl; }
+  catch(e){ if (w) w.close(); toast(errMsg(e), true); }
+}
+
+/* =====================================================================
+   Approvals
+   ===================================================================== */
+async function pageApprove(){
+  const f = S.filters.approve;
+  const sel = "*, applicant:profiles!leave_requests_user_id_fkey(full_name,employee_no,department,position)";
+  let q = sb.from("leave_requests").select(sel).neq("user_id", S.me.id);
+  q = isAdmin() ? q.or(`approver_id.eq.${S.me.id},approver_id.is.null`) : q.eq("approver_id", S.me.id);
+  q = f.tab === "todo" ? q.eq("status","pending").order("start_date") : q.neq("status","pending").order("decided_at", {ascending:false}).limit(60);
+  const rows = await run(q);
+  S.cache.requests = Object.fromEntries(rows.map(r=>[r.id,r]));
+  const today = todayISO();
+  let away = [];
+  if (f.tab === "todo") {
+    let qa = sb.from("leave_requests").select(sel).eq("status","approved").lte("start_date", today).gte("end_date", today);
+    if (!isAdmin()) qa = qa.eq("approver_id", S.me.id);
+    away = await run(qa);
+  }
+  $("#main").innerHTML = `
+    <div class="tabs"><button class="${f.tab==="todo"?"on":""}" onclick="S.filters.approve.tab='todo';render()">${t("toApprove")}${S.pendingCount?` (${S.pendingCount})`:""}</button>
+      <button class="${f.tab==="done"?"on":""}" onclick="S.filters.approve.tab='done';render()">${t("decided")}</button></div>
+    <div class="list">${rows.length ? rows.map(r=>reqCard(r, {showWho:true})).join("") : emptyHtml(t("nothingToApprove"))}</div>
+    ${away.length ? `<div class="section-h"><h2>${t("onLeaveNow")} · ${away.length}</h2></div>
+      <div class="card">${away.map(r=>`<div class="who" style="padding:12px 14px;border-bottom:1px solid var(--line2)">
+        <div class="avatar">${esc(initials(r.applicant?.full_name))}</div><div style="flex:1"><div class="n">${esc(r.applicant?.full_name||"")}</div>
+        <div class="s">${esc(typeName(r.type_code))} · ${fmtRangeShort(r)}</div></div></div>`).join("")}</div>` : ""}`;
+}
+
+/* =====================================================================
+   Profile
+   ===================================================================== */
+async function pageMe(){
+  const m = S.me;
+  $("#main").innerHTML = `
+    <div class="card card-pad" style="display:flex;gap:14px;align-items:center">
+      <div class="avatar" style="width:54px;height:54px;border-radius:27px;font-size:18px">${esc(initials(m.full_name))}</div>
+      <div style="min-width:0"><div style="font-weight:750;font-size:17px">${esc(m.full_name)}</div>
+        <div class="small muted">${esc(m.email)}</div>
+        <div class="small muted">${[m.position, m.department, m.site].filter(Boolean).map(esc).join(" · ")}</div></div></div>
+    <div class="card card-pad" style="margin-top:12px"><dl class="kv">
+      ${m.employee_no?`<dt>${t("employeeNo")}</dt><dd>${esc(m.employee_no)}</dd>`:""}
+      <dt>${t("role")}</dt><dd>${t("role_"+m.role)}</dd>
+      <dt>${t("yourApprover")}</dt><dd>${esc(S.ctx?.approver_name || t("none"))}</dd>
+      ${m.hire_date?`<dt>${t("hireDate")}</dt><dd>${fmtDate(m.hire_date,{day:"numeric",month:"long",year:"numeric"})}</dd>`:""}
+    </dl></div>
+    <div class="section-h"><h2>${t("changePwd")}</h2></div>
+    <div class="card card-pad">${pwdFormHtml()}</div>
+    <button class="btn btn-bad btn-block" style="margin-top:18px" onclick="logout()">${t("logout")}</button>`;
+  bindPwdForm(()=>{ $("#p1").value = ""; $("#p2").value = ""; busy($("#pb"), false); });
+}
+
+/* =====================================================================
+   Admin
+   ===================================================================== */
+async function pageAdmin(){
+  const f = S.filters.admin;
+  const tabs = [["requests",t("requestsAll")],["users",t("users")],["balances",t("balances")],["settings",t("settings")]];
+  $("#main").innerHTML = `<div class="tabs">${tabs.map(([k,l]) => `<button class="${f.tab===k?"on":""}" onclick="S.filters.admin.tab='${k}';render()">${l}</button>`).join("")}</div><div id="adm"><div class="spinner"></div></div>`;
+  S.cache.profiles = await run(sb.from("profiles").select("*").order("full_name"));
+  S.cache.pmap = Object.fromEntries(S.cache.profiles.map(p=>[p.id,p]));
+  await ({ requests:admRequests, users:admUsers, balances:admBalances, settings:admSettings }[f.tab])();
+}
+const yearsOpts = sel => { const out=[]; for (let y=new Date().getFullYear()+1; y>=new Date().getFullYear()-4; y--) out.push(`<option ${y===sel?"selected":""}>${y}</option>`); return out.join(""); };
+const matchQ = (p, q) => !q || [p?.full_name, p?.employee_no, p?.department, p?.email].some(v => (v||"").toLowerCase().includes(q.toLowerCase()));
+
+async function admRequests(){
+  const f = S.filters.admin;
+  let q = sb.from("leave_requests").select("*, applicant:profiles!leave_requests_user_id_fkey(full_name,employee_no,department,position)")
+    .gte("start_date", `${f.year}-01-01`).lte("start_date", `${f.year}-12-31`).order("start_date", {ascending:false}).limit(1000);
+  if (f.status !== "all") q = q.eq("status", f.status);
+  if (f.type !== "all") q = q.eq("type_code", f.type);
+  const all = await run(q);
+  const rows = all.filter(r => matchQ(r.applicant, f.q));
+  S.cache.requests = Object.fromEntries(rows.map(r=>[r.id,r]));
+  S.cache.exportRows = rows;
+  const today = todayISO(), m0 = today.slice(0,7);
+  const pend = rows.filter(r=>r.status==="pending").length;
+  const away = rows.filter(r=>r.status==="approved" && r.start_date<=today && r.end_date>=today).length;
+  const monthDays = rows.filter(r=>r.status==="approved" && r.start_date.startsWith(m0)).reduce((s,r)=>s+Number(r.days),0);
+  $("#adm").innerHTML = `
+    <div class="stat-row">
+      <div class="card stat"><div class="k">${t("stats_pending")}</div><div class="v tabnum" style="color:var(--warn)">${pend}</div></div>
+      <div class="card stat"><div class="k">${t("stats_onleave")}</div><div class="v tabnum">${away}</div></div>
+      <div class="card stat"><div class="k">${t("stats_month")}</div><div class="v tabnum">${num(monthDays)}</div></div>
+      <div class="card stat"><div class="k">${t("stats_users")}</div><div class="v tabnum">${S.cache.profiles.filter(p=>p.active).length}</div></div></div>
+    <div class="toolbar">
+      <input class="input" id="aq" placeholder="${t("search")}" value="${esc(f.q)}">
+      <select class="input" onchange="S.filters.admin.year=+this.value;admRequests()">${yearsOpts(f.year)}</select>
+      <select class="input" onchange="S.filters.admin.status=this.value;admRequests()">${["all","pending","approved","rejected","cancelled"].map(s=>`<option value="${s}" ${f.status===s?"selected":""}>${s==="all"?t("all"):t("status_"+s)}</option>`).join("")}</select>
+      <select class="input" onchange="S.filters.admin.type=this.value;admRequests()"><option value="all">${t("leaveType")} · ${t("all")}</option>${S.types.map(x=>`<option value="${esc(x.code)}" ${f.type===x.code?"selected":""}>${esc(typeName(x.code))}</option>`).join("")}</select>
+      <button class="btn btn-ghost btn-sm" style="height:40px" onclick="exportCsv()">${IC.down} ${t("export")}</button>
+    </div>
+    <div class="m-only"><div class="list">${rows.length ? rows.map(r=>reqCard(r,{showWho:true})).join("") : emptyHtml(t("noResults"))}</div></div>
+    <div class="d-only card tbl-wrap">${rows.length ? `<table class="tbl"><thead><tr>
+      <th>${t("applicant")}</th><th>${t("leaveType")}</th><th>${t("period")}</th><th class="num">${t("duration")}</th><th>${t("approverL")}</th><th>${t("statusL")}</th></tr></thead><tbody>
+      ${rows.map(r => `<tr class="click" onclick="openRequest('${r.id}')">
+        <td><div class="who"><div class="avatar">${esc(initials(r.applicant?.full_name))}</div><div><div class="n">${esc(r.applicant?.full_name||"")}</div><div class="s">${esc([r.applicant?.employee_no, r.applicant?.department].filter(Boolean).join(" · "))}</div></div></div></td>
+        <td><span class="dot" style="background:${esc(typeOf(r.type_code).color)}"></span> ${esc(typeName(r.type_code))}</td>
+        <td>${fmtRangeShort(r)}</td><td class="num">${num(r.days)}</td>
+        <td class="small">${esc(r.decided_by_name || S.cache.pmap[r.approver_id]?.full_name || "—")}</td><td>${statusPill(r.status)}</td></tr>`).join("")}
+      </tbody></table>` : emptyHtml(t("noResults"))}</div>`;
+  let deb; $("#aq").oninput = e => { clearTimeout(deb); deb = setTimeout(()=>{ S.filters.admin.q = e.target.value; admRequests().then(()=>{ const i=$("#aq"); i.focus(); i.setSelectionRange(i.value.length,i.value.length); }); }, 250); };
+}
+function exportCsv(){
+  const rows = S.cache.exportRows || [];
+  const head = ["Référence/编号","Nom/姓名","Matricule/工号","Service/部门","Type/类型","Début/开始","Fin/结束","Demi-journée/半天","Jours/天数","Statut/状态","Valideur/审批人","Décision le/审批时间","Motif/事由","Commentaire/意见"];
+  const cell = v => `"${String(v ?? "").replace(/"/g,'""')}"`;
+  const lines = rows.map(r => [r.ref_no, r.applicant?.full_name, r.applicant?.employee_no, r.applicant?.department,
+    `${typeOf(r.type_code).name_fr} / ${typeOf(r.type_code).name_zh}`, r.start_date, r.end_date,
+    [r.start_half?"début PM":"", r.end_half?"fin AM":""].filter(Boolean).join(", "), num(r.days),
+    `${I18N.fr["status_"+r.status]} / ${I18N.zh["status_"+r.status]}`,
+    r.decided_by_name || S.cache.pmap[r.approver_id]?.full_name || "", r.decided_at ? r.decided_at.slice(0,16).replace("T"," ") : "",
+    r.reason, r.decision_comment].map(cell).join(","));
+  const blob = new Blob(["﻿" + [head.map(cell).join(","), ...lines].join("\r\n")], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = `conges_${S.filters.admin.year}_${todayISO()}.csv`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+}
+
+async function admUsers(){
+  const f = S.filters.admin, P = S.cache.profiles.filter(p => matchQ(p, f.q));
+  const card = p => `<button class="card req" onclick="editUser('${p.id}')" style="align-items:center">
+    <div class="avatar">${esc(initials(p.full_name))}</div>
+    <div class="body"><div class="top"><span class="ttl">${esc(p.full_name||p.email)}</span>
+      ${p.active ? `<span class="pill st-approved">${t("role_"+p.role)}</span>` : `<span class="pill st-cancelled">${t("inactiveL")}</span>`}</div>
+      <div class="meta">${esc([p.employee_no, p.position, p.department].filter(Boolean).join(" · ") || p.email)}</div>
+      <div class="meta">${t("approverL")} : ${esc(S.cache.pmap[p.approver_id]?.full_name || t("none"))}</div></div></button>`;
+  $("#adm").innerHTML = `
+    <div class="toolbar"><input class="input" id="uq" placeholder="${t("search")}" value="${esc(f.q)}">
+      <button class="btn btn-pri btn-sm" style="height:40px" onclick="editUser()">${IC.plus.replace("<svg","<svg width='16' height='16'")} ${t("newUser")}</button></div>
+    <div class="m-only"><div class="list">${P.map(card).join("") || emptyHtml(t("noResults"))}</div></div>
+    <div class="d-only card tbl-wrap"><table class="tbl"><thead><tr><th>${t("fullName")}</th><th>${t("email")}</th><th>${t("position")}</th><th>${t("department")}</th><th>${t("role")}</th><th>${t("approverL")}</th><th></th></tr></thead><tbody>
+      ${P.map(p => `<tr class="click" onclick="editUser('${p.id}')" style="${p.active?"":"opacity:.55"}">
+        <td><div class="who"><div class="avatar">${esc(initials(p.full_name))}</div><div><div class="n">${esc(p.full_name)}</div><div class="s">${esc(p.employee_no||"")}</div></div></div></td>
+        <td class="small">${esc(p.email)}</td><td class="small">${esc(p.position||"")}</td><td class="small">${esc(p.department||"")}</td>
+        <td>${t("role_"+p.role)}</td><td class="small">${esc(S.cache.pmap[p.approver_id]?.full_name||"—")}</td>
+        <td>${p.active?"":`<span class="pill st-cancelled">${t("inactiveL")}</span>`}</td></tr>`).join("")}</tbody></table></div>`;
+  let deb; $("#uq").oninput = e => { clearTimeout(deb); deb = setTimeout(()=>{ S.filters.admin.q = e.target.value; admUsers().then(()=>{ const i=$("#uq"); i.focus(); i.setSelectionRange(i.value.length,i.value.length); }); }, 250); };
+}
+
+async function callAdminFn(body){
+  const { data, error } = await sb.functions.invoke("admin-users", { body });
+  if (error) {
+    let payload = null; try { payload = await error.context?.json?.(); } catch(e){}
+    throw new Error(payload?.error || "ERR_FUNCTION");
+  }
+  if (data?.error) throw new Error(data.error);
+  return data;
+}
+function editUser(id){
+  const p = id ? S.cache.pmap[id] : { role:"employee", lang:"fr", active:true };
+  const isNew = !id;
+  const approvers = S.cache.profiles.filter(x => x.active && ["approver","admin"].includes(x.role) && x.id !== id);
+  const f = (k, label, type="text", extra="") => `<div class="field"><label for="u_${k}">${label}</label><input class="input" id="u_${k}" type="${type}" value="${esc(p[k]||"")}" ${extra}></div>`;
+  openSheet(isNew ? t("newUser") : t("editUser"), `<form id="uf">
+    ${isNew ? f("email", t("email")+" *", "email", 'required autocapitalize="none"') : `<div class="field"><span class="label">${t("email")}</span><div class="small">${esc(p.email)}</div></div>`}
+    ${f("full_name", t("fullName")+" *", "text", "required")}
+    <div class="row2">${f("employee_no", t("employeeNo"))}${f("hire_date", t("hireDate"), "date")}</div>
+    <div class="row2">${f("position", t("position"))}${f("department", t("department"))}</div>
+    ${f("site", t("site"), "text", 'placeholder="Boké, Conakry…"')}
+    <div class="row2">
+      <div class="field"><label for="u_role">${t("role")}</label><select class="input" id="u_role">${["employee","approver","admin"].map(r=>`<option value="${r}" ${p.role===r?"selected":""}>${t("role_"+r)}</option>`).join("")}</select></div>
+      <div class="field"><label for="u_lang">${t("lang")}</label><select class="input" id="u_lang"><option value="fr" ${p.lang==="fr"?"selected":""}>Français</option><option value="zh" ${p.lang==="zh"?"selected":""}>中文</option></select></div></div>
+    <div class="field"><label for="u_approver">${t("approver")}</label><select class="input" id="u_approver"><option value="">${t("none")}</option>
+      ${approvers.map(a=>`<option value="${a.id}" ${p.approver_id===a.id?"selected":""}>${esc(a.full_name)} — ${t("role_"+a.role)}</option>`).join("")}</select></div>
+    ${isNew ? `<div class="row2">
+      <div class="field"><label for="u_days">${t("annualDays")}</label><input class="input" id="u_days" type="number" step="0.5" min="0" value="${num(S.settings.default_annual_days)}"></div>
+      <div class="field"><label for="u_pwd">${t("tempPwd")}</label><input class="input" id="u_pwd" type="text" autocomplete="off" placeholder="${t("optional")}"></div></div>
+      <p class="small muted" style="margin:-8px 0 12px">${t("tempPwdHint")}</p>` : ""}
+    <button class="btn btn-pri btn-block" id="usv" type="submit">${t("save")}</button>
+    ${!isNew ? `<div class="actions"><button type="button" class="btn btn-ghost" id="urp">${t("resetPwd")}</button>
+      ${p.id !== S.me.id ? `<button type="button" class="btn ${p.active?"btn-bad":"btn-ghost"}" id="uac">${p.active?t("deactivate"):t("activate")}</button>` : ""}</div>` : ""}
+  </form>`, sh => {
+    const v = k => $("#u_"+k, sh)?.value.trim();
+    $("#uf", sh).onsubmit = async e => {
+      e.preventDefault(); const b = $("#usv", sh); busy(b, true);
+      const fields = { full_name:v("full_name"), employee_no:v("employee_no")||null, hire_date:v("hire_date")||null, position:v("position")||null,
+        department:v("department")||null, site:v("site")||null, role:v("role"), lang:v("lang"), approver_id:v("approver")||null };
+      try {
+        if (!fields.full_name) throw new Error("ERR_NAME");
+        if (isNew) {
+          const res = await callAdminFn({ action:"create", email:v("email"), password:v("pwd"), annual_days:v("days"), ...fields });
+          showCreds(t("credsTitle"), res.email, res.password);
+        } else {
+          await run(sb.from("profiles").update(fields).eq("id", id));
+          toast(t("saved")); closeSheet();
+        }
+        if (id === S.me.id) await loadContext();
+        await pageAdmin();
+      } catch(err){ toast(errMsg(err), true); busy(b, false); }
+    };
+    if (!isNew) {
+      $("#urp", sh).onclick = async e => { const b = e.currentTarget; busy(b, true);
+        try { const res = await callAdminFn({ action:"reset_password", user_id:id }); showCreds(t("pwdResetTitle"), p.email, res.password); }
+        catch(err){ toast(errMsg(err), true); busy(b, false); } };
+      const ac = $("#uac", sh);
+      if (ac) ac.onclick = async e => {
+        if (p.active && !confirm(t("confirmDeactivate"))) return;
+        const b = e.currentTarget; busy(b, true);
+        try { await callAdminFn({ action:"set_active", user_id:id, active:!p.active }); toast(t("saved")); closeSheet(); await pageAdmin(); }
+        catch(err){ toast(errMsg(err), true); busy(b, false); } };
+    }
+  });
+}
+function showCreds(title, email, pwd){
+  const url = location.origin + location.pathname;
+  const text = `${t("loginUrl")} : ${url}\n${t("email")} : ${email}\n${t("password")} : ${pwd}`;
+  openSheet(title, `<div class="creds">${esc(text).replace(/\n/g,"<br>")}</div>
+    <p class="small muted" style="margin:10px 0 16px">${t("credsNote")}</p>
+    <button class="btn btn-pri btn-block" id="cpy">${t("copy")}</button>`, sh => {
+    $("#cpy", sh).onclick = async () => { try { await navigator.clipboard.writeText(text); toast(t("copied")); } catch(e){ toast(text); } };
+  });
+}
+
+async function admBalances(){
+  const f = S.filters.admin;
+  const [bals, ents] = await Promise.all([ run(sb.rpc("all_balances", {p_year:f.year})), run(sb.from("leave_entitlements").select("*").eq("year", f.year)) ]);
+  const emap = Object.fromEntries(ents.map(e=>[e.user_id, e]));
+  const rows = bals.map(b => ({...b, p:S.cache.pmap[b.user_id]})).filter(r => r.p?.active && matchQ(r.p, f.q));
+  S.cache.bal = { rows, emap };
+  $("#adm").innerHTML = `
+    <div class="toolbar"><input class="input" id="bq" placeholder="${t("search")}" value="${esc(f.q)}">
+      <select class="input" onchange="S.filters.admin.year=+this.value;admBalances()">${yearsOpts(f.year)}</select></div>
+    <div class="card tbl-wrap"><table class="tbl"><thead><tr><th>${t("fullName")}</th><th class="num">${t("entitled")}</th><th class="num">${t("carried")}</th>
+      <th class="num">${t("adjustment")}</th><th class="num">${t("used")}</th><th class="num">${t("pending")}</th><th class="num">${t("available")}</th></tr></thead><tbody>
+      ${rows.map(r => `<tr class="click" onclick="editBalance('${r.user_id}')">
+        <td><div class="n" style="font-weight:650">${esc(r.p.full_name)}</div><div class="small muted">${esc(r.p.employee_no||"")}${emap[r.user_id]?"":` · <i>${S.lang==="zh"?"默认":"défaut"}</i>`}</div></td>
+        <td class="num">${num(r.entitled)}</td><td class="num">${num(r.carried_over)}</td><td class="num">${num(r.adjustment)}</td>
+        <td class="num">${num(r.used)}</td><td class="num">${num(r.pending)}</td>
+        <td class="num" style="font-weight:750;color:${Number(r.available)<0?"var(--bad)":"var(--ink)"}">${num(r.available)}</td></tr>`).join("") || `<tr><td colspan="7">${emptyHtml(t("noResults"))}</td></tr>`}
+    </tbody></table></div>`;
+  let deb; $("#bq").oninput = e => { clearTimeout(deb); deb = setTimeout(()=>{ S.filters.admin.q = e.target.value; admBalances().then(()=>{ const i=$("#bq"); i.focus(); i.setSelectionRange(i.value.length,i.value.length); }); }, 250); };
+}
+function editBalance(uid){
+  const { rows, emap } = S.cache.bal, r = rows.find(x=>x.user_id===uid), e = emap[uid], y = S.filters.admin.year;
+  openSheet(`${t("editBalance")} · ${y}`, `<p style="font-weight:700;margin-bottom:14px">${esc(r.p.full_name)}</p>
+    <form id="bf"><div class="row2">
+      <div class="field"><label>${t("entitled")}</label><input class="input" id="b1" type="number" step="0.5" min="0" value="${num(e?e.annual_days:r.entitled)}"></div>
+      <div class="field"><label>${t("carried")}</label><input class="input" id="b2" type="number" step="0.5" value="${num(e?.carried_over||0)}"></div></div>
+      <div class="field"><label>${t("adjustment")} (±)</label><input class="input" id="b3" type="number" step="0.5" value="${num(e?.adjustment||0)}"></div>
+      <div class="field"><label>${t("note")}</label><input class="input" id="b4" value="${esc(e?.note||"")}"></div>
+      <p class="small muted" style="margin-bottom:14px">${t("used")} ${fmtDays(r.used)} · ${t("pending")} ${fmtDays(r.pending)}</p>
+      <button class="btn btn-pri btn-block" id="bsv">${t("save")}</button></form>`, sh => {
+    $("#bf", sh).onsubmit = async ev => { ev.preventDefault(); const b = $("#bsv", sh); busy(b, true);
+      try { await run(sb.from("leave_entitlements").upsert({ user_id:uid, year:y, annual_days:+$("#b1",sh).value||0, carried_over:+$("#b2",sh).value||0,
+          adjustment:+$("#b3",sh).value||0, note:$("#b4",sh).value.trim()||null }));
+        toast(t("saved")); closeSheet(); admBalances(); }
+      catch(err){ toast(errMsg(err), true); busy(b, false); } };
+  });
+}
+
+async function admSettings(){
+  const s = S.settings, y = S.filters.admin.year;
+  const hol = await run(sb.from("holidays").select("*").gte("day", `${y}-01-01`).lte("day", `${y}-12-31`).order("day"));
+  $("#adm").innerHTML = `
+    <div class="card card-pad"><form id="sf">
+      <div class="field"><label>${t("countMode")}</label><select class="input" id="s1">${["ouvrables","ouvres","calendaires"].map(m=>`<option value="${m}" ${s.count_mode===m?"selected":""}>${t("mode_"+m+"_s")}</option>`).join("")}</select></div>
+      <div class="row2"><div class="field"><label>${t("defaultDays")}</label><input class="input" id="s2" type="number" step="0.5" min="0" value="${num(s.default_annual_days)}"></div>
+      <div class="field"><label>${t("companyName")}</label><input class="input" id="s3" value="${esc(s.company_name)}"></div></div>
+      <button class="btn btn-pri" id="ssv">${t("save")}</button></form></div>
+
+    <div class="section-h"><h2>${t("leaveTypes")}</h2><button onclick="editType()">+ ${t("add")}</button></div>
+    <div class="card">${S.types.map(x => `<button class="req" style="border-bottom:1px solid var(--line2);align-items:center;${x.active?"":"opacity:.5"}" onclick="editType('${esc(x.code)}')">
+      <span class="dot" style="background:${esc(x.color)};width:12px;height:12px"></span>
+      <div class="body"><div class="ttl" style="font-size:14px">${esc(x.name_fr)} · ${esc(x.name_zh)}</div>
+        <div class="meta">${x.deducts_balance?`✓ ${t("deducts")}`:""}${x.requires_attachment?` · ✓ ${t("requiresAtt")}`:""}${x.active?"":` · ${t("inactiveL")}`}</div></div></button>`).join("")}</div>
+
+    <div class="section-h"><h2>${t("holidays")} ${y}</h2>
+      <span><select class="input" style="height:32px;width:auto;font-size:13px;display:inline-block;margin-right:8px" onchange="S.filters.admin.year=+this.value;admSettings()">${yearsOpts(y)}</select>
+      <button onclick="addHoliday()">+ ${t("add")}</button></span></div>
+    <div class="notice info" style="margin:0 0 10px">${IC.info}<div>${t("holidayHint")}</div></div>
+    <div class="card">${hol.length ? hol.map(h => `<div class="who" style="padding:11px 14px;border-bottom:1px solid var(--line2)">
+      <div style="flex:1"><div class="n">${esc(S.lang==="zh"?h.name_zh:h.name_fr)}</div><div class="s">${fmtDate(h.day)}</div></div>
+      <button class="btn btn-ghost btn-sm" onclick="delHoliday('${h.day}')">${t("del")}</button></div>`).join("") : emptyHtml(t("noResults"))}</div>`;
+  $("#sf").onsubmit = async e => { e.preventDefault(); const b = $("#ssv"); busy(b, true);
+    try { const upd = { count_mode:$("#s1").value, default_annual_days:+$("#s2").value||0, company_name:$("#s3").value.trim()||s.company_name };
+      await run(sb.from("app_settings").update(upd).eq("id",1)); Object.assign(S.settings, upd); toast(t("saved")); }
+    catch(err){ toast(errMsg(err), true); } busy(b, false); };
+}
+function editType(code){
+  const x = code ? typeOf(code) : { code:"", name_zh:"", name_fr:"", color:"#0ea5e9", active:true, deducts_balance:false, requires_attachment:false, sort_order:S.types.length+1 };
+  openSheet(code ? t("edit") : t("newType"), `<form id="tf">
+    ${code ? "" : `<div class="field"><label>${t("code")}</label><input class="input" id="t0" pattern="[a-z0-9_]+" required placeholder="ex: training" autocapitalize="none"></div>`}
+    <div class="field"><label>${t("nameFr")}</label><input class="input" id="t1" value="${esc(x.name_fr)}" required></div>
+    <div class="field"><label>${t("nameZh")}</label><input class="input" id="t2" value="${esc(x.name_zh)}" required></div>
+    <div class="field"><label>${t("color")}</label><input class="input" id="t3" type="color" value="${esc(x.color)}" style="padding:4px;height:46px"></div>
+    <label class="check"><input type="checkbox" id="t4" ${x.deducts_balance?"checked":""}> ${t("deducts")}</label>
+    <label class="check"><input type="checkbox" id="t5" ${x.requires_attachment?"checked":""}> ${t("requiresAtt")}</label>
+    <label class="check"><input type="checkbox" id="t6" ${x.active?"checked":""}> ${t("activeType")}</label>
+    <button class="btn btn-pri btn-block" style="margin-top:10px" id="tsv">${t("save")}</button></form>`, sh => {
+    $("#tf", sh).onsubmit = async e => { e.preventDefault(); const b = $("#tsv", sh); busy(b, true);
+      const row = { code: code || $("#t0",sh).value.trim().toLowerCase(), name_fr:$("#t1",sh).value.trim(), name_zh:$("#t2",sh).value.trim(),
+        color:$("#t3",sh).value, deducts_balance:$("#t4",sh).checked, requires_attachment:$("#t5",sh).checked, active:$("#t6",sh).checked, sort_order:x.sort_order };
+      try { await run(sb.from("leave_types").upsert(row)); S.types = await run(sb.from("leave_types").select("*").order("sort_order"));
+        toast(t("saved")); closeSheet(); admSettings(); }
+      catch(err){ toast(errMsg(err), true); busy(b, false); } };
+  });
+}
+function addHoliday(){
+  openSheet(t("newHoliday"), `<form id="hf">
+    <div class="field"><label>${t("date")}</label><input class="input" id="h0" type="date" required></div>
+    <div class="field"><label>${t("nameFr")}</label><input class="input" id="h1" required placeholder="Aïd el-Fitr"></div>
+    <div class="field"><label>${t("nameZh")}</label><input class="input" id="h2" required placeholder="开斋节"></div>
+    <button class="btn btn-pri btn-block" id="hsv">${t("save")}</button></form>`, sh => {
+    $("#hf", sh).onsubmit = async e => { e.preventDefault(); const b = $("#hsv", sh); busy(b, true);
+      try { await run(sb.from("holidays").upsert({ day:$("#h0",sh).value, name_fr:$("#h1",sh).value.trim(), name_zh:$("#h2",sh).value.trim() }));
+        toast(t("saved")); closeSheet(); admSettings(); }
+      catch(err){ toast(errMsg(err), true); busy(b, false); } };
+  });
+}
+async function delHoliday(day){
+  if (!confirm(`${t("del")} ${fmtDate(day)} ?`)) return;
+  try { await run(sb.from("holidays").delete().eq("day", day)); toast(t("saved")); admSettings(); } catch(err){ toast(errMsg(err), true); }
+}
+
+boot();
+</script>
+</body>
+</html>
