@@ -1,0 +1,26 @@
+# 服务器统一入口（网关）/ Passerelle commune du serveur
+#
+# Caddy 监听本机 80 / 443 端口，按访问的域名把请求转给各个应用，并自动申请、续期 HTTPS 证书。
+# 每个应用在 sites/ 目录下有一个配置文件，例如 sites/leave.caddy。
+#
+# 部署位置：/opt/gateway（由 deploy/aliyun/enable-https.sh 自动安装）
+# 新增应用：见 deploy/gateway/README.md
+
+name: gateway
+
+services:
+  caddy:
+    container_name: gateway-caddy
+    image: caddy:2.8-alpine
+    restart: unless-stopped
+    # 使用主机网络：直接转发到各应用在本机开放的端口（127.0.0.1:808x）
+    network_mode: host
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./sites:/etc/caddy/sites:ro
+      - caddy_data:/data        # 证书保存在这里
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

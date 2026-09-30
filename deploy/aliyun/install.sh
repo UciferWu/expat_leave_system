@@ -136,6 +136,11 @@ fi
 
 # ---------------------------------------------------------------------
 log "4/8 对外地址 / Adresse publique"
+# 已安装且已设置过网址（例如已启用 HTTPS 域名）时，沿用原网址
+if [ -z "${PUBLIC_URL:-}" ] && [ -f "$SB_DIR/.env" ]; then
+  prev="$(env_get SUPABASE_PUBLIC_URL)"
+  case "$prev" in http://localhost*|"") ;; *) PUBLIC_URL="$prev" ;; esac
+fi
 if [ -z "${PUBLIC_URL:-}" ]; then
   ip="$(curl -fsS -m 3 http://100.100.100.200/latest/meta-data/eipv4 2>/dev/null || true)"
   [ -n "$ip" ] || ip="$(curl -fsS -m 3 http://100.100.100.200/latest/meta-data/public-ipv4 2>/dev/null || true)"

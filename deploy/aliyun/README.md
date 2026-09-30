@@ -76,13 +76,19 @@ ssh -L 8000:127.0.0.1:8000 root@公网IP
 
 ---
 
-## 四、以后绑定域名、开启 HTTPS
+## 四、绑定域名、开启 HTTPS
 
-目前通过 IP 地址以 http 访问，**登录密码在网络上不加密传输，只适合测试阶段**。正式使用前建议：
+1. 域名解析中添加 A 记录：`leave` → 本机公网 IP；安全组放行 **80 和 443**。
+2. 在服务器上运行（把域名换成实际的，邮箱用于接收证书到期提醒，可省略）：
 
-1. 准备一个子域名（如 `leave.公司域名`），添加 A 记录指向这台主机的公网 IP；安全组再放行 **443** 端口。
-2. 告诉我域名，我会补充自动申请免费 HTTPS 证书的配置；更新后运行
-   `PUBLIC_URL=https://leave.公司域名 bash /opt/leave/app/deploy/aliyun/install.sh` 即可切换。
+```bash
+cd /opt/leave/app && git pull
+bash /opt/leave/app/deploy/aliyun/enable-https.sh leave.公司域名 it@公司域名
+```
+
+脚本会：检查域名解析 → 休假系统改为只在本机 8081 端口 → 安装服务器**统一入口网关**（`/opt/gateway`）→
+自动申请并续期免费 HTTPS 证书。完成后通过 `https://leave.公司域名` 访问，直接用 IP 访问会自动跳转。
+以后在这台服务器上增加其他应用，见 [deploy/gateway/README.md](../gateway/README.md)。
 
 ---
 
