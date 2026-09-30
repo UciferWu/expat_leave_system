@@ -1,0 +1,37 @@
+# 员工休假系统：在官方 Supabase 自部署配置（self-hosted/v0.8.2）之上的改动
+# Surcharge de la configuration officielle Supabase auto-hébergée
+#
+# 由 install.sh 复制到 /opt/leave/supabase/，并通过 .env 中的
+# COMPOSE_FILE=docker-compose.yml:docker-compose.leave.yml 自动加载。
+
+services:
+
+  # 本系统不使用实时推送和连接池，关闭以节省内存
+  # Non utilisés : désactivés pour économiser la mémoire
+  realtime:
+    profiles: ["disabled"]
+  supavisor:
+    profiles: ["disabled"]
+
+  # 邮件通知函数所需的配置（可留空，留空则不发邮件）
+  # Variables pour la fonction notify-leave (facultatives)
+  functions:
+    environment:
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      APP_URL: ${APP_URL:-}
+
+  # 网页 + 接口统一入口：/ 为休假系统网页，/auth /rest /storage /functions 转发到 Supabase
+  # Point d'entrée unique : le site et les API Supabase sur le même port
+  web:
+    container_name: leave-web
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "${LEAVE_HTTP_PORT:-80}:80"
+    depends_on:
+      api-gw:
+        condition: service_healthy
+    volumes:
+      - ./leave/site:/usr/share/nginx/html:ro
+      - ./leave/nginx.conf:/etc/nginx/conf.d/default.conf:ro

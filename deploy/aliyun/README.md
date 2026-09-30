@@ -1,0 +1,96 @@
+# 部署到阿里云 ECS（Linux 主机）
+
+一条命令在一台 Linux 主机上装好整个休假系统：网页、数据库、登录、附件存储、建号和邮件函数。
+使用 Supabase 官方开源的自部署版本（固定为 `self-hosted/v0.8.2`），前端代码不需要任何修改。
+
+适用于：阿里云 **香港或海外地域**（无需 ICP 备案），Alibaba Cloud Linux 3 / CentOS / Rocky / Ubuntu / Debian，**内存 ≥ 2 GB（建议 4 GB）**，磁盘可用 ≥ 10 GB。
+
+---
+
+## 一、安装（约 15–20 分钟）
+
+**1. 放行端口**：阿里云控制台 → ECS → 实例 → 安全组 → 入方向，添加规则：TCP **80**，授权对象 `0.0.0.0/0`（22 端口用于 SSH，一般默认已开）。
+
+**2. 登录主机**：用阿里云控制台的"远程连接"（Workbench），或 `ssh root@公网IP`。
+
+**3. 运行以下两条命令**：
+
+```bash
+git clone https://github.com/UciferWu/expat_leave_system /opt/leave/app
+bash /opt/leave/app/deploy/aliyun/install.sh
+```
+
+> 如果系统提示没有 git：Alibaba Cloud Linux / CentOS 先运行 `dnf install -y git`，Ubuntu 先运行 `apt install -y git`。
+
+**4. 按提示输入第一个管理员的邮箱、姓名和密码**。
+
+完成后屏幕会显示网址（`http://公网IP`），用刚才的管理员账号登录即可。
+
+脚本会自动完成：安装 Docker（使用阿里云镜像源）→ 内存不足 4 GB 时添加交换空间 → 生成全部密钥 →
+启动服务 → 运行数据库脚本 001–010 → 创建管理员 → 设置每天凌晨 2:30 自动备份。
+中途失败可以直接重新运行，已完成的步骤会跳过。
+
+---
+
+## 二、日常维护
+
+| 操作 | 命令 |
+|---|---|
+| 更新到最新版本（会先自动备份） | `bash /opt/leave/app/deploy/aliyun/update.sh` |
+| 手动备份 | `bash /opt/leave/app/deploy/aliyun/backup.sh` |
+| 查看服务状态 | `cd /opt/leave/supabase && docker compose ps` |
+| 查看某个服务的日志 | `cd /opt/leave/supabase && docker compose logs --tail 100 functions`（或 `auth`、`db`、`web`） |
+| 重启全部服务 | `cd /opt/leave/supabase && docker compose restart` |
+
+- **备份**保存在 `/opt/leave/backups/`（数据库 + 附件，保留 14 天）。建议另外在阿里云控制台为这台 ECS 设置**自动快照**。
+- **全部密钥**在 `/opt/leave/supabase/.env`，请妥善保管，不要外传或提交到 GitHub。
+
+### 数据库管理后台（Studio）
+出于安全考虑不对外开放。需要时在自己电脑上运行：
+
+```bash
+ssh -L 8000:127.0.0.1:8000 root@公网IP
+```
+
+然后浏览器打开 http://localhost:8000 ，用户名、密码见 `.env` 中的 `DASHBOARD_USERNAME` / `DASHBOARD_PASSWORD`。
+
+---
+
+## 三、开启邮件通知（可选）
+
+1. 按主 README 第 3b 步注册 Resend、验证发信域名、创建 API Key。
+2. 编辑 `/opt/leave/supabase/.env`，填写：
+   ```
+   RESEND_API_KEY=re_xxxxxxxx
+   MAIL_FROM=员工休假系统 <leave@mail.公司域名>
+   ```
+3. 运行 `cd /opt/leave/supabase && docker compose up -d functions` 使其生效。
+
+---
+
+## 四、以后绑定域名、开启 HTTPS
+
+目前通过 IP 地址以 http 访问，**登录密码在网络上不加密传输，只适合测试阶段**。正式使用前建议：
+
+1. 准备一个子域名（如 `leave.公司域名`），添加 A 记录指向这台主机的公网 IP；安全组再放行 **443** 端口。
+2. 告诉我域名，我会补充自动申请免费 HTTPS 证书的配置；更新后运行
+   `PUBLIC_URL=https://leave.公司域名 bash /opt/leave/app/deploy/aliyun/install.sh` 即可切换。
+
+---
+
+## 五、架构说明
+
+```
+浏览器 ──80──▶ leave-web (Nginx)
+                 ├── /                          休假系统网页
+                 └── /auth /rest /storage /functions ─▶ api-gw (Envoy, 仅本机 8000)
+                                                         ├── auth      登录
+                                                         ├── rest      数据接口
+                                                         ├── storage   附件（保存在 volumes/storage）
+                                                         ├── functions admin-users、notify-leave
+                                                         └── studio    管理后台（仅 SSH 隧道）
+                                                   db (PostgreSQL 17，数据在 volumes/db/data)
+```
+
+与官方配置相比：关闭了本系统用不到的实时推送（realtime）和连接池（supavisor），网关只监听本机，
+对外只开放 80 端口。改动全部在 `docker-compose.leave.yml` 中。

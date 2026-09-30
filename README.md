@@ -77,11 +77,16 @@ Sur mobile, « Ajouter à l'écran d'accueil » pour l'utiliser comme une applic
 
 ---
 
+## 部署到阿里云 / Déploiement sur Alibaba Cloud
+在自己的 Linux 主机（阿里云 ECS 香港/海外地域）上一键部署，见 [deploy/aliyun/README.md](deploy/aliyun/README.md)。
+
 ## 文件结构 / Structure
 
 ```
 index.html                                  前端（单文件）/ interface
 config.js                                   Supabase 地址与公开密钥 / URL + clé anon
+vendor/supabase.js                          supabase-js 本地副本（不依赖 CDN）
+deploy/aliyun/                              阿里云 ECS 一键部署脚本
 manifest.webmanifest, icon.svg              添加到主屏幕 / écran d'accueil
 supabase/migrations/001_schema.sql          表、权限、业务函数、初始数据
 supabase/migrations/002_storage.sql         附件存储桶与权限
