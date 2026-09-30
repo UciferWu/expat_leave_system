@@ -1277,7 +1277,8 @@ function editUser(id){
     });
     const saveInit = uid => run(sb.from("leave_entitlements").upsert([
       { user_id:uid, year:iy, kind:"annual", carried_over:numOrNull("carry")||0, opening_used:numOrNull("oa")||0 },
-      { user_id:uid, year:iy, kind:"sick", opening_used:numOrNull("os")||0 } ], { onConflict:"user_id,year,kind" }));
+      { user_id:uid, year:iy, kind:"sick",   carried_over:0,                   opening_used:numOrNull("os")||0 } ],
+      { onConflict:"user_id,year,kind", defaultToNull:false }));
     $("#uf", sh).onsubmit = async e => {
       e.preventDefault(); const b = $("#usv", sh); busy(b, true);
       const fields = { full_name:v("full_name"), employee_no:v("employee_no")||null, position:v("position")||null, department:v("department")||null,
@@ -1291,9 +1292,13 @@ function editUser(id){
           // 函数只负责创建登录账号；其余资料由管理员直接写入档案
           const res = await callAdminFn({ action:"create", email:v("email"), password:v("pwd"),
             full_name:fields.full_name, lang:fields.lang, role:fields.role });
-          await run(sb.from("profiles").update(fields).eq("id", res.user_id));
-          await saveInit(res.user_id);
+          // 账号已创建：即使后续资料保存失败，也要显示初始密码
+          // Le compte existe déjà : toujours afficher le mot de passe initial
+          let later = null;
+          try { await run(sb.from("profiles").update(fields).eq("id", res.user_id)); await saveInit(res.user_id); }
+          catch (e2) { later = e2; }
           showCreds(t("credsTitle"), res.email, res.password);
+          if (later) toast(errMsg(later), true);
         } else {
           await run(sb.from("profiles").update(fields).eq("id", id));
           await saveInit(id);
@@ -1386,7 +1391,8 @@ function editBalance(uid){
         await run(sb.from("profiles").update({ annual_days:nn("#b0a"), sick_days:nn("#b0s") }).eq("id", uid));
         await run(sb.from("leave_entitlements").upsert([
           { user_id:uid, year:y, kind:"annual", carried_over:nn("#b1")||0, adjustment:nn("#b2")||0, opening_used:nn("#b5")||0, note:$("#b4",sh).value.trim()||null },
-          { user_id:uid, year:y, kind:"sick",   carried_over:0,             adjustment:nn("#b3")||0, opening_used:nn("#b6")||0 } ], { onConflict:"user_id,year,kind" }));
+          { user_id:uid, year:y, kind:"sick",   carried_over:0,             adjustment:nn("#b3")||0, opening_used:nn("#b6")||0, note:null } ],
+          { onConflict:"user_id,year,kind", defaultToNull:false }));
         toast(t("saved")); closeSheet(); await pageAdmin();
       } catch(err){ toast(errMsg(err), true); busy(b, false); } };
   });
