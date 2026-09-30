@@ -4,7 +4,7 @@
 # Déploiement en une commande sur un serveur Linux (Alibaba Cloud ECS)
 #
 # 用法 / Usage（root）：
-#   git clone https://github.com/UciferWu/expat_leave_system /opt/leave/app
+#   sudo git clone https://github.com/UciferWu/expat_leave_system /opt/leave/app
 #   sudo bash /opt/leave/app/deploy/aliyun/install.sh
 #
 # 可选环境变量 / Variables facultatives :
@@ -88,6 +88,14 @@ if [ "$mem_mb" -lt 3500 ] && [ -z "$(swapon --show 2>/dev/null)" ]; then
   chmod 600 /swapfile && mkswap /swapfile >/dev/null && swapon /swapfile
   grep -q '^/swapfile ' /etc/fstab || echo '/swapfile none swap sw 0 0' >> /etc/fstab
   ok "交换空间已启用"
+fi
+
+# 主机自带防火墙放行网页端口（阿里云安全组仍需在控制台单独放行）
+port="${LEAVE_HTTP_PORT:-80}"
+if systemctl is-active --quiet firewalld 2>/dev/null; then
+  firewall-cmd --permanent --add-port="${port}/tcp" >/dev/null && firewall-cmd --reload >/dev/null && ok "firewalld 已放行 ${port}/tcp"
+elif command -v ufw >/dev/null 2>&1 && ufw status 2>/dev/null | grep -q "Status: active"; then
+  ufw allow "${port}/tcp" >/dev/null && ok "ufw 已放行 ${port}/tcp"
 fi
 
 # ---------------------------------------------------------------------
@@ -185,7 +193,7 @@ $(printf '\033[1;32m')部署完成 / Déploiement terminé$(printf '\033[0m')
   网址 / Adresse      : $PUBLIC_URL
   管理员 / Admin      : 用刚才创建的邮箱和密码登录
 
-  ⚠ 请在阿里云控制台 → ECS → 安全组，放行 TCP 80 端口（入方向），否则外部无法访问。
+  ⚠ 请阿里云账号管理员在 ECS 安全组放行 TCP 80 端口（入方向），否则外部无法访问。
 
   数据库管理后台（Studio，不对外开放）：
     在自己电脑上运行  ssh -L 8000:127.0.0.1:8000 root@${PUBLIC_URL#http://}

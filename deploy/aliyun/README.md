@@ -9,24 +9,32 @@
 
 ## 一、安装（约 15–20 分钟）
 
-**1. 放行端口**：阿里云控制台 → ECS → 实例 → 安全组 → 入方向，添加规则：TCP **80**，授权对象 `0.0.0.0/0`（22 端口用于 SSH，一般默认已开）。
+> 通过**阿里云云堡垒机**登录的也完全适用：在堡垒机里打开这台主机的 SSH 会话（网页终端），以下命令都在那里运行。
+> 堡垒机账号通常不是 root，所以命令前面要加 `sudo`。
 
-**2. 登录主机**：用阿里云控制台的"远程连接"（Workbench），或 `ssh root@公网IP`。
+**1. 请阿里云账号管理员放行端口**（堡垒机账号看不到 ECS 控制台）：
+ECS 所在**安全组** → 入方向 → 添加规则：协议 TCP，端口 **80**，授权对象 `0.0.0.0/0`；并确认这台 ECS 有**公网 IP 或已绑定 EIP**。
 
-**3. 运行以下两条命令**：
+**2. 部署前检查**（只读，不做修改），把结果截图发给 Claude：
 
 ```bash
-git clone https://github.com/UciferWu/expat_leave_system /opt/leave/app
-bash /opt/leave/app/deploy/aliyun/install.sh
+curl -fsSL https://raw.githubusercontent.com/UciferWu/expat_leave_system/main/deploy/aliyun/check.sh | bash
 ```
 
-> 如果系统提示没有 git：Alibaba Cloud Linux / CentOS 先运行 `dnf install -y git`，Ubuntu 先运行 `apt install -y git`。
+**3. 安装**：
+
+```bash
+sudo git clone https://github.com/UciferWu/expat_leave_system /opt/leave/app
+sudo bash /opt/leave/app/deploy/aliyun/install.sh
+```
+
+> 如果提示没有 git：Alibaba Cloud Linux / CentOS 运行 `sudo dnf install -y git`，Ubuntu 运行 `sudo apt install -y git`。
 
 **4. 按提示输入第一个管理员的邮箱、姓名和密码**。
 
 完成后屏幕会显示网址（`http://公网IP`），用刚才的管理员账号登录即可。
 
-脚本会自动完成：安装 Docker（使用阿里云镜像源）→ 内存不足 4 GB 时添加交换空间 → 生成全部密钥 →
+脚本会自动完成：安装 Docker（使用阿里云镜像源）→ 内存不足 4 GB 时添加交换空间 → 放行主机防火墙 80 端口 → 生成全部密钥 →
 启动服务 → 运行数据库脚本 001–010 → 创建管理员 → 设置每天凌晨 2:30 自动备份。
 中途失败可以直接重新运行，已完成的步骤会跳过。
 
@@ -36,11 +44,11 @@ bash /opt/leave/app/deploy/aliyun/install.sh
 
 | 操作 | 命令 |
 |---|---|
-| 更新到最新版本（会先自动备份） | `bash /opt/leave/app/deploy/aliyun/update.sh` |
-| 手动备份 | `bash /opt/leave/app/deploy/aliyun/backup.sh` |
-| 查看服务状态 | `cd /opt/leave/supabase && docker compose ps` |
-| 查看某个服务的日志 | `cd /opt/leave/supabase && docker compose logs --tail 100 functions`（或 `auth`、`db`、`web`） |
-| 重启全部服务 | `cd /opt/leave/supabase && docker compose restart` |
+| 更新到最新版本（会先自动备份） | `sudo bash /opt/leave/app/deploy/aliyun/update.sh` |
+| 手动备份 | `sudo bash /opt/leave/app/deploy/aliyun/backup.sh` |
+| 查看服务状态 | `cd /opt/leave/supabase && sudo docker compose ps` |
+| 查看某个服务的日志 | `cd /opt/leave/supabase && sudo docker compose logs --tail 100 functions`（或 `auth`、`db`、`web`） |
+| 重启全部服务 | `cd /opt/leave/supabase && sudo docker compose restart` |
 
 - **备份**保存在 `/opt/leave/backups/`（数据库 + 附件，保留 14 天）。建议另外在阿里云控制台为这台 ECS 设置**自动快照**。
 - **全部密钥**在 `/opt/leave/supabase/.env`，请妥善保管，不要外传或提交到 GitHub。
@@ -64,7 +72,7 @@ ssh -L 8000:127.0.0.1:8000 root@公网IP
    RESEND_API_KEY=re_xxxxxxxx
    MAIL_FROM=员工休假系统 <leave@mail.公司域名>
    ```
-3. 运行 `cd /opt/leave/supabase && docker compose up -d functions` 使其生效。
+3. 运行 `cd /opt/leave/supabase && sudo docker compose up -d functions` 使其生效。
 
 ---
 
