@@ -970,8 +970,8 @@ async function openRequest(id){
   const mine = r.user_id === S.me.id;
   const canDecide = r.status === "pending" && !mine && (r.approver_id === S.me.id || isAdmin());
   const canModify = r.status === "approved" && !mine && (r.approver_id === S.me.id || isAdmin());
-  // 只有待审批的申请可以撤回；已批准的只能"修改休假"
-  const canCancel = r.status === "pending" && (mine || isAdmin());
+  // 待审批：本人或管理员可撤回；已批准：仅管理员可撤销（须填写原因）
+  const canCancel = (r.status === "pending" && (mine || isAdmin())) || (r.status === "approved" && isAdmin());
   let balHtml = "";
   const kind = typeOf(r.type_code).balance_kind;
   if (!mine && kind) {
@@ -1004,7 +1004,7 @@ async function openRequest(id){
       <div class="actions"><button class="btn btn-bad" id="rj">${t("reject")}</button><button class="btn btn-ok" id="ap">${t("approve")}</button></div>` : ""}
     ${(canCancel && !canDecide) || canModify ? `<div class="actions">
       ${canModify ? `<button class="btn btn-ghost" id="mdf">${t("modifyLeave")}</button>` : ""}
-      ${canCancel && !canDecide ? `<button class="btn btn-bad" id="cx">${t("cancelReq")}</button>` : ""}</div>` : ""}
+      ${canCancel && !canDecide ? `<button class="btn btn-bad" id="cx">${r.status === "approved" ? t("revoke") : t("cancelReq")}</button>` : ""}</div>` : ""}
   `, sh => {
     if (canModify) $("#mdf", sh).onclick = () => openModify(r);
     const dec = async (d, btn) => {
