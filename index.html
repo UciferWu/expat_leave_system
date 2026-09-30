@@ -111,6 +111,12 @@ input[type=date]::-webkit-date-and-time-value{text-align:left}
 .file-drop{display:flex;align-items:center;gap:12px;padding:13px;border:1.5px dashed var(--line);border-radius:11px;background:var(--surface);
   color:var(--muted);font-size:14px;cursor:pointer}
 .file-drop svg{width:22px;height:22px;flex-shrink:0}
+.file-drop span{line-height:1.3}
+.file-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.file-item{display:flex;align-items:center;gap:10px;padding:9px 10px 9px 12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:13.5px}
+.file-item .fn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-item .fs{color:var(--muted);font-size:12px;flex-shrink:0}
+.file-item button{width:28px;height:28px;border-radius:14px;background:var(--off-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .summary-bar{position:sticky;bottom:calc(var(--nav-h) + var(--safe-b) + 10px);margin-top:18px;background:var(--ink);color:#fff;border-radius:var(--r);
   padding:12px 14px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 24px rgba(15,23,42,.25)}
 .summary-bar .big{font-size:22px;font-weight:750;line-height:1}
@@ -263,7 +269,7 @@ zh:{
   startPm:"首日从下午开始", endAm:"末日只休上午",
   duration:"共计", afterBalance:"批准后{k}剩余", notDeducted:"不扣减额度",
   reason:"事由", destination:"休假期间所在地", contact:"紧急联系方式", optional:"选填",
-  attachment:"附件（病假证明等）", addFile:"上传文件或拍照", fileTooBig:"文件不能超过 10 MB",
+  attachment:"附件（病假证明等）", addFile:"上传文件或拍照（可多选）", fileTooBig:"文件不能超过 10 MB",
   submit:"提交", submitted:"申请已提交，等待审批", required:"必填",
   mode_ouvrables:"按工作日计算：周一至周六，不含法定假日",
   mode_ouvres:"按工作日计算：周一至周五，不含法定假日",
@@ -313,6 +319,7 @@ zh:{
   modifyLeave:"修改休假", modifyHint:"如员工提前返岗，把结束日期改为实际休假的最后一天，多出的天数会自动退回余额。也可延长，但会重新校验余额。", modifyReason:"修改原因", modifyReasonPh:"例：提前返岗", newDuration:"修改后", oldDuration:"原天数", modified:"已修改", ev_modified:"修改休假", modifiedSaved:"休假已更新", nameEn:"英文名称", perYearAll:"每年额度（从今年起生效）", unitDays:"天", unitShort:"天", ERR_NOT_APPROVED:"只能修改已批准的申请", ERR_NO_CHANGE:"日期没有变化",
   countModeDefault:"默认天数计算方式（国家未单独设置时）", useDefault:"使用默认方式", workdayOverride:"调休上班日（周末补班，计入休假天数）", workdayBadge:"调休上班", 
   initTitle:"{y} 年初始数据（系统上线前）", initHint:"用于录入系统上线前的数据：上年未休年假会加入本年额度，本年已休天数会从余额中扣除。之后在系统里批准的假期会自动累加。", carriedInit:"上年未休年假天数", openAnnual:"本年已休年假天数", openSick:"本年已休病假天数", openUsed:"系统外已休", 
+  addMoreFiles:"继续添加", filesCount:"{n} 个附件", maxFiles:"最多上传 10 个附件", removeFile:"移除", attachmentsL:"附件", ERR_TOO_MANY_FILES:"最多上传 10 个附件", 
   ERR_PROBATION:"试用期至 {d}，试用期结束前不能申请年假", ERR_BEFORE_START:"系统从 {d} 年开始使用，不能申请更早的假期",
   ERR_ACCOUNT_INACTIVE:"账号已停用，请联系人力资源部", ERR_TYPE:"请选择假期类型", ERR_DATES:"结束日期不能早于开始日期",
   ERR_HALF:"同一天不能既从下午开始又在上午结束", ERR_TOO_OLD:"不能补报 60 天以前的假期", ERR_CROSS_YEAR:"年假不能跨年，请按年度分两次申请",
@@ -338,7 +345,7 @@ fr:{
   startPm:"Début l'après-midi du premier jour", endAm:"Fin à midi le dernier jour",
   duration:"Durée", afterBalance:"Solde {k} après validation", notDeducted:"Non décompté",
   reason:"Motif", destination:"Lieu pendant le congé", contact:"Contact d'urgence", optional:"facultatif",
-  attachment:"Justificatif (certificat médical…)", addFile:"Joindre un fichier ou une photo", fileTooBig:"Fichier limité à 10 Mo",
+  attachment:"Justificatif (certificat médical…)", addFile:"Joindre des fichiers ou photos (plusieurs possibles)", fileTooBig:"Fichier limité à 10 Mo",
   submit:"Envoyer", submitted:"Demande envoyée, en attente de validation", required:"obligatoire",
   mode_ouvrables:"Décompte en jours ouvrables : du lundi au samedi, hors jours fériés",
   mode_ouvres:"Décompte en jours ouvrés : du lundi au vendredi, hors jours fériés",
@@ -388,6 +395,7 @@ fr:{
   modifyLeave:"Modifier le congé", modifyHint:"En cas de retour anticipé, indiquez le dernier jour de congé réellement pris : les jours non utilisés sont recrédités. Une prolongation est possible, sous réserve du solde.", modifyReason:"Motif de la modification", modifyReasonPh:"ex. retour anticipé", newDuration:"Nouvelle durée", oldDuration:"Durée initiale", modified:"Modifiée", ev_modified:"Congé modifié", modifiedSaved:"Congé mis à jour", nameEn:"Nom (anglais)", perYearAll:"Droits par an (à partir de cette année)", unitDays:"jours", unitShort:"j", ERR_NOT_APPROVED:"Seule une demande approuvée peut être modifiée", ERR_NO_CHANGE:"Aucune modification des dates",
   countModeDefault:"Mode de décompte par défaut (pays sans réglage propre)", useDefault:"Utiliser le mode par défaut", workdayOverride:"Jour travaillé exceptionnel (week-end travaillé, décompté)", workdayBadge:"Jour travaillé", 
   initTitle:"Données initiales {y} (avant la mise en service)", initHint:"Pour reprendre l'historique : les congés annuels non pris l'an dernier s'ajoutent aux droits, les jours déjà pris cette année sont déduits du solde. Les congés validés ensuite dans la plateforme s'ajoutent automatiquement.", carriedInit:"Congés annuels non pris N-1", openAnnual:"Congés annuels déjà pris cette année", openSick:"Congés maladie déjà pris cette année", openUsed:"Pris hors plateforme", 
+  addMoreFiles:"Ajouter d'autres fichiers", filesCount:"{n} fichier(s)", maxFiles:"10 fichiers maximum", removeFile:"Retirer", attachmentsL:"Justificatifs", ERR_TOO_MANY_FILES:"10 fichiers maximum", 
   ERR_PROBATION:"Période d'essai jusqu'au {d} : pas de congé annuel avant cette date", ERR_BEFORE_START:"La plateforme démarre en {d} : impossible de déclarer un congé antérieur",
   ERR_ACCOUNT_INACTIVE:"Compte désactivé. Contactez les RH.", ERR_TYPE:"Choisissez un type de congé", ERR_DATES:"La date de fin précède la date de début",
   ERR_HALF:"Un même jour ne peut pas commencer l'après-midi et finir à midi", ERR_TOO_OLD:"Impossible de déclarer un congé de plus de 60 jours dans le passé",
@@ -415,7 +423,7 @@ en:{
   startPm:"Start in the afternoon of the first day", endAm:"End at noon on the last day",
   duration:"Duration", afterBalance:"{k} balance after approval", notDeducted:"Not deducted",
   reason:"Reason", destination:"Location during leave", contact:"Emergency contact", optional:"optional",
-  attachment:"Supporting document (medical certificate…)", addFile:"Attach a file or photo", fileTooBig:"File limited to 10 MB",
+  attachment:"Supporting document (medical certificate…)", addFile:"Attach files or photos (several allowed)", fileTooBig:"File limited to 10 MB",
   submit:"Submit", submitted:"Request submitted, awaiting approval", required:"required",
   mode_ouvrables:"Counted in working days: Monday to Saturday, excluding public holidays",
   mode_ouvres:"Counted in working days: Monday to Friday, excluding public holidays",
@@ -468,6 +476,7 @@ en:{
   unitDays:"days", unitShort:"d", ERR_NOT_APPROVED:"Only approved requests can be edited", ERR_NO_CHANGE:"The dates have not changed",
   countModeDefault:"Default day-count method (countries without their own)", useDefault:"Use the default method", workdayOverride:"Make-up working day (weekend worked, counted as leave)", workdayBadge:"Working day", 
   initTitle:"Opening data {y} (before go-live)", initHint:"To load history: unused annual leave from last year is added to the entitlement, and days already taken this year are deducted from the balance. Leave approved in the platform afterwards is added automatically.", carriedInit:"Unused annual leave from last year", openAnnual:"Annual leave already taken this year", openSick:"Sick leave already taken this year", openUsed:"Taken outside the platform", 
+  addMoreFiles:"Add more files", filesCount:"{n} file(s)", maxFiles:"Up to 10 files", removeFile:"Remove", attachmentsL:"Attachments", ERR_TOO_MANY_FILES:"Up to 10 files", 
   ERR_PROBATION:"On probation until {d}: no annual leave before then", ERR_BEFORE_START:"The platform starts in {d}: earlier leave cannot be recorded",
   ERR_ACCOUNT_INACTIVE:"Account deactivated. Please contact HR.", ERR_TYPE:"Choose a leave type", ERR_DATES:"The end date is before the start date",
   ERR_HALF:"The same day cannot start in the afternoon and end at noon", ERR_TOO_OLD:"Leave more than 60 days in the past cannot be recorded",
@@ -815,7 +824,7 @@ const emptyHtml = msg => `<div class="empty">${IC.inbox}<div>${esc(msg)}</div></
    New request
    ===================================================================== */
 function freshForm(){ return { type: (S.types.find(x=>x.active)||{}).code, start:"", end:"", single:"full", startPm:false, endAm:false,
-  reason:"", destination:"", contact:"", file:null, days:null, bal:null }; }
+  reason:"", destination:"", contact:"", files:[], days:null, bal:null }; }
 async function pageNew(){
   if (!S.newForm) S.newForm = freshForm();
   const F = S.newForm, y = new Date().getFullYear();
@@ -838,8 +847,9 @@ async function pageNew(){
       <div class="field"><label for="fc">${t("contact")}</label><input class="input" id="fc" type="tel" value="${esc(F.contact)}" placeholder="+224 / +33"></div>
     </div>
     <div class="field"><span class="label" id="attLabel">${t("attachment")}</span>
-      <label class="file-drop" for="ff">${IC.clip}<span id="fname">${F.file ? esc(F.file.name) : t("addFile")}</span></label>
-      <input type="file" id="ff" accept="image/*,application/pdf" class="hidden"></div>
+      <label class="file-drop" for="ff">${IC.clip}<span id="fname"></span></label>
+      <input type="file" id="ff" accept="image/*,application/pdf" multiple class="hidden">
+      <div class="file-list" id="flist"></div></div>
     <div class="summary-bar"><div class="grow" id="sumTxt"></div><button class="btn" id="fsub" type="submit">${t("submit")}</button></div>
   </form>`;
 
@@ -849,10 +859,27 @@ async function pageNew(){
   $("#fs").onchange = () => { upd(); if (!F.end || F.end < F.start) { F.end = F.start; $("#fe").value = F.start; } renderHalf(); recalc(); };
   $("#fe").onchange = () => { upd(); renderHalf(); recalc(); };
   ["#fr","#fd","#fc"].forEach(s => $(s).oninput = upd);
-  $("#ff").onchange = e => { const f = e.target.files[0]; if (f && f.size > 10*1024*1024) { toast(t("fileTooBig"), true); e.target.value=""; return; }
-    F.file = f || null; $("#fname").textContent = f ? f.name : t("addFile"); };
+  $("#ff").onchange = e => {
+    const picked = Array.from(e.target.files || []); e.target.value = "";
+    for (const f of picked) {
+      if (f.size > 10*1024*1024) { toast(`${f.name} — ${t("fileTooBig")}`, true); continue; }
+      if (F.files.length >= 10) { toast(t("maxFiles"), true); break; }
+      if (!F.files.some(x => x.name === f.name && x.size === f.size)) F.files.push(f);
+    }
+    renderFiles();
+  };
+  renderFiles();
   $("#nf").onsubmit = e => { e.preventDefault(); upd(); submitNew(); };
   renderHalf(); recalc();
+}
+function fmtSize(b){ return b < 1024*1024 ? `${Math.max(1, Math.round(b/1024))} KB` : `${(b/1024/1024).toFixed(1)} MB`; }
+function renderFiles(){
+  const F = S.newForm, list = $("#flist"), lbl = $("#fname"); if (!list) return;
+  lbl.textContent = F.files.length ? `${t("addMoreFiles")} · ${t("filesCount", {n:F.files.length})}` : t("addFile");
+  list.innerHTML = F.files.map((f, i) => `<div class="file-item">${IC.clip.replace("<svg","<svg width='16' height='16' style='flex-shrink:0;color:var(--muted)'")}
+    <span class="fn">${esc(f.name)}</span><span class="fs">${fmtSize(f.size)}</span>
+    <button type="button" aria-label="${t("removeFile")}" data-rm="${i}">${IC.x.replace('width="18" height="18"','width="14" height="14"')}</button></div>`).join("");
+  list.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { F.files.splice(+b.dataset.rm, 1); renderFiles(); });
 }
 function renderHalf(){
   const F = S.newForm, box = $("#halfBox"); if (!box) return;
@@ -915,22 +942,23 @@ async function submitNew(){
   if (!F.type) return toast(t("ERR_TYPE"), true);
   if (!F.start || !F.end) return toast(t("ERR_DATES"), true);
   const ty = typeOf(F.type);
-  if (ty.requires_attachment && !F.file) return toast(t("ERR_ATTACHMENT_REQUIRED"), true);
+  if (ty.requires_attachment && !F.files.length) return toast(t("ERR_ATTACHMENT_REQUIRED"), true);
   busy(b, true);
-  let path = null;
+  const paths = [];
   try {
-    if (F.file) {
-      const safe = F.file.name.normalize("NFKD").replace(/[^\w.\-]+/g, "_").slice(-60);
-      path = `${S.me.id}/${Date.now()}-${safe}`;
-      await run(sb.storage.from("leave-attachments").upload(path, F.file, { contentType: F.file.type || undefined }));
+    for (const [i, f] of F.files.entries()) {
+      const safe = f.name.normalize("NFKD").replace(/[^\w.\-]+/g, "_").slice(-60);
+      const path = `${S.me.id}/${Date.now()}-${i}-${safe}`;
+      await run(sb.storage.from("leave-attachments").upload(path, f, { contentType: f.type || undefined }));
+      paths.push(path);
     }
     const {sh, eh} = halfFlags(F);
     const created = await run(sb.rpc("submit_leave", { p_type:F.type, p_start:F.start, p_end:F.end, p_start_half:sh, p_end_half:eh,
-      p_reason:F.reason, p_destination:F.destination, p_contact:F.contact, p_attachment:path }));
+      p_reason:F.reason, p_destination:F.destination, p_contact:F.contact, p_attachments:paths }));
     notifyApprover(created?.id);
     S.newForm = null; toast(t("submitted")); location.hash = "#mine";
   } catch(err) {
-    if (path) sb.storage.from("leave-attachments").remove([path]);
+    if (paths.length) sb.storage.from("leave-attachments").remove(paths);
     toast(errMsg(err), true); busy(b, false);
   }
 }
@@ -994,7 +1022,10 @@ async function openRequest(id){
       <dt>${t("refNo")}</dt><dd class="tabnum">${esc(r.ref_no||"")}</dd>
       <dt>${t("submittedAt")}</dt><dd>${fmtDT(r.created_at)}</dd>
     </dl>
-    ${r.attachment_path ? `<button class="btn btn-ghost btn-block" style="margin-top:14px" onclick="viewAttachment('${esc(r.attachment_path)}')">${IC.clip.replace("<svg","<svg width='18' height='18'")} ${t("viewAttachment")}</button>` : ""}
+    ${attList(r).length ? `<div class="label" style="margin:16px 0 8px">${t("attachmentsL")} · ${attList(r).length}</div>
+      <div class="file-list" style="margin-top:0">${attList(r).map(pth => `<button type="button" class="file-item" style="text-align:left;width:100%" onclick="viewAttachment('${esc(pth)}')">
+        ${IC.clip.replace("<svg","<svg width='16' height='16' style='flex-shrink:0;color:var(--muted)'")}
+        <span class="fn">${esc(attName(pth))}</span><span class="fs" style="color:var(--pri2);font-weight:600">${t("viewAttachment")}</span></button>`).join("")}</div>` : ""}
     <div class="hr"></div>
     <div class="label" style="margin-bottom:10px">${t("history")}</div>
     <ul class="timeline">${(events||[]).map(ev => `<li class="${evCls(ev.action)}"><div class="t1">${t("ev_"+ev.action)} · ${esc(ev.actor_name||"")}</div>
@@ -1066,6 +1097,8 @@ function openModify(r){
       catch(err){ toast(errMsg(err), true); busy(b, false); } };
   });
 }
+const attList = r => (r.attachment_paths && r.attachment_paths.length) ? r.attachment_paths : (r.attachment_path ? [r.attachment_path] : []);
+const attName = p => p.split("/").pop().replace(/^\d+-(\d+-)?/, "");
 async function viewAttachment(path){
   const w = window.open("", "_blank");
   try { const d = await run(sb.storage.from("leave-attachments").createSignedUrl(path, 300));

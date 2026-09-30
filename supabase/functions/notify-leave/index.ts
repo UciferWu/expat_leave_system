@@ -28,7 +28,7 @@ const TXT: Record<string, Record<string, string>> = {
     intro: "{name} 提交了一份休假申请，请登录系统审批。",
     employee: "申请人", type: "假期类型", period: "休假时间", days: "天数", reason: "事由",
     destination: "休假期间所在地", contact: "紧急联系方式", ref: "编号", balance: "申请人{kind}余额",
-    balanceVal: "剩余 {avail} 天（审批中 {pend} 天，含本次）", attachment: "附件", hasAttachment: "已上传，请在系统中查看",
+    balanceVal: "剩余 {avail} 天（审批中 {pend} 天，含本次）", attachment: "附件", hasAttachment: "{n} 个，请在系统中查看",
     button: "查看并审批", fallback: "如果按钮无法点击，请复制以下链接到浏览器打开：",
     footer: "此邮件由员工休假系统自动发送，请勿直接回复。",
     am: "上午", pm: "下午", unit: "天", annual: "年假", sick: "病假",
@@ -39,7 +39,7 @@ const TXT: Record<string, Record<string, string>> = {
     intro: "{name} a soumis une demande de congé. Merci de vous connecter pour la traiter.",
     employee: "Demandeur", type: "Type de congé", period: "Période", days: "Durée", reason: "Motif",
     destination: "Lieu pendant le congé", contact: "Contact d'urgence", ref: "Référence", balance: "Solde {kind} du demandeur",
-    balanceVal: "{avail} j restants ({pend} j en attente, cette demande comprise)", attachment: "Justificatif", hasAttachment: "Joint — à consulter dans la plateforme",
+    balanceVal: "{avail} j restants ({pend} j en attente, cette demande comprise)", attachment: "Justificatif", hasAttachment: "{n} fichier(s) — à consulter dans la plateforme",
     button: "Voir et valider", fallback: "Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :",
     footer: "E-mail envoyé automatiquement par la plateforme de gestion des congés. Merci de ne pas y répondre.",
     am: "matin", pm: "après-midi", unit: "j", annual: "congés annuels", sick: "congés maladie",
@@ -50,7 +50,7 @@ const TXT: Record<string, Record<string, string>> = {
     intro: "{name} has submitted a leave request. Please sign in to review it.",
     employee: "Employee", type: "Leave type", period: "Period", days: "Duration", reason: "Reason",
     destination: "Location during leave", contact: "Emergency contact", ref: "Reference", balance: "Employee {kind} balance",
-    balanceVal: "{avail} days left ({pend} pending, incl. this request)", attachment: "Supporting document", hasAttachment: "Attached — view it in the platform",
+    balanceVal: "{avail} days left ({pend} pending, incl. this request)", attachment: "Supporting document", hasAttachment: "{n} file(s) — view them in the platform",
     button: "Review and approve", fallback: "If the button does not work, copy this link into your browser:",
     footer: "This email was sent automatically by the leave management system. Please do not reply.",
     am: "morning", pm: "afternoon", unit: "days", annual: "annual leave", sick: "sick leave",
@@ -66,7 +66,7 @@ export function renderEmail(lang: string, d: {
   name: string; employeeNo?: string | null; department?: string | null; typeName: string; color?: string;
   start: string; end: string; startHalf: boolean; endHalf: boolean; days: number;
   reason?: string | null; destination?: string | null; contact?: string | null; ref?: string | null;
-  hasAttachment?: boolean; balance?: { kind: string; available: number; pending: number } | null; link: string;
+  hasAttachment?: number; balance?: { kind: string; available: number; pending: number } | null; link: string;
 }) {
   const T = TXT[lang] || TXT.fr;
   const loc = lang === "zh" ? "zh-CN" : lang === "en" ? "en-GB" : "fr-FR";
@@ -96,7 +96,7 @@ export function renderEmail(lang: string, d: {
     d.reason ? row(T.reason, esc(d.reason)) : "",
     d.destination ? row(T.destination, esc(d.destination)) : "",
     d.contact ? row(T.contact, esc(d.contact)) : "",
-    d.hasAttachment ? row(T.attachment, esc(T.hasAttachment)) : "",
+    d.hasAttachment ? row(T.attachment, esc(fill(T.hasAttachment, { n: String(d.hasAttachment) }))) : "",
     d.ref ? row(T.ref, esc(d.ref)) : "",
   ].join("");
 
@@ -191,7 +191,7 @@ if (typeof Deno !== "undefined") Deno.serve(async (req) => {
       typeName: typeName || r.type_code, color: lt?.color,
       start: r.start_date, end: r.end_date, startHalf: r.start_half, endHalf: r.end_half, days: r.days,
       reason: r.reason, destination: r.destination, contact: r.contact, ref: r.ref_no,
-      hasAttachment: !!r.attachment_path, balance, link,
+      hasAttachment: (r.attachment_paths?.length || (r.attachment_path ? 1 : 0)), balance, link,
     });
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
