@@ -283,7 +283,7 @@ zh:{
   newUser:"新建账号", editUser:"编辑用户",
   fullName:"姓名", employeeNo:"工号", position:"职位", department:"部门", workCountry:"工作国家", nationality:"国籍",
   probationEnd:"试用期截止日期", probationHint:"试用期结束前不能申请年假", annualDaysL:"年假天数 / 年", sickDaysL:"病假天数 / 年",
-  daysHint:"设置一次，适用于所有年份；入职当年按剩余天数自动折算。留空则使用默认值 {a} / {s} 天。",
+  daysHint:"修改后从今年起生效，以往年份保持原天数；入职当年按剩余天数自动折算。留空则使用默认值 {a} / {s} 天。",
   annualShort:"年假", sickShort:"病假", kl_annual:"年假", kl_sick:"病假", prorated:"入职当年折算", fullYear:"全年额度", thisYear:"{y} 年",
   sickTitle:"{y} 年病假可用", inProbation:"试用期至 {d}，此前不能申请年假。",
   balanceKind:"扣减哪项额度", kind_none:"不扣减", kind_annual:"年假额度", kind_sick:"病假额度",
@@ -310,7 +310,7 @@ zh:{
   setupTitle:"尚未连接数据库", setupBody:"请在 config.js 中填入 Supabase 的 Project URL 和 anon key，然后刷新页面。",
   onLeaveNow:"正在休假", stats_pending:"待审批", stats_onleave:"今日休假", stats_month:"本月批准天数", stats_users:"在职人数",
   dayUnit:"天", from:"从", to:"至", noResults:"没有符合条件的记录", count:"条",
-  modifyLeave:"修改休假", modifyHint:"如员工提前返岗，把结束日期改为实际休假的最后一天，多出的天数会自动退回余额。也可延长，但会重新校验余额。", modifyReason:"修改原因", modifyReasonPh:"例：提前返岗", newDuration:"修改后", oldDuration:"原天数", modified:"已修改", ev_modified:"修改休假", modifiedSaved:"休假已更新", nameEn:"英文名称", perYearAll:"每年额度（适用于所有年份）", unitDays:"天", unitShort:"天", ERR_NOT_APPROVED:"只能修改已批准的申请", ERR_NO_CHANGE:"日期没有变化",
+  modifyLeave:"修改休假", modifyHint:"如员工提前返岗，把结束日期改为实际休假的最后一天，多出的天数会自动退回余额。也可延长，但会重新校验余额。", modifyReason:"修改原因", modifyReasonPh:"例：提前返岗", newDuration:"修改后", oldDuration:"原天数", modified:"已修改", ev_modified:"修改休假", modifiedSaved:"休假已更新", nameEn:"英文名称", perYearAll:"每年额度（从今年起生效）", unitDays:"天", unitShort:"天", ERR_NOT_APPROVED:"只能修改已批准的申请", ERR_NO_CHANGE:"日期没有变化",
   countModeDefault:"默认天数计算方式（国家未单独设置时）", useDefault:"使用默认方式", workdayOverride:"调休上班日（周末补班，计入休假天数）", workdayBadge:"调休上班", 
   initTitle:"{y} 年初始数据（系统上线前）", initHint:"用于录入系统上线前的数据：上年未休年假会加入本年额度，本年已休天数会从余额中扣除。之后在系统里批准的假期会自动累加。", carriedInit:"上年未休年假天数", openAnnual:"本年已休年假天数", openSick:"本年已休病假天数", openUsed:"系统外已休", 
   ERR_PROBATION:"试用期至 {d}，试用期结束前不能申请年假", ERR_BEFORE_START:"系统从 {d} 年开始使用，不能申请更早的假期",
@@ -358,7 +358,7 @@ fr:{
   newUser:"Nouveau compte", editUser:"Modifier l'utilisateur",
   fullName:"Nom complet", employeeNo:"Matricule", position:"Poste", department:"Service", workCountry:"Pays d'affectation", nationality:"Nationalité",
   probationEnd:"Fin de période d'essai", probationHint:"Pas de congé annuel avant la fin de la période d'essai", annualDaysL:"Congés annuels / an", sickDaysL:"Congés maladie / an",
-  daysHint:"Défini une fois pour toutes les années ; proratisé automatiquement l'année d'entrée. Vide = valeurs par défaut ({a} / {s} j).",
+  daysHint:"Une modification s'applique à partir de l'année en cours ; les années passées gardent leurs droits. Proratisé l'année d'entrée. Vide = valeurs par défaut ({a} / {s} j).",
   annualShort:"Congés annuels", sickShort:"Maladie", kl_annual:"congés annuels", kl_sick:"congés maladie", prorated:"Proratisé (année d'entrée)", fullYear:"Droits annuels pleins", thisYear:"{y}",
   sickTitle:"Congés maladie disponibles {y}", inProbation:"Période d'essai jusqu'au {d} : pas de congé annuel avant cette date.",
   balanceKind:"Imputé sur", kind_none:"Non décompté", kind_annual:"Solde congés annuels", kind_sick:"Solde congés maladie",
@@ -385,7 +385,7 @@ fr:{
   setupTitle:"Base de données non connectée", setupBody:"Renseignez l'URL du projet Supabase et la clé anon dans config.js, puis rechargez la page.",
   onLeaveNow:"En congé", stats_pending:"En attente", stats_onleave:"En congé aujourd'hui", stats_month:"Jours approuvés ce mois", stats_users:"Comptes actifs",
   dayUnit:"j", from:"du", to:"au", noResults:"Aucun résultat", count:"",
-  modifyLeave:"Modifier le congé", modifyHint:"En cas de retour anticipé, indiquez le dernier jour de congé réellement pris : les jours non utilisés sont recrédités. Une prolongation est possible, sous réserve du solde.", modifyReason:"Motif de la modification", modifyReasonPh:"ex. retour anticipé", newDuration:"Nouvelle durée", oldDuration:"Durée initiale", modified:"Modifiée", ev_modified:"Congé modifié", modifiedSaved:"Congé mis à jour", nameEn:"Nom (anglais)", perYearAll:"Droits par an (toutes années)", unitDays:"jours", unitShort:"j", ERR_NOT_APPROVED:"Seule une demande approuvée peut être modifiée", ERR_NO_CHANGE:"Aucune modification des dates",
+  modifyLeave:"Modifier le congé", modifyHint:"En cas de retour anticipé, indiquez le dernier jour de congé réellement pris : les jours non utilisés sont recrédités. Une prolongation est possible, sous réserve du solde.", modifyReason:"Motif de la modification", modifyReasonPh:"ex. retour anticipé", newDuration:"Nouvelle durée", oldDuration:"Durée initiale", modified:"Modifiée", ev_modified:"Congé modifié", modifiedSaved:"Congé mis à jour", nameEn:"Nom (anglais)", perYearAll:"Droits par an (à partir de cette année)", unitDays:"jours", unitShort:"j", ERR_NOT_APPROVED:"Seule une demande approuvée peut être modifiée", ERR_NO_CHANGE:"Aucune modification des dates",
   countModeDefault:"Mode de décompte par défaut (pays sans réglage propre)", useDefault:"Utiliser le mode par défaut", workdayOverride:"Jour travaillé exceptionnel (week-end travaillé, décompté)", workdayBadge:"Jour travaillé", 
   initTitle:"Données initiales {y} (avant la mise en service)", initHint:"Pour reprendre l'historique : les congés annuels non pris l'an dernier s'ajoutent aux droits, les jours déjà pris cette année sont déduits du solde. Les congés validés ensuite dans la plateforme s'ajoutent automatiquement.", carriedInit:"Congés annuels non pris N-1", openAnnual:"Congés annuels déjà pris cette année", openSick:"Congés maladie déjà pris cette année", openUsed:"Pris hors plateforme", 
   ERR_PROBATION:"Période d'essai jusqu'au {d} : pas de congé annuel avant cette date", ERR_BEFORE_START:"La plateforme démarre en {d} : impossible de déclarer un congé antérieur",
@@ -435,7 +435,7 @@ en:{
   newUser:"New account", editUser:"Edit user",
   fullName:"Full name", employeeNo:"Employee no.", position:"Position", department:"Department", workCountry:"Work country", nationality:"Nationality",
   probationEnd:"Probation end date", probationHint:"No annual leave before the end of probation", annualDaysL:"Annual leave / year", sickDaysL:"Sick leave / year",
-  daysHint:"Set once for all years; prorated automatically in the hiring year. Leave blank to use the defaults ({a} / {s} days).",
+  daysHint:"Changes apply from the current year; past years keep their entitlement. Prorated in the hiring year. Leave blank to use the defaults ({a} / {s} days).",
   annualShort:"Annual leave", sickShort:"Sick leave", kl_annual:"annual leave", kl_sick:"sick leave", prorated:"Prorated (hiring year)", fullYear:"Full-year entitlement", thisYear:"{y}",
   sickTitle:"Sick leave available {y}", inProbation:"On probation until {d}: annual leave cannot start before then.",
   balanceKind:"Deducted from", kind_none:"Not deducted", kind_annual:"Annual leave balance", kind_sick:"Sick leave balance",
@@ -464,7 +464,7 @@ en:{
   dayUnit:"d", from:"from", to:"to", noResults:"No results", count:"",
   modifyLeave:"Edit leave", modifyHint:"If the employee returned early, set the end date to the last day actually taken: unused days are credited back. Extensions are possible, subject to balance.",
   modifyReason:"Reason for change", modifyReasonPh:"e.g. returned early", newDuration:"New duration", oldDuration:"Original duration", modified:"Edited",
-  ev_modified:"Leave edited", modifiedSaved:"Leave updated", perYearAll:"Yearly entitlement (all years)",
+  ev_modified:"Leave edited", modifiedSaved:"Leave updated", perYearAll:"Yearly entitlement (from this year)",
   unitDays:"days", unitShort:"d", ERR_NOT_APPROVED:"Only approved requests can be edited", ERR_NO_CHANGE:"The dates have not changed",
   countModeDefault:"Default day-count method (countries without their own)", useDefault:"Use the default method", workdayOverride:"Make-up working day (weekend worked, counted as leave)", workdayBadge:"Working day", 
   initTitle:"Opening data {y} (before go-live)", initHint:"To load history: unused annual leave from last year is added to the entitlement, and days already taken this year are deducted from the balance. Leave approved in the platform afterwards is added automatically.", carriedInit:"Unused annual leave from last year", openAnnual:"Annual leave already taken this year", openSick:"Sick leave already taken this year", openUsed:"Taken outside the platform", 
@@ -970,7 +970,8 @@ async function openRequest(id){
   const mine = r.user_id === S.me.id;
   const canDecide = r.status === "pending" && !mine && (r.approver_id === S.me.id || isAdmin());
   const canModify = r.status === "approved" && !mine && (r.approver_id === S.me.id || isAdmin());
-  const canCancel = (mine && r.status === "pending") || (isAdmin() && ["pending","approved"].includes(r.status));
+  // 只有待审批的申请可以撤回；已批准的只能"修改休假"
+  const canCancel = r.status === "pending" && (mine || isAdmin());
   let balHtml = "";
   const kind = typeOf(r.type_code).balance_kind;
   if (!mine && kind) {
@@ -1003,7 +1004,7 @@ async function openRequest(id){
       <div class="actions"><button class="btn btn-bad" id="rj">${t("reject")}</button><button class="btn btn-ok" id="ap">${t("approve")}</button></div>` : ""}
     ${(canCancel && !canDecide) || canModify ? `<div class="actions">
       ${canModify ? `<button class="btn btn-ghost" id="mdf">${t("modifyLeave")}</button>` : ""}
-      ${canCancel && !canDecide ? `<button class="btn btn-bad" id="cx">${mine && r.status==="pending" ? t("cancelReq") : t("revoke")}</button>` : ""}</div>` : ""}
+      ${canCancel && !canDecide ? `<button class="btn btn-bad" id="cx">${t("cancelReq")}</button>` : ""}</div>` : ""}
   `, sh => {
     if (canModify) $("#mdf", sh).onclick = () => openModify(r);
     const dec = async (d, btn) => {
