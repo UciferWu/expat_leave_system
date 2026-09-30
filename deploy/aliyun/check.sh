@@ -29,7 +29,7 @@ for u in https://github.com https://raw.githubusercontent.com https://mirrors.al
 done
 
 echo "== 已有软件 / Logiciels"
-command -v git >/dev/null && ok "git" || inf "git 未安装（安装脚本前需要：dnf install -y git 或 apt install -y git）"
+command -v git >/dev/null && ok "git" || inf "git 未安装（先运行：yum install -y git，或 dnf / apt install -y git）"
 command -v docker >/dev/null && ok "$(docker --version)" || inf "Docker 未安装（安装脚本会自动安装）"
 
 echo "== 端口 / Ports"

@@ -3,7 +3,7 @@
 一条命令在一台 Linux 主机上装好整个休假系统：网页、数据库、登录、附件存储、建号和邮件函数。
 使用 Supabase 官方开源的自部署版本（固定为 `self-hosted/v0.8.2`），前端代码不需要任何修改。
 
-适用于：阿里云 **香港或海外地域**（无需 ICP 备案），Alibaba Cloud Linux 3 / CentOS / Rocky / Ubuntu / Debian，**内存 ≥ 2 GB（建议 4 GB）**，磁盘可用 ≥ 10 GB。
+适用于：阿里云 **香港或海外地域**（无需 ICP 备案），Alibaba Cloud Linux 3 / CentOS 7（已停止维护，可用但建议日后升级）/ Rocky / Ubuntu / Debian，**内存 ≥ 2 GB（建议 4 GB）**，磁盘可用 ≥ 10 GB。
 
 ---
 
@@ -28,7 +28,7 @@ sudo git clone https://github.com/UciferWu/expat_leave_system /opt/leave/app
 sudo bash /opt/leave/app/deploy/aliyun/install.sh
 ```
 
-> 如果提示没有 git：Alibaba Cloud Linux / CentOS 运行 `sudo dnf install -y git`，Ubuntu 运行 `sudo apt install -y git`。
+> 如果提示没有 git：CentOS 7 运行 `sudo yum install -y git`，Alibaba Cloud Linux 3 运行 `sudo dnf install -y git`，Ubuntu 运行 `sudo apt install -y git`。
 
 **4. 按提示输入第一个管理员的邮箱、姓名和密码**。
 

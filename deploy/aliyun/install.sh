@@ -44,9 +44,45 @@ if [ "$FAM" = debian ]; then
   apt-get install -y -qq git curl openssl jq ca-certificates gnupg cron >/dev/null
   systemctl enable --now cron >/dev/null 2>&1 || true
 else
-  "$PKG" install -y -q git curl openssl jq ca-certificates cronie >/dev/null
+  if [ "$ID" = centos ] && [ "${VERSION_ID%%.*}" = 7 ]; then
+    warn "CentOS 7 已于 2024 年 6 月停止维护，建议日后升级到 Alibaba Cloud Linux 3"
+    # 官方源已下线：若无法使用，切换到阿里云的 CentOS 7 归档源
+    if ! yum -q makecache >/dev/null 2>&1; then
+      mkdir -p /etc/yum.repos.d/backup-leave
+      mv /etc/yum.repos.d/CentOS-*.repo /etc/yum.repos.d/backup-leave/ 2>/dev/null || true
+      cat > /etc/yum.repos.d/CentOS-Vault-Aliyun.repo <<'REPO'
+[base]
+name=CentOS-7.9.2009 - Base (Aliyun vault)
+baseurl=https://mirrors.aliyun.com/centos-vault/7.9.2009/os/$basearch/
+gpgcheck=1
+gpgkey=https://mirrors.aliyun.com/centos-vault/RPM-GPG-KEY-CentOS-7
+[updates]
+name=CentOS-7.9.2009 - Updates (Aliyun vault)
+baseurl=https://mirrors.aliyun.com/centos-vault/7.9.2009/updates/$basearch/
+gpgcheck=1
+gpgkey=https://mirrors.aliyun.com/centos-vault/RPM-GPG-KEY-CentOS-7
+[extras]
+name=CentOS-7.9.2009 - Extras (Aliyun vault)
+baseurl=https://mirrors.aliyun.com/centos-vault/7.9.2009/extras/$basearch/
+gpgcheck=1
+gpgkey=https://mirrors.aliyun.com/centos-vault/RPM-GPG-KEY-CentOS-7
+REPO
+      yum clean all -q >/dev/null 2>&1; yum -q makecache >/dev/null || die "CentOS 7 软件源不可用"
+      ok "已切换到阿里云 CentOS 7 归档源"
+    fi
+  fi
+  "$PKG" install -y -q git curl openssl ca-certificates cronie >/dev/null
   "$PKG" install -y -q dnf-plugins-core >/dev/null 2>&1 || "$PKG" install -y -q yum-utils >/dev/null 2>&1 || true
+  "$PKG" install -y -q jq >/dev/null 2>&1 || true
   systemctl enable --now crond >/dev/null 2>&1 || true
+fi
+# jq 不在部分系统的默认源中（如 CentOS 7）：直接下载官方二进制
+if ! command -v jq >/dev/null 2>&1; then
+  case "$(uname -m)" in x86_64) a=amd64 ;; aarch64|arm64) a=arm64 ;; *) a="" ;; esac
+  [ -n "$a" ] || die "无法安装 jq（不支持的架构 $(uname -m)）"
+  curl -fsSL -o /usr/local/bin/jq "https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-linux-$a" && chmod +x /usr/local/bin/jq \
+    || die "无法下载 jq"
+  export PATH="/usr/local/bin:$PATH"
 fi
 ok "git / curl / openssl / jq / cron"
 
@@ -82,7 +118,7 @@ fi
 docker compose version >/dev/null 2>&1 || die "docker compose 插件不可用"
 
 # 内存小于 4 GB 时增加 2 GB 交换空间，避免内存不足
-if [ "$mem_mb" -lt 3500 ] && [ -z "$(swapon --show 2>/dev/null)" ]; then
+if [ "$mem_mb" -lt 3500 ] && [ "$(awk 'NR>1' /proc/swaps | wc -l)" = 0 ]; then
   log "内存 ${mem_mb} MB，添加 2 GB 交换空间 / Ajout de 2 Go de swap"
   fallocate -l 2G /swapfile 2>/dev/null || dd if=/dev/zero of=/swapfile bs=1M count=2048 status=none
   chmod 600 /swapfile && mkswap /swapfile >/dev/null && swapon /swapfile
@@ -116,11 +152,15 @@ mkdir -p "$LEAVE_BASE"
 if [ -f "$SB_DIR/.env" ]; then
   ok "已存在，保留原有密钥：$SB_DIR/.env"
 else
-  curl -fsSL "https://raw.githubusercontent.com/supabase/supabase/refs/tags/${SB_REF}/docker/setup.sh" -o /tmp/supabase-setup.sh \
-    || die "无法下载 Supabase 官方安装脚本（请检查主机能否访问 GitHub）"
-  # 官方脚本：下载配置文件、生成全部密钥（不再安装软件，也不交互）
-  (cd "$LEAVE_BASE" && sh /tmp/supabase-setup.sh --skip-deps -y --ref "$SB_REF" --project-dir supabase)
-  [ -f "$SB_DIR/.env" ] || die "Supabase 配置生成失败"
+  mkdir -p "$SB_DIR"
+  cp -a "$DEPLOY_DIR/supabase-docker/." "$SB_DIR/"
+  cp "$SB_DIR/.env.example" "$SB_DIR/.env"
+  echo "ref=$SB_REF" > "$SB_DIR/.supabase-version"
+  # 官方脚本生成全部密钥（第二个脚本会用 Docker 临时运行 node）
+  (cd "$SB_DIR" && sh utils/generate-keys.sh --update-env >/dev/null) || die "密钥生成失败"
+  (cd "$SB_DIR" && sh utils/add-new-auth-keys.sh --update-env >/dev/null) || die "新版 API 密钥生成失败"
+  rm -f "$SB_DIR/.env.old"
+  grep -q '^JWT_SECRET=your-super-secret' "$SB_DIR/.env" && die "密钥未正确生成"
   ok "配置和密钥已生成"
 fi
 
