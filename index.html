@@ -930,8 +930,9 @@ async function recalc(){
     el.innerHTML = `<div class="lbl">${t("duration")}</div><div class="big tabnum">${fmtDays(F.days)}</div>${extra}`;
   } catch(e) { el.innerHTML = `<div class="warnline">${esc(errMsg(e))}</div>`; }
 }
-// 通知审批人（邮件）；失败不影响申请本身 / l'échec n'affecte pas la demande
-function notifyApprover(id){
+// 邮件提醒（提交、审批、修改、撤回后调用）；失败不影响操作本身
+// Notification e-mail après chaque action ; un échec n'affecte pas l'action
+function notifyLeave(id){
   if (!id) return;
   sb.functions.invoke("notify-leave", { body:{ request_id:id } })
     .then(({ data, error }) => { if (error || data?.error) console.warn("notify-leave", error || data); })
@@ -955,7 +956,7 @@ async function submitNew(){
     const {sh, eh} = halfFlags(F);
     const created = await run(sb.rpc("submit_leave", { p_type:F.type, p_start:F.start, p_end:F.end, p_start_half:sh, p_end_half:eh,
       p_reason:F.reason, p_destination:F.destination, p_contact:F.contact, p_attachments:paths }));
-    notifyApprover(created?.id);
+    notifyLeave(created?.id);
     S.newForm = null; toast(t("submitted")); location.hash = "#mine";
   } catch(err) {
     if (paths.length) sb.storage.from("leave-attachments").remove(paths);
@@ -1041,7 +1042,7 @@ async function openRequest(id){
     const dec = async (d, btn) => {
       busy(btn, true);
       try { await run(sb.rpc("decide_leave", {p_id:r.id, p_decision:d, p_comment:$("#dc").value}));
-        toast(t(d)); closeSheet(); await refreshPendingCount(); render(); }
+        notifyLeave(r.id); toast(t(d)); closeSheet(); await refreshPendingCount(); render(); }
       catch(e){ toast(errMsg(e), true); busy(btn, false); }
     };
     if (canDecide) { $("#ap", sh).onclick = e => dec("approved", e.currentTarget); $("#rj", sh).onclick = e => dec("rejected", e.currentTarget); }
@@ -1050,7 +1051,7 @@ async function openRequest(id){
       if (!mine || r.status === "approved") { comment = prompt(t("revokeReason")); if (comment === null) return; }
       else if (!confirm(t("confirmCancel"))) return;
       const btn = e.currentTarget; busy(btn, true);
-      try { await run(sb.rpc("cancel_leave", {p_id:r.id, p_comment:comment})); toast(t("cancelled")); closeSheet(); await refreshPendingCount(); render(); }
+      try { await run(sb.rpc("cancel_leave", {p_id:r.id, p_comment:comment})); notifyLeave(r.id); toast(t("cancelled")); closeSheet(); await refreshPendingCount(); render(); }
       catch(err){ toast(errMsg(err), true); busy(btn, false); }
     };
   });
@@ -1093,7 +1094,7 @@ function openModify(r){
     ["#ms","#me","#msh","#meh"].forEach(q => $(q,sh).onchange = calc);
     $("#mf", sh).onsubmit = async e => { e.preventDefault(); const b = $("#msv", sh); busy(b, true);
       try { await run(sb.rpc("modify_leave", {p_id:r.id, p_start:M.start, p_end:M.end, p_start_half:M.sh, p_end_half:M.eh, p_comment:$("#mr",sh).value}));
-        toast(t("modifiedSaved")); closeSheet(); render(); }
+        notifyLeave(r.id); toast(t("modifiedSaved")); closeSheet(); render(); }
       catch(err){ toast(errMsg(err), true); busy(b, false); } };
   });
 }

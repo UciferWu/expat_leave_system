@@ -15,7 +15,7 @@ die()  { printf '\n\033[1;31m错误 / Erreur : %s\033[0m\n' "$*" >&2; exit 1; }
 require_root() { [ "$(id -u)" = 0 ] || die "请用 root 运行 / exécuter en root : sudo bash $0"; }
 
 # 读取 / 写入 .env 中的变量
-env_get() { grep -E "^$1=" "$SB_DIR/.env" 2>/dev/null | tail -1 | cut -d= -f2- | sed -e 's/^"//' -e 's/"$//'; }
+env_get() { grep -E "^$1=" "$SB_DIR/.env" 2>/dev/null | tail -1 | cut -d= -f2- | sed -e 's/^"//' -e 's/"$//' -e "s/^'//" -e "s/'\$//"; }
 env_set() {
   local key="$1" val="$2" f="$SB_DIR/.env"
   if grep -qE "^$key=" "$f"; then

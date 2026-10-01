@@ -64,15 +64,26 @@ ssh -L 8000:127.0.0.1:8000 root@公网IP
 
 ---
 
-## 三、开启邮件通知（可选）
+## 三、开启邮件提醒
 
-1. 按主 README 第 3b 步注册 Resend、验证发信域名、创建 API Key。
-2. 编辑 `/opt/leave/supabase/.env`，填写：
-   ```
-   RESEND_API_KEY=re_xxxxxxxx
-   MAIL_FROM=员工休假系统 <leave@mail.公司域名>
-   ```
-3. 运行 `cd /opt/leave/supabase && sudo docker compose up -d functions` 使其生效。
+| 操作 | 收件人 |
+|---|---|
+| 员工提交申请 | 审批人（未指定审批人时发给管理员） |
+| 批准 / 驳回 / 修改已批准的休假 / 管理员撤销 | 申请人 |
+| 员工撤回待审批的申请 | 审批人 |
+
+邮件按收件人的界面语言（中 / 法 / 英）发送，附申请信息和直达链接。
+
+**配置方法**：推荐用公司邮箱的 SMTP 发信，只需一个邮箱账号和密码（或客户端授权码），不用改域名解析。
+
+```bash
+cd /opt/leave/app && git pull
+bash /opt/leave/app/deploy/aliyun/update.sh
+bash /opt/leave/app/deploy/aliyun/mail-setup.sh
+```
+
+按提示选择邮箱类型（阿里 / 腾讯 / 网易企业邮箱、Microsoft 365、Gmail、其他、Resend），填写账号和授权码，
+最后输入一个收件邮箱，脚本会立即发送一封测试邮件。阿里云 ECS 禁止 25 端口外发，请使用 465 或 587 端口。
 
 ---
 

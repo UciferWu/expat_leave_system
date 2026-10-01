@@ -13,10 +13,14 @@ services:
   supavisor:
     profiles: ["disabled"]
 
-  # 邮件通知函数所需的配置（可留空，留空则不发邮件）
-  # Variables pour la fonction notify-leave (facultatives)
+  # 邮件提醒函数所需的配置（由 mail-setup.sh 写入 .env；留空则不发邮件）
+  # Variables pour la fonction notify-leave (facultatives, voir mail-setup.sh)
   functions:
     environment:
+      MAIL_SMTP_HOST: ${MAIL_SMTP_HOST:-}
+      MAIL_SMTP_PORT: ${MAIL_SMTP_PORT:-}
+      MAIL_SMTP_USER: ${MAIL_SMTP_USER:-}
+      MAIL_SMTP_PASS: ${MAIL_SMTP_PASS:-}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       MAIL_FROM: ${MAIL_FROM:-}
       APP_URL: ${APP_URL:-}
