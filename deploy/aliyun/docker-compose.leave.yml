@@ -17,6 +17,10 @@ services:
   # Variables pour la fonction notify-leave (facultatives, voir mail-setup.sh)
   functions:
     environment:
+      MAIL_GRAPH_TENANT_ID: ${MAIL_GRAPH_TENANT_ID:-}
+      MAIL_GRAPH_CLIENT_ID: ${MAIL_GRAPH_CLIENT_ID:-}
+      MAIL_GRAPH_CLIENT_SECRET: ${MAIL_GRAPH_CLIENT_SECRET:-}
+      MAIL_GRAPH_SENDER: ${MAIL_GRAPH_SENDER:-}
       MAIL_SMTP_HOST: ${MAIL_SMTP_HOST:-}
       MAIL_SMTP_PORT: ${MAIL_SMTP_PORT:-}
       MAIL_SMTP_USER: ${MAIL_SMTP_USER:-}

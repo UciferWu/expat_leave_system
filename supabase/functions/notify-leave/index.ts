@@ -10,8 +10,11 @@
 // 网页在每次操作后调用本函数：{ request_id }。函数只发送"由调用者本人产生、尚未通知"的操作记录，
 // 每条记录只发送一次（leave_events.notified_at）。
 //
-// 发信方式（二选一，均通过环境变量 / Secrets 配置）：
-//   ① 公司邮箱 SMTP（推荐，无需改域名解析）
+// 发信方式（任选其一，均通过环境变量 / Secrets 配置）：
+//   ⓪ Microsoft 365 — Graph API（推荐用于 Office 365，支持开启了 MFA 的账号）
+//        MAIL_GRAPH_TENANT_ID / MAIL_GRAPH_CLIENT_ID / MAIL_GRAPH_CLIENT_SECRET  Entra ID 应用
+//        MAIL_GRAPH_SENDER  发信邮箱（建议用共享邮箱，如 leave@公司域名）
+//   ① 公司邮箱 SMTP（无需改域名解析）
 //        MAIL_SMTP_HOST  例如 smtp.qiye.aliyun.com
 //        MAIL_SMTP_PORT  465（SSL，默认）或 587（STARTTLS）
 //        MAIL_SMTP_USER  发信邮箱账号
@@ -212,7 +215,53 @@ const env = (k: string) => (typeof Deno !== "undefined" ? Deno.env.get(k) : unde
 // deno-lint-ignore no-explicit-any
 let smtp: any = null;
 
+// Microsoft 365：Graph API（OAuth 应用身份，不受 MFA 影响）/ Microsoft Graph (OAuth, compatible MFA)
+let graphToken: { value: string; exp: number } | null = null;
+async function graphAccessToken() {
+  if (graphToken && graphToken.exp > Date.now() + 60_000) return graphToken.value;
+  const authority = (env("MAIL_GRAPH_AUTHORITY") || "https://login.microsoftonline.com").replace(/\/$/, "");
+  const res = await fetch(`${authority}/${encodeURIComponent(env("MAIL_GRAPH_TENANT_ID"))}/oauth2/v2.0/token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      client_id: env("MAIL_GRAPH_CLIENT_ID"), client_secret: env("MAIL_GRAPH_CLIENT_SECRET"),
+      scope: "https://graph.microsoft.com/.default", grant_type: "client_credentials",
+    }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.access_token) {
+    throw new Error(`Microsoft 登录失败 / Échec d'authentification (${res.status}): ${data.error_description || data.error || ""}`.trim());
+  }
+  graphToken = { value: data.access_token, exp: Date.now() + Number(data.expires_in || 3600) * 1000 };
+  return graphToken.value;
+}
+
 export async function sendMail(to: string, subject: string, html: string, text: string) {
+  if (env("MAIL_GRAPH_TENANT_ID") && env("MAIL_GRAPH_CLIENT_ID") && env("MAIL_GRAPH_CLIENT_SECRET")) {
+    const sender = env("MAIL_GRAPH_SENDER");
+    if (!sender) throw new Error("MAIL_GRAPH_SENDER is required");
+    const endpoint = (env("MAIL_GRAPH_ENDPOINT") || "https://graph.microsoft.com").replace(/\/$/, "");
+    const send = async () => fetch(`${endpoint}/v1.0/users/${encodeURIComponent(sender)}/sendMail`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${await graphAccessToken()}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: {
+          subject,
+          body: { contentType: "HTML", content: html },
+          toRecipients: [{ emailAddress: { address: to } }],
+        },
+        saveToSentItems: false,
+      }),
+    });
+    let res = await send();
+    if (res.status === 401) { graphToken = null; res = await send(); }   // 令牌过期则重试一次
+    if (res.status !== 202 && !res.ok) {
+      const body = await res.text();
+      let msg = body; try { msg = JSON.parse(body)?.error?.message || body; } catch { /* keep text */ }
+      throw new Error(`Microsoft Graph ${res.status}: ${msg}`);
+    }
+    return;
+  }
   const host = env("MAIL_SMTP_HOST");
   if (host) {
     const port = Number(env("MAIL_SMTP_PORT") || 465);

@@ -85,6 +85,8 @@ bash /opt/leave/app/deploy/aliyun/mail-setup.sh
 按提示选择邮箱类型（阿里 / 腾讯 / 网易企业邮箱、Microsoft 365、Gmail、其他、Resend），填写账号和授权码，
 最后输入一个收件邮箱，脚本会立即发送一封测试邮件。阿里云 ECS 禁止 25 端口外发，请使用 465 或 587 端口。
 
+**使用 Microsoft 365 / Office 365（包括开启了 MFA 的账号）**：通过 Microsoft Graph API 发信，需要 IT 先在 Microsoft 365 中注册一个应用，步骤见 [MICROSOFT365.md](MICROSOFT365.md)。
+
 ---
 
 ## 四、绑定域名、开启 HTTPS
