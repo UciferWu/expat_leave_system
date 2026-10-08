@@ -200,6 +200,12 @@ table.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
   font-weight:750;font-size:13px;flex-shrink:0}
 .who .n{font-weight:650}
 .who .s{font-size:12px;color:var(--muted)}
+.lnk{font-weight:650;color:var(--pri2);text-align:left;padding:0}
+.lnk:hover{text-decoration:underline}
+.hist-row{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 0;border-bottom:1px solid var(--line2)}
+.hist-row:last-child{border-bottom:0}
+.hist-row .d{flex:1;min-width:0}
+.hist-row .d .s{font-size:12px;color:var(--muted)}
 .m-only{display:block}.d-only{display:none}
 .creds{background:var(--bg);border-radius:12px;padding:14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;line-height:1.7;word-break:break-all}
 .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
@@ -302,7 +308,7 @@ zh:{
   deactivate:"停用账号", activate:"重新启用", resetPwd:"重置密码", confirmDeactivate:"停用后该员工将无法登录，确定吗？",
   credsTitle:"账号已创建，请把以下信息发给员工", pwdResetTitle:"密码已重置，请把新密码发给员工",
   copy:"复制", copied:"已复制", loginUrl:"登录地址", credsNote:"员工首次登录后须自行修改密码。",
-  entitled:"本年额度", carried:"上年结转", adjustment:"调整", note:"备注", editBalance:"额度设置",
+  entitled:"本年额度", carried:"上年结转", adjustment:"调整", note:"备注", editBalance:"额度设置", leaveHistory:"休假明细", histTaken:"已休合计", histNone:"该年度没有休假记录", histHint:"点击姓名查看休假明细",
   countMode:"天数计算方式", mode_ouvrables_s:"工作日（周一至周六）", mode_ouvres_s:"工作日（周一至周五）", mode_calendaires_s:"自然日",
   defaultDays:"默认年假天数 / 年", companyName:"公司名称",
   leaveTypes:"假期类型", requiresAtt:"必须上传附件", activeType:"启用",
@@ -378,7 +384,7 @@ fr:{
   deactivate:"Désactiver le compte", activate:"Réactiver", resetPwd:"Réinitialiser le mot de passe", confirmDeactivate:"L'employé ne pourra plus se connecter. Confirmer ?",
   credsTitle:"Compte créé — identifiants à transmettre à l'employé", pwdResetTitle:"Mot de passe réinitialisé — à transmettre à l'employé",
   copy:"Copier", copied:"Copié", loginUrl:"Adresse", credsNote:"L'employé devra changer ce mot de passe à sa première connexion.",
-  entitled:"Droits de l'année", carried:"Report N-1", adjustment:"Ajustement", note:"Note", editBalance:"Droits à congés",
+  entitled:"Droits de l'année", carried:"Report N-1", adjustment:"Ajustement", note:"Note", editBalance:"Droits à congés", leaveHistory:"Historique des congés", histTaken:"Total pris", histNone:"Aucun congé pour cette année", histHint:"Cliquez sur un nom pour voir l'historique",
   countMode:"Mode de décompte", mode_ouvrables_s:"Jours ouvrables (lun.–sam.)", mode_ouvres_s:"Jours ouvrés (lun.–ven.)", mode_calendaires_s:"Jours calendaires",
   defaultDays:"Congés annuels par défaut / an", companyName:"Nom de la société",
   leaveTypes:"Types de congé", requiresAtt:"Justificatif obligatoire", activeType:"Actif",
@@ -456,7 +462,7 @@ en:{
   deactivate:"Deactivate account", activate:"Reactivate", resetPwd:"Reset password", confirmDeactivate:"The employee will no longer be able to sign in. Continue?",
   credsTitle:"Account created — send these credentials to the employee", pwdResetTitle:"Password reset — send the new password to the employee",
   copy:"Copy", copied:"Copied", loginUrl:"Address", credsNote:"The employee must change this password at first sign-in.",
-  entitled:"Entitlement for the year", carried:"Carried over", adjustment:"Adjustment", note:"Note", editBalance:"Leave entitlements",
+  entitled:"Entitlement for the year", carried:"Carried over", adjustment:"Adjustment", note:"Note", editBalance:"Leave entitlements", leaveHistory:"Leave history", histTaken:"Total taken", histNone:"No leave recorded for this year", histHint:"Click a name to see the leave history",
   countMode:"Day-count method", mode_ouvrables_s:"Working days (Mon–Sat)", mode_ouvres_s:"Working days (Mon–Fri)", mode_calendaires_s:"Calendar days",
   defaultDays:"Default annual leave / year", companyName:"Company name",
   leaveTypes:"Leave types", requiresAtt:"Supporting document required", activeType:"Active",
@@ -1209,7 +1215,7 @@ async function admRequests(){
     <div class="d-only card tbl-wrap">${rows.length ? `<table class="tbl"><thead><tr>
       <th>${t("applicant")}</th><th>${t("leaveType")}</th><th>${t("period")}</th><th class="num">${t("duration")}</th><th>${t("approverL")}</th><th>${t("statusL")}</th></tr></thead><tbody>
       ${rows.map(r => `<tr class="click" onclick="openRequest('${r.id}')">
-        <td><div class="who"><div class="avatar">${esc(initials(r.applicant?.full_name))}</div><div><div class="n">${esc(r.applicant?.full_name||"")}</div><div class="s">${esc([r.applicant?.employee_no, r.applicant?.department].filter(Boolean).join(" · "))}</div></div></div></td>
+        <td><div class="who"><div class="avatar">${esc(initials(r.applicant?.full_name))}</div><div><button class="lnk n" title="${t("histHint")}" onclick="event.stopPropagation();openLeaveHistory('${r.user_id}', S.filters.admin.year)">${esc(r.applicant?.full_name||"")}</button><div class="s">${esc([r.applicant?.employee_no, r.applicant?.department].filter(Boolean).join(" · "))}</div></div></div></td>
         <td><span class="dot" style="background:${esc(typeOf(r.type_code).color)}"></span> ${esc(typeName(r.type_code))}</td>
         <td>${fmtRangeShort(r)}</td><td class="num">${num(r.days)}</td>
         <td class="small">${esc(r.decided_by_name || S.cache.pmap[r.approver_id]?.full_name || "—")}</td><td>${statusPill(r.status)}</td></tr>`).join("")}
@@ -1387,12 +1393,12 @@ async function admBalances(){
       <tr><th class="num" style="border-left:1px solid var(--line)">${t("total")}</th><th class="num">${t("used")}</th><th class="num">${t("pending")}</th><th class="num">${t("available")}</th>
         <th class="num" style="border-left:1px solid var(--line)">${t("total")}</th><th class="num">${t("used")}</th><th class="num">${t("available")}</th></tr></thead><tbody>
       ${rows.map(r => `<tr class="click" onclick="editBalance('${r.user_id}')">
-        <td><div style="font-weight:650">${esc(r.p.full_name)}</div><div class="small muted">${esc([r.p.employee_no, countryName(r.p.work_country)].filter(Boolean).join(" · "))}${r.a.prorated?` · <i>${t("prorated")}</i>`:""}</div></td>
+        <td><button class="lnk" title="${t("histHint")}" onclick="event.stopPropagation();openLeaveHistory('${r.user_id}', S.filters.admin.year)">${esc(r.p.full_name)}</button><div class="small muted">${esc([r.p.employee_no, countryName(r.p.work_country)].filter(Boolean).join(" · "))}${r.a.prorated?` · <i>${t("prorated")}</i>`:""}</div></td>
         <td class="num" style="border-left:1px solid var(--line2)">${num(r.a.total)}${r.a.prorated?"*":""}</td>${cell(r.a.used)}${cell(r.a.pending)}${cell(r.a.available, true, Number(r.a.available)<0)}
         <td class="num" style="border-left:1px solid var(--line2)">${num(r.s.total)}${r.s.prorated?"*":""}</td>${cell(Number(r.s.used)+Number(r.s.pending))}${cell(r.s.available, true, Number(r.s.available)<0)}</tr>`).join("")
         || `<tr><td colspan="8">${emptyHtml(t("noResults"))}</td></tr>`}
     </tbody></table></div>
-    <p class="small muted" style="margin-top:8px">* ${t("prorated")}</p>`;
+    <p class="small muted" style="margin-top:8px">* ${t("prorated")} · ${t("histHint")}</p>`;
   let deb; $("#bq").oninput = e => { clearTimeout(deb); deb = setTimeout(()=>{ S.filters.admin.q = e.target.value; admBalances().then(()=>{ const i=$("#bq"); i.focus(); i.setSelectionRange(i.value.length,i.value.length); }); }, 250); };
 }
 function editBalance(uid){
@@ -1431,6 +1437,48 @@ function editBalance(uid){
         toast(t("saved")); closeSheet(); await pageAdmin();
       } catch(err){ toast(errMsg(err), true); busy(b, false); } };
   });
+}
+
+/* ---------- 员工休假明细 / Historique des congés d'un employé ---------- */
+async function openLeaveHistory(uid, year){
+  const p = S.cache.pmap?.[uid] || {};
+  let reqs, ents;
+  try {
+    [reqs, ents] = await Promise.all([
+      run(sb.from("leave_requests").select("*").eq("user_id", uid).in("status", ["approved","pending"])
+        .gte("start_date", `${year}-01-01`).lte("start_date", `${year}-12-31`).order("start_date")),
+      run(sb.from("leave_entitlements").select("kind,opening_used").eq("user_id", uid).eq("year", year)),
+    ]);
+  } catch(e){ return toast(errMsg(e), true); }
+  // 按假期类型汇总已批准天数，加上系统上线前已休天数，与"假期额度"表的"已休"一致
+  const sum = {};
+  for (const r of reqs) if (r.status === "approved") sum[r.type_code] = (sum[r.type_code] || 0) + Number(r.days);
+  const opening = (ents || []).filter(e => Number(e.opening_used) > 0);
+  const kindType = k => S.types.find(x => x.balance_kind === k)?.code;
+  for (const e of opening) { const c = kindType(e.kind); if (c) sum[c] = (sum[c] || 0) + Number(e.opening_used); }
+  const total = Object.values(sum).reduce((a,b) => a+b, 0);
+  const chips = Object.entries(sum).map(([c,d]) => `<span class="pill" style="background:var(--bg);color:var(--ink2);gap:6px">
+    <span class="dot" style="background:${esc(typeOf(c).color)}"></span> ${esc(typeName(c))} · ${fmtDays(d)}</span>`).join("");
+  const row = r => `<button type="button" class="hist-row" onclick="openRequest('${r.id}')">
+      <span class="dot" style="background:${esc(typeOf(r.type_code).color)};flex-shrink:0"></span>
+      <div class="d"><div style="font-weight:650">${esc(typeName(r.type_code))}</div><div class="s">${fmtRange(r)}</div></div>
+      ${r.status === "pending" ? statusPill(r.status) : ""}
+      <b class="tabnum" style="white-space:nowrap">${fmtDays(r.days)}</b></button>`;
+  const openRow = e => `<div class="hist-row"><span class="dot" style="background:${esc(typeOf(kindType(e.kind)).color)};flex-shrink:0"></span>
+      <div class="d"><div style="font-weight:650">${esc(t("kl_"+e.kind))}</div><div class="s">${t("openUsed")}</div></div>
+      <b class="tabnum" style="white-space:nowrap">${fmtDays(e.opening_used)}</b></div>`;
+  openSheet(t("leaveHistory"), `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <div class="avatar">${esc(initials(p.full_name))}</div>
+      <div style="flex:1;min-width:0"><div style="font-weight:700">${esc(p.full_name || "")}</div>
+        <div class="small muted">${esc([p.employee_no, p.department, countryName(p.work_country)].filter(Boolean).join(" · "))}</div></div>
+      <select class="input" id="hy" style="width:auto">${yearsOpts(year)}</select></div>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin:6px 0 8px">
+      <span class="label" style="margin:0">${t("histTaken")}</span><b style="font-size:20px" class="tabnum">${fmtDays(total)}</b></div>
+    ${chips ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">${chips}</div>` : ""}
+    <div class="hr"></div>
+    ${reqs.length || opening.length ? `<div>${opening.map(openRow).join("")}${reqs.map(row).join("")}</div>` : emptyHtml(t("histNone"))}`,
+    sh => { $("#hy", sh).onchange = e => openLeaveHistory(uid, +e.target.value); });
 }
 
 /* ---------- Settings ---------- */
