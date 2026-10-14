@@ -86,14 +86,14 @@ ok "已保存到 $SB_DIR/.env"
 log "应用配置 / Application"
 sync_app
 compose up -d functions >/dev/null
-wait_healthy "supabase-edge-functions" 120
+wait_healthy "leave-functions" 120
 sleep 3
 
 log "发送测试邮件 / E-mail de test"
 to="$(ask "测试邮件发到哪个邮箱:")"
 [ -n "$to" ] || die "收件邮箱不能为空"
 svc="$(env_get SERVICE_ROLE_KEY)"
-resp="$(curl -sS -m 90 -X POST http://127.0.0.1:8000/functions/v1/notify-leave \
+resp="$(curl -sS -m 90 -X POST "http://127.0.0.1:$LEAVE_API_PORT/functions/v1/notify-leave" \
   -H "apikey: $svc" -H "Authorization: Bearer $svc" -H "Content-Type: application/json" \
   -d "$(jq -n --arg t "$to" '{test_to:$t, lang:"zh"}')" || true)"
 if printf '%s' "$resp" | jq -e '.ok' >/dev/null 2>&1; then
@@ -109,7 +109,7 @@ else
       · 邮箱后台未开启 SMTP / IMAP 服务
       · Microsoft 365（Graph）：租户 ID / 应用 ID / 客户端密码填错，管理员未"授予管理员同意"，
         或发信邮箱不在应用访问策略允许的范围内（见 MICROSOFT365.md）
-    修正后重新运行本脚本即可。详细日志：docker logs --tail 50 supabase-edge-functions
+    修正后重新运行本脚本即可。详细日志：docker logs --tail 50 leave-functions
 EOF
   exit 1
 fi

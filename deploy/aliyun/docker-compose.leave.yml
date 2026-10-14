@@ -3,19 +3,44 @@
 #
 # 由 install.sh 复制到 /opt/leave/supabase/，并通过 .env 中的
 # COMPOSE_FILE=docker-compose.yml:docker-compose.leave.yml 自动加载。
+#
+# 使用独立的项目名（leave）和容器名（leave-*），与同一台服务器上的其他 Supabase
+# （例如人力报告平台）互不冲突。官方文件默认的项目名 supabase 和容器名 supabase-* 不再使用。
+
+name: leave
 
 services:
+
+  db:
+    container_name: leave-db
+  auth:
+    container_name: leave-auth
+  rest:
+    container_name: leave-rest
+  storage:
+    container_name: leave-storage
+  imgproxy:
+    container_name: leave-imgproxy
+  meta:
+    container_name: leave-meta
+  studio:
+    container_name: leave-studio
+  api-gw:
+    container_name: leave-envoy
 
   # 本系统不使用实时推送和连接池，关闭以节省内存
   # Non utilisés : désactivés pour économiser la mémoire
   realtime:
+    container_name: leave-realtime
     profiles: ["disabled"]
   supavisor:
+    container_name: leave-pooler
     profiles: ["disabled"]
 
   # 邮件提醒函数所需的配置（由 mail-setup.sh 写入 .env；留空则不发邮件）
   # Variables pour la fonction notify-leave (facultatives, voir mail-setup.sh)
   functions:
+    container_name: leave-functions
     environment:
       MAIL_GRAPH_TENANT_ID: ${MAIL_GRAPH_TENANT_ID:-}
       MAIL_GRAPH_CLIENT_ID: ${MAIL_GRAPH_CLIENT_ID:-}

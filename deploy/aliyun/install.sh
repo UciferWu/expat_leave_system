@@ -177,7 +177,8 @@ env_set ENABLE_EMAIL_AUTOCONFIRM "true"
 env_set ENABLE_PHONE_SIGNUP      "false"
 env_set ENABLE_ANONYMOUS_USERS   "false"
 env_set FUNCTIONS_VERIFY_JWT     "false"     # 函数内部自行校验登录身份
-env_set API_GW_HTTP_PORT         "127.0.0.1:8000"   # 网关只在本机开放，对外统一走 80 端口
+env_set API_GW_HTTP_PORT         "127.0.0.1:$LEAVE_API_PORT"   # 网关只在本机开放，对外统一走 80 端口
+env_set COMPOSE_PROJECT_NAME     "leave"
 env_set COMPOSE_FILE             "docker-compose.yml:docker-compose.leave.yml"
 env_set STUDIO_DEFAULT_ORGANIZATION "Winning Consortium"
 env_set STUDIO_DEFAULT_PROJECT   "员工休假系统"
@@ -196,7 +197,7 @@ sync_app
 log "7/8 启动服务（首次需下载镜像，约 5–15 分钟）/ Démarrage"
 compose pull -q
 compose up -d --remove-orphans
-wait_healthy "supabase-db supabase-auth supabase-rest supabase-storage supabase-studio supabase-envoy supabase-edge-functions leave-web" 900
+wait_healthy "$LEAVE_CORE" 900
 apply_migrations
 
 # ---------------------------------------------------------------------
@@ -215,7 +216,7 @@ if [ "$users" = "0" ]; then
   payload="$(jq -n --arg e "$ADMIN_EMAIL" --arg p "$ADMIN_PASSWORD" --arg n "${ADMIN_NAME:-Admin}" \
     '{email:$e, password:$p, email_confirm:true, user_metadata:{full_name:$n, lang:"zh"}}')"
   svc="$(env_get SERVICE_ROLE_KEY)"
-  resp="$(curl -sS -X POST http://127.0.0.1:8000/auth/v1/admin/users \
+  resp="$(curl -sS -X POST "http://127.0.0.1:$LEAVE_API_PORT/auth/v1/admin/users" \
            -H "apikey: $svc" -H "Authorization: Bearer $svc" -H "Content-Type: application/json" -d "$payload")"
   echo "$resp" | jq -e '.id' >/dev/null 2>&1 || die "创建管理员失败：$resp"
   ok "管理员已创建：$ADMIN_EMAIL"
@@ -241,7 +242,7 @@ $(printf '\033[1;32m')部署完成 / Déploiement terminé$(printf '\033[0m')
   ⚠ 请阿里云账号管理员在 ECS 安全组放行 TCP 80 端口（入方向），否则外部无法访问。
 
   数据库管理后台（Studio，不对外开放）：
-    在自己电脑上运行  ssh -L 8000:127.0.0.1:8000 root@${PUBLIC_URL#http://}
+    在自己电脑上运行  ssh -L 8000:127.0.0.1:$LEAVE_API_PORT root@${PUBLIC_URL#http://}
     然后浏览器打开    http://localhost:8000
     用户名 $(env_get DASHBOARD_USERNAME)，密码见 $SB_DIR/.env 中的 DASHBOARD_PASSWORD
 

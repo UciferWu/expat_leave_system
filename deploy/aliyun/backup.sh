@@ -9,7 +9,7 @@ KEEP_DAYS="${KEEP_DAYS:-14}"
 ts="$(date +%Y%m%d_%H%M)"
 mkdir -p "$BK" && chmod 700 "$BK"
 
-docker exec supabase-db pg_dump -U postgres -h 127.0.0.1 -d postgres -Fc \
+docker exec leave-db pg_dump -U postgres -h 127.0.0.1 -d postgres -Fc \
   -n public -n auth -n storage -n leave_admin > "$BK/db_$ts.dump.tmp"
 mv "$BK/db_$ts.dump.tmp" "$BK/db_$ts.dump"
 tar czf "$BK/files_$ts.tar.gz" -C "$SB_DIR/volumes" storage

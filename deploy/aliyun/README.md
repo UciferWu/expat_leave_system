@@ -46,9 +46,9 @@ sudo bash /opt/leave/app/deploy/aliyun/install.sh
 |---|---|
 | 更新到最新版本（会先自动备份） | `sudo bash /opt/leave/app/deploy/aliyun/update.sh` |
 | 手动备份 | `sudo bash /opt/leave/app/deploy/aliyun/backup.sh` |
-| 查看服务状态 | `cd /opt/leave/supabase && sudo docker compose ps` |
-| 查看某个服务的日志 | `cd /opt/leave/supabase && sudo docker compose logs --tail 100 functions`（或 `auth`、`db`、`web`） |
-| 重启全部服务 | `cd /opt/leave/supabase && sudo docker compose restart` |
+| 查看服务状态 | `cd /opt/leave/supabase && sudo docker compose -p leave ps` |
+| 查看某个服务的日志 | `cd /opt/leave/supabase && sudo docker compose -p leave logs --tail 100 functions`（或 `auth`、`db`、`web`） |
+| 重启全部服务 | `cd /opt/leave/supabase && sudo docker compose -p leave restart` |
 
 - **备份**保存在 `/opt/leave/backups/`（数据库 + 附件，保留 14 天）。建议另外在阿里云控制台为这台 ECS 设置**自动快照**。
 - **全部密钥**在 `/opt/leave/supabase/.env`，请妥善保管，不要外传或提交到 GitHub。
@@ -57,7 +57,7 @@ sudo bash /opt/leave/app/deploy/aliyun/install.sh
 出于安全考虑不对外开放。需要时在自己电脑上运行：
 
 ```bash
-ssh -L 8000:127.0.0.1:8000 root@公网IP
+ssh -L 8000:127.0.0.1:8090 root@公网IP
 ```
 
 然后浏览器打开 http://localhost:8000 ，用户名、密码见 `.env` 中的 `DASHBOARD_USERNAME` / `DASHBOARD_PASSWORD`。
@@ -110,7 +110,7 @@ bash /opt/leave/app/deploy/aliyun/enable-https.sh leave.公司域名 it@公司�
 ```
 浏览器 ──80──▶ leave-web (Nginx)
                  ├── /                          休假系统网页
-                 └── /auth /rest /storage /functions ─▶ api-gw (Envoy, 仅本机 8000)
+                 └── /auth /rest /storage /functions ─▶ api-gw (Envoy, 仅本机 8090)
                                                          ├── auth      登录
                                                          ├── rest      数据接口
                                                          ├── storage   附件（保存在 volumes/storage）

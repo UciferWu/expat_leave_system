@@ -43,7 +43,7 @@ env_set SITE_URL            "https://$DOMAIN"
 env_set APP_URL             "https://$DOMAIN/"
 sync_app
 compose up -d --remove-orphans
-wait_healthy "supabase-auth supabase-storage supabase-edge-functions supabase-studio supabase-envoy leave-web" 300
+wait_healthy "leave-auth leave-storage leave-functions leave-studio leave-envoy leave-web" 300
 code="$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:$APP_PORT/")"
 [ "$code" = 200 ] || die "休假系统在本机 $APP_PORT 端口无响应（HTTP $code）"
 ok "休假系统：127.0.0.1:$APP_PORT"

@@ -25,7 +25,7 @@ log "3/4 更新网页、函数和数据库 / Site, fonctions, base"
 sync_app
 compose up -d --remove-orphans
 compose restart functions web >/dev/null
-wait_healthy "supabase-db supabase-edge-functions leave-web" 300
+wait_healthy "leave-db leave-functions leave-web" 300
 apply_migrations
 
 log "4/4 完成 / Terminé"

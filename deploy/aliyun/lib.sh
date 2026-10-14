@@ -4,6 +4,9 @@
 LEAVE_BASE="${LEAVE_BASE:-/opt/leave}"
 SB_DIR="$LEAVE_BASE/supabase"
 SB_REF="${SB_REF:-self-hosted/v0.8.2}"
+LEAVE_API_PORT="${LEAVE_API_PORT:-8090}"   # Supabase 接口 / Studio：只在本机开放
+# 本系统的容器（独立项目名 leave，不与服务器上的其他 Supabase 冲突）
+LEAVE_CORE="leave-db leave-auth leave-rest leave-storage leave-studio leave-envoy leave-functions leave-web"
 DEPLOY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(cd "$DEPLOY_DIR/../.." && pwd)"
 
@@ -27,10 +30,10 @@ env_set() {
 # 只在变量不存在时写入（保留用户已填的值）
 env_default() { grep -qE "^$1=" "$SB_DIR/.env" || printf '%s=%s\n' "$1" "$2" >> "$SB_DIR/.env"; }
 
-compose() { (cd "$SB_DIR" && docker compose "$@"); }
+compose() { (cd "$SB_DIR" && docker compose -p leave "$@"); }
 
 db_sql() {  # 以 postgres 身份执行 SQL（与 Supabase 网页 SQL Editor 相同）
-  docker exec -i supabase-db psql -v ON_ERROR_STOP=1 -q -X -U postgres -h 127.0.0.1 -d postgres "$@"
+  docker exec -i leave-db psql -v ON_ERROR_STOP=1 -q -X -U postgres -h 127.0.0.1 -d postgres "$@"
 }
 
 wait_healthy() {
