@@ -1,0 +1,59 @@
+# 人力报告平台：在官方 Supabase 自部署配置（self-hosted/v0.8.2）之上的改动
+#
+# 与员工休假系统使用同一套官方文件，但这是第二套完全独立的实例：
+#   - 独立的项目名（hr）、容器名（hr-*）、数据库和附件目录（/opt/hr/supabase/volumes）
+#   - 接口只在本机 127.0.0.1:8100，网页在 127.0.0.1:8082，由网关（Caddy）对外提供 HTTPS
+#
+# 由 install.sh 复制到 /opt/hr/supabase/，通过 .env 中的
+# COMPOSE_FILE=docker-compose.yml:docker-compose.hr.yml 自动加载。
+
+name: hr
+
+services:
+  studio:
+    container_name: hr-studio
+  api-gw:
+    container_name: hr-envoy
+  rest:
+    container_name: hr-rest
+  storage:
+    container_name: hr-storage
+  imgproxy:
+    container_name: hr-imgproxy
+  meta:
+    container_name: hr-meta
+  functions:
+    container_name: hr-functions
+  db:
+    container_name: hr-db
+
+  # 本平台不使用实时推送和连接池
+  realtime:
+    container_name: hr-realtime
+    profiles: ["disabled"]
+  supavisor:
+    container_name: hr-pooler
+    profiles: ["disabled"]
+
+  auth:
+    container_name: hr-auth
+    environment:
+      # 中文的注册验证 / 重置密码邮件（模板由下面的 web 容器提供）
+      GOTRUE_MAILER_SUBJECTS_CONFIRMATION: "【HR 工作平台】请验证您的邮箱"
+      GOTRUE_MAILER_SUBJECTS_RECOVERY: "【HR 工作平台】重置密码"
+      GOTRUE_MAILER_TEMPLATES_CONFIRMATION: "http://web/mail/confirmation.html"
+      GOTRUE_MAILER_TEMPLATES_RECOVERY: "http://web/mail/recovery.html"
+
+  # 网页 + 接口统一入口：/ 为人力报告平台网页，/auth /rest /storage 转发到 Supabase
+  web:
+    container_name: hr-web
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "${HR_HTTP_PORT:-127.0.0.1:8082}:80"
+    depends_on:
+      api-gw:
+        condition: service_healthy
+    volumes:
+      - ./hr/site:/usr/share/nginx/html:ro
+      - ./hr/nginx.conf:/etc/nginx/conf.d/default.conf:ro

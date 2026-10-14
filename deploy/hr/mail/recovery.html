@@ -1,0 +1,10 @@
+<div style="font-family:-apple-system,'Segoe UI','Microsoft YaHei',sans-serif;max-width:520px;margin:0 auto;padding:24px;color:#1e293b">
+  <h2 style="color:#1e40af;margin:0 0 16px">HR 工作平台</h2>
+  <p>您好，</p>
+  <p>我们收到了重置您账号（{{ .Email }}）密码的请求。请点击下面的按钮设置新密码：</p>
+  <p style="margin:28px 0">
+    <a href="{{ .ConfirmationURL }}" style="background:#2563eb;color:#fff;text-decoration:none;padding:12px 24px;border-radius:6px;display:inline-block">重置密码</a>
+  </p>
+  <p style="font-size:13px;color:#64748b">如果按钮无法点击，请复制以下链接到浏览器打开：<br><span style="word-break:break-all">{{ .ConfirmationURL }}</span></p>
+  <p style="font-size:13px;color:#64748b">如果您没有申请重置密码，请忽略此邮件，您的密码不会改变。</p>
+</div>
