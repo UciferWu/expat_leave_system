@@ -14,9 +14,10 @@ log "1/4 备份 / Sauvegarde"
 bash "$DEPLOY_DIR/backup.sh"
 
 log "2/4 获取最新代码 / Récupération du code"
-before="$(git -C "$REPO_DIR" rev-parse --short HEAD)"
-git -C "$REPO_DIR" pull --ff-only -q || die "git pull 失败（本地文件是否被修改过？）"
-after="$(git -C "$REPO_DIR" rev-parse --short HEAD)"
+# 用 cd 而不是 git -C：CentOS 7 自带的 git 1.8.3 不支持 -C
+before="$(cd "$REPO_DIR" && git rev-parse --short HEAD)"
+(cd "$REPO_DIR" && git pull --ff-only -q) || die "git pull 失败（本地文件是否被修改过？）"
+after="$(cd "$REPO_DIR" && git rev-parse --short HEAD)"
 ok "$before → $after"
 # 脚本本身可能已更新，重新加载
 source "$DEPLOY_DIR/lib.sh"
