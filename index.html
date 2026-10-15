@@ -317,7 +317,7 @@ zh:{
   onLeaveNow:"正在休假", stats_pending:"待审批", stats_onleave:"今日休假", stats_month:"本月批准天数", stats_users:"在职人数",
   dayUnit:"天", from:"从", to:"至", noResults:"没有符合条件的记录", count:"条",
   modifyLeave:"修改休假", modifyHint:"如员工提前返岗，把结束日期改为实际休假的最后一天，多出的天数会自动退回余额。也可延长，但会重新校验余额。", modifyReason:"修改原因", modifyReasonPh:"例：提前返岗", newDuration:"修改后", oldDuration:"原天数", modified:"已修改", ev_modified:"修改休假", modifiedSaved:"休假已更新", nameEn:"英文名称", perYearAll:"每年额度（从今年起生效）", unitDays:"天", unitShort:"天", ERR_NOT_APPROVED:"只能修改已批准的申请", ERR_NO_CHANGE:"日期没有变化",
-  countModeDefault:"默认天数计算方式（国家未单独设置时）", useDefault:"使用默认方式", workdayOverride:"调休上班日（周末补班，计入休假天数）", workdayBadge:"调休上班", 
+  countModeDefault:"默认天数计算方式（国家未单独设置时）", useDefault:"使用默认方式", followCountry:"按员工工作国家的方式", workdayOverride:"调休上班日（周末补班，计入休假天数）", workdayBadge:"调休上班", 
   initTitle:"{y} 年初始数据（系统上线前）", initHint:"用于录入系统上线前的数据：上年未休年假会加入本年额度，本年已休天数会从余额中扣除。之后在系统里批准的假期会自动累加。", carriedInit:"上年未休年假天数", openAnnual:"本年已休年假天数", openSick:"本年已休病假天数", openUsed:"系统外已休", 
   addMoreFiles:"继续添加", filesCount:"{n} 个附件", maxFiles:"最多上传 10 个附件", removeFile:"移除", attachmentsL:"附件", ERR_TOO_MANY_FILES:"最多上传 10 个附件", 
   ERR_PROBATION:"试用期至 {d}，试用期结束前不能申请年假", ERR_BEFORE_START:"系统从 {d} 年开始使用，不能申请更早的假期",
@@ -336,7 +336,7 @@ fr:{
   login:"Connexion", email:"E-mail", password:"Mot de passe", signIn:"Se connecter",
   forgot:"Mot de passe oublié ? Contactez les Ressources humaines.", badLogin:"E-mail ou mot de passe incorrect",
   navHome:"Accueil", navMine:"Mes demandes", navApprove:"Validation", navAdmin:"Admin", navMe:"Profil",
-  hello:"Bonjour", balanceTitle:"Congés annuels disponibles {y}", available:"Disponible", used:"Pris", pending:"En attente", total:"Droits",
+  hello:"Bonjour", balanceTitle:"Solde de congés annuels {y}", available:"Disponible", used:"Pris", pending:"En attente", total:"Droits",
   newRequest:"Demander un congé", recent:"Demandes récentes", seeAll:"Tout voir", noRequests:"Aucune demande pour l'instant",
   nextLeave:"Prochain congé", yourApprover:"Votre valideur", noApprover:"Aucun valideur désigné : vos demandes seront traitées par un administrateur.",
   toApproveBanner:"{n} demande(s) en attente de votre validation",
@@ -345,8 +345,8 @@ fr:{
   startPm:"Début l'après-midi du premier jour", endAm:"Fin à midi le dernier jour",
   duration:"Durée", afterBalance:"Solde {k} après validation", notDeducted:"Non décompté",
   reason:"Motif", destination:"Lieu pendant le congé", contact:"Contact d'urgence", optional:"facultatif",
-  attachment:"Justificatif (certificat médical…)", addFile:"Joindre des fichiers ou photos (plusieurs possibles)", fileTooBig:"Fichier limité à 10 Mo",
-  submit:"Envoyer", submitted:"Demande envoyée, en attente de validation", required:"obligatoire",
+  attachment:"Justificatif (certificat médical…)", addFile:"Joindre des fichiers ou photos (sélection multiple possible)", fileTooBig:"Fichier limité à 10 Mo",
+  submit:"Soumettre", submitted:"Demande envoyée, en attente de validation", required:"obligatoire",
   mode_ouvrables:"Décompte en jours ouvrables : du lundi au samedi, hors jours fériés",
   mode_ouvres:"Décompte en jours ouvrés : du lundi au vendredi, hors jours fériés",
   mode_calendaires:"Décompte en jours calendaires",
@@ -367,7 +367,7 @@ fr:{
   probationEnd:"Fin de période d'essai", probationHint:"Pas de congé annuel avant la fin de la période d'essai", annualDaysL:"Congés annuels / an", sickDaysL:"Congés maladie / an",
   daysHint:"Une modification s'applique à partir de l'année en cours ; les années passées gardent leurs droits. Proratisé l'année d'entrée. Vide = valeurs par défaut ({a} / {s} j).",
   annualShort:"Congés annuels", sickShort:"Maladie", kl_annual:"congés annuels", kl_sick:"congés maladie", prorated:"Proratisé (année d'entrée)", fullYear:"Droits annuels pleins", thisYear:"{y}",
-  sickTitle:"Congés maladie disponibles {y}", inProbation:"Période d'essai jusqu'au {d} : pas de congé annuel avant cette date.",
+  sickTitle:"Solde de congés maladie {y}", inProbation:"Période d'essai jusqu'au {d} : pas de congé annuel avant cette date.",
   balanceKind:"Imputé sur", kind_none:"Non décompté", kind_annual:"Solde congés annuels", kind_sick:"Solde congés maladie",
   defaultSickDays:"Congés maladie par défaut / an", countries:"Pays", isWorkCountry:"Proposé comme pays d'affectation", newCountry:"Nouveau pays",
   countryCode:"Code pays (2 lettres majuscules, ex. FR)", holidayCountry:"Pays concerné",
@@ -393,7 +393,7 @@ fr:{
   onLeaveNow:"En congé", stats_pending:"En attente", stats_onleave:"En congé aujourd'hui", stats_month:"Jours approuvés ce mois", stats_users:"Comptes actifs",
   dayUnit:"j", from:"du", to:"au", noResults:"Aucun résultat", count:"",
   modifyLeave:"Modifier le congé", modifyHint:"En cas de retour anticipé, indiquez le dernier jour de congé réellement pris : les jours non utilisés sont recrédités. Une prolongation est possible, sous réserve du solde.", modifyReason:"Motif de la modification", modifyReasonPh:"ex. retour anticipé", newDuration:"Nouvelle durée", oldDuration:"Durée initiale", modified:"Modifiée", ev_modified:"Congé modifié", modifiedSaved:"Congé mis à jour", nameEn:"Nom (anglais)", perYearAll:"Droits par an (à partir de cette année)", unitDays:"jours", unitShort:"j", ERR_NOT_APPROVED:"Seule une demande approuvée peut être modifiée", ERR_NO_CHANGE:"Aucune modification des dates",
-  countModeDefault:"Mode de décompte par défaut (pays sans réglage propre)", useDefault:"Utiliser le mode par défaut", workdayOverride:"Jour travaillé exceptionnel (week-end travaillé, décompté)", workdayBadge:"Jour travaillé", 
+  countModeDefault:"Mode de décompte par défaut (pays sans réglage propre)", useDefault:"Utiliser le mode par défaut", followCountry:"Selon le pays de travail", workdayOverride:"Jour travaillé exceptionnel (week-end travaillé, décompté)", workdayBadge:"Jour travaillé", 
   initTitle:"Données initiales {y} (avant la mise en service)", initHint:"Pour reprendre l'historique : les congés annuels non pris l'an dernier s'ajoutent aux droits, les jours déjà pris cette année sont déduits du solde. Les congés validés ensuite dans la plateforme s'ajoutent automatiquement.", carriedInit:"Congés annuels non pris N-1", openAnnual:"Congés annuels déjà pris cette année", openSick:"Congés maladie déjà pris cette année", openUsed:"Pris hors plateforme", 
   addMoreFiles:"Ajouter d'autres fichiers", filesCount:"{n} fichier(s)", maxFiles:"10 fichiers maximum", removeFile:"Retirer", attachmentsL:"Justificatifs", ERR_TOO_MANY_FILES:"10 fichiers maximum", 
   ERR_PROBATION:"Période d'essai jusqu'au {d} : pas de congé annuel avant cette date", ERR_BEFORE_START:"La plateforme démarre en {d} : impossible de déclarer un congé antérieur",
@@ -474,7 +474,7 @@ en:{
   modifyReason:"Reason for change", modifyReasonPh:"e.g. returned early", newDuration:"New duration", oldDuration:"Original duration", modified:"Edited",
   ev_modified:"Leave edited", modifiedSaved:"Leave updated", perYearAll:"Yearly entitlement (from this year)",
   unitDays:"days", unitShort:"d", ERR_NOT_APPROVED:"Only approved requests can be edited", ERR_NO_CHANGE:"The dates have not changed",
-  countModeDefault:"Default day-count method (countries without their own)", useDefault:"Use the default method", workdayOverride:"Make-up working day (weekend worked, counted as leave)", workdayBadge:"Working day", 
+  countModeDefault:"Default day-count method (countries without their own)", useDefault:"Use the default method", followCountry:"Per the work country", workdayOverride:"Make-up working day (weekend worked, counted as leave)", workdayBadge:"Working day", 
   initTitle:"Opening data {y} (before go-live)", initHint:"To load history: unused annual leave from last year is added to the entitlement, and days already taken this year are deducted from the balance. Leave approved in the platform afterwards is added automatically.", carriedInit:"Unused annual leave from last year", openAnnual:"Annual leave already taken this year", openSick:"Sick leave already taken this year", openUsed:"Taken outside the platform", 
   addMoreFiles:"Add more files", filesCount:"{n} file(s)", maxFiles:"Up to 10 files", removeFile:"Remove", attachmentsL:"Attachments", ERR_TOO_MANY_FILES:"Up to 10 files", 
   ERR_PROBATION:"On probation until {d}: no annual leave before then", ERR_BEFORE_START:"The platform starts in {d}: earlier leave cannot be recorded",
@@ -539,6 +539,7 @@ function fmtRangeShort(r){
   const sameYear = r.start_date.slice(0,4) === r.end_date.slice(0,4);
   return `${fmtShort(r.start_date)} – ${fmtDate(r.end_date, sameYear?{day:"numeric",month:"short"}:{day:"numeric",month:"short",year:"numeric"})}`;
 }
+const modeHint = code => esc(t("mode_"+typeCountMode(code))) + (!typeOf(code).count_mode && S.me?.work_country ? ` · ${esc(countryName(S.me.work_country))}` : "");
 const typeOf = code => S.types.find(x => x.code === code) || {code, name_zh:code, name_fr:code, color:"#64748b"};
 const typeName = code => lname(typeOf(code));
 const statusPill = s => `<span class="pill st-${s}">${t("status_"+s)}</span>`;
@@ -549,6 +550,7 @@ const countryName = code => { const c = S.countries.find(x => x.code === code); 
 const countryOpts = (sel, workOnly, blank) => (blank ? `<option value="">${t("none")}</option>` : "") +
   S.countries.filter(c => !workOnly || c.is_work_country)
     .map(c => `<option value="${c.code}" ${c.code===sel?"selected":""}>${esc(lname(c))}</option>`).join("");
+const typeCountMode = code => typeOf(code).count_mode || myCountMode();
 const myCountMode = () => (S.countries.find(c => c.code === S.me?.work_country) || {}).count_mode || S.settings?.count_mode || "ouvrables";
 const tri = x => `${esc(x.name_zh)} · ${esc(x.name_fr)} · ${x.name_en ? esc(x.name_en) : `<span class="muted" style="font-weight:500">EN —</span>`}`;
 const initYear = () => Math.max(new Date().getFullYear(), Number(S.settings?.first_year || 2026));
@@ -840,7 +842,7 @@ async function pageNew(){
       <div class="field"><label for="fe">${t("endDate")}</label><input class="input" type="date" id="fe" value="${F.end}" required></div>
     </div>
     <div id="halfBox"></div>
-    <p class="small muted" style="margin:-4px 2px 16px">${t("mode_"+myCountMode())}${S.me.work_country?` · ${esc(countryName(S.me.work_country))}`:""}</p>
+    <p class="small muted" style="margin:-4px 2px 16px" id="modeTxt">${modeHint(F.type)}</p>
     <div class="field"><label for="fr">${t("reason")} <span class="muted">· ${t("optional")}</span></label><textarea class="input" id="fr" rows="2">${esc(F.reason)}</textarea></div>
     <div class="row2">
       <div class="field"><label for="fd">${t("destination")}</label><input class="input" id="fd" value="${esc(F.destination)}" placeholder="${t("optional")}"></div>
@@ -904,12 +906,13 @@ let recalcSeq = 0;
 async function recalc(){
   const F = S.newForm, el = $("#sumTxt"); if (!el) return;
   const ty = typeOf(F.type);
+  if ($("#modeTxt")) $("#modeTxt").innerHTML = modeHint(F.type);
   $("#attLabel").innerHTML = `${t("attachment")} ${ty.requires_attachment ? `<span style="color:var(--bad)">· ${t("required")}</span>` : `<span class="muted">· ${t("optional")}</span>`}`;
   if (!F.start || !F.end || F.end < F.start) { F.days = null;
     el.innerHTML = `<div class="lbl">${t("duration")}</div><div class="big">—</div>`; return; }
   const seq = ++recalcSeq; const {sh, eh} = halfFlags(F);
   try {
-    const d = await run(sb.rpc("count_leave_days", {p_start:F.start, p_end:F.end, p_start_half:sh, p_end_half:eh}));
+    const d = await run(sb.rpc("count_leave_days", {p_start:F.start, p_end:F.end, p_start_half:sh, p_end_half:eh, p_type:F.type}));
     const sy = +F.start.slice(0,4);
     if (ty.balance_kind && F.balYear !== sy && sy >= firstYear()) {
       try { F.bal = await run(sb.rpc("leave_balance", {p_user:S.me.id, p_year:sy})); F.balYear = sy; } catch(e) {}
@@ -1085,7 +1088,7 @@ function openModify(r){
       if (!M.start || !M.end || M.end < M.start) { $("#mdays",sh).textContent = "—"; $("#mdelta",sh).textContent = ""; return; }
       const my = ++seq;
       try { const d = Number(await run(sb.rpc("count_leave_days", {p_start:M.start, p_end:M.end, p_start_half:M.sh, p_end_half:M.eh,
-            p_country:r.applicant?.work_country || null})));
+            p_country:r.applicant?.work_country || null, p_type:r.type_code})));
         if (my !== seq) return; M.days = d; $("#mdays",sh).textContent = fmtDays(d);
         const delta = d - Number(r.days);
         $("#mdelta",sh).innerHTML = delta ? `<span style="color:${delta<0?"var(--ok)":"var(--warn)"}">(${delta>0?"+":""}${num(delta)})</span>` : "";
@@ -1453,7 +1456,7 @@ async function admSettings(){
     <div class="card">${S.types.map(x => `<button class="req" style="border-bottom:1px solid var(--line2);align-items:center;${x.active?"":"opacity:.5"}" onclick="editType('${esc(x.code)}')">
       <span class="dot" style="background:${esc(x.color)};width:12px;height:12px"></span>
       <div class="body"><div class="ttl" style="font-size:14px;white-space:normal">${tri(x)}</div>
-        <div class="meta">${kindLbl(x.balance_kind)}${x.requires_attachment?` · ✓ ${t("requiresAtt")}`:""}${x.active?"":` · ${t("inactiveL")}`}</div></div></button>`).join("")}</div>
+        <div class="meta">${kindLbl(x.balance_kind)}${x.count_mode?` · ${t("mode_"+x.count_mode+"_s")}`:""}${x.requires_attachment?` · ✓ ${t("requiresAtt")}`:""}${x.active?"":` · ${t("inactiveL")}`}</div></div></button>`).join("")}</div>
 
     <div class="section-h"><h2>${t("holidays")}</h2><button onclick="addHoliday()">+ ${t("add")}</button></div>
     <div class="toolbar">
@@ -1487,12 +1490,15 @@ function editType(code){
       <div class="field"><label>${t("balanceKind")}</label><select class="input" id="t4">${[["",t("kind_none")],["annual",t("kind_annual")],["sick",t("kind_sick")]].map(([k,l]) =>
         `<option value="${k}" ${(x.balance_kind||"")===k?"selected":""}>${l}</option>`).join("")}</select></div>
       <div class="field"><label>${t("color")}</label><input class="input" id="t3" type="color" value="${esc(x.color)}" style="padding:4px;height:46px"></div></div>
+    <div class="field"><label>${t("countMode")}</label><select class="input" id="t8">
+      <option value="">${t("followCountry")}</option>
+      ${["ouvrables","ouvres","calendaires"].map(m=>`<option value="${m}" ${x.count_mode===m?"selected":""}>${t("mode_"+m+"_s")}</option>`).join("")}</select></div>
     <label class="check"><input type="checkbox" id="t5" ${x.requires_attachment?"checked":""}> ${t("requiresAtt")}</label>
     <label class="check"><input type="checkbox" id="t6" ${x.active?"checked":""}> ${t("activeType")}</label>
     <button class="btn btn-pri btn-block" style="margin-top:10px" id="tsv">${t("save")}</button></form>`, sh => {
     $("#tf", sh).onsubmit = async e => { e.preventDefault(); const b = $("#tsv", sh); busy(b, true);
       const row = { code: code || $("#t0",sh).value.trim().toLowerCase(), name_fr:$("#t1",sh).value.trim(), name_zh:$("#t2",sh).value.trim(), name_en:$("#t7",sh).value.trim()||null,
-        color:$("#t3",sh).value, balance_kind:$("#t4",sh).value||null, requires_attachment:$("#t5",sh).checked, active:$("#t6",sh).checked, sort_order:x.sort_order };
+        color:$("#t3",sh).value, balance_kind:$("#t4",sh).value||null, requires_attachment:$("#t5",sh).checked, active:$("#t6",sh).checked, count_mode:$("#t8",sh).value||null, sort_order:x.sort_order };
       try { await run(sb.from("leave_types").upsert(row)); S.types = await run(sb.from("leave_types").select("*").order("sort_order"));
         toast(t("saved")); closeSheet(); admSettings(); }
       catch(err){ toast(errMsg(err), true); busy(b, false); } };
